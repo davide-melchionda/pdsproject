@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <fstream>
 #include <thread>
+#include <vector>
 #include<windows.h>
 #include <condition_variable>
 #include <map>
@@ -61,5 +62,14 @@ public:
 		}
 
 		return 1;
+	}
+	vector<pair<string, T>>  WrapperClass<T>::getAll()
+	{
+		vector<pair<string, T>> v;
+
+		for (map<string, T >::iterator it = myMap.begin(); it != myMap.end(); ++it) {
+			v.push_back(pair< string, T>(it->first, it->second));
+		}
+		return v;
 	}
 };
