@@ -7,18 +7,22 @@
 #include <map>
 #include <mutex>
 #include <vector>
+#include "HelloThread.h"
 
 
 int main()
 {
-	 WrapperClass<string>& wc = WrapperClass<string>::getInstance();
+	 /*WrapperClass<string>& wc = WrapperClass<string>::getInstance();
 	 WrapperClass<string>& wc1 = WrapperClass<string>::getInstance();
 
 	wc.insert(pair< string, string>("zio", "nicola"));
 	wc1.insert(pair< string, string>("zio", "gigi"));
 
 	vector<pair<string,string>> vectore= wc.getAll();
-	cout << vectore.back().first;
+	cout << vectore.back().first;*/
+	HelloThread hello;
+	std::thread helloThread(hello);
+	helloThread.join();
 
     return 0;
 }
