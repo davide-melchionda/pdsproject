@@ -29,13 +29,13 @@ public:
 	}
 	int insert(pair<string, T > element)
 	{
-		pair<map<string, string>::iterator, bool> ret;
+		pair<map<string, T>::iterator, bool> ret;
 
 		unique_lock<mutex> ul(m);
 		ret = this->myMap.insert(element);
 		if (ret.second == false) {
-			std::cout << "element already existed";
-			std::cout << " with a value of " << ret.first->second << '\n';
+			std::cout << "element already existed" << std::endl;
+			//std::cout << " with a value of " << ret.first->second << '\n';
 		}
 		cv.notify_all();
 		return 0;
@@ -48,14 +48,14 @@ public:
 		int ret = this->myMap.erase(key);
 		cv.notify_all();
 		return ret;
-
 	}
+
 	//restituisce 1 se va a buon fine e riempie il T passato come parametro
-	int WrapperClass<T>::get(string key, T *container)
+	int WrapperClass<T>::get(string key, T& container)
 	{
 
 		try {
-			*container = myMap.at(key);
+			container = myMap.at(key);
 		}
 		catch (out_of_range& ofr) {
 			return 0;
@@ -71,5 +71,9 @@ public:
 			v.push_back(pair< string, T>(it->first, it->second));
 		}
 		return v;
+	}
+
+	bool WrapperClass<T>::exists(string key) {
+		return (myMap.find(key) != myMap.end());
 	}
 };
