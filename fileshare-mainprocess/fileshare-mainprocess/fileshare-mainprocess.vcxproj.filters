@@ -48,6 +48,18 @@
     <ClInclude Include="PresentationPacket.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
+    <ClInclude Include="ActiveJobsList.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="Job.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="JobsList.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="PeersList.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -81,6 +93,18 @@
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="PresentationPacket.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="ActiveJobsList.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="Job.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="JobsList.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="PeersList.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
   </ItemGroup>

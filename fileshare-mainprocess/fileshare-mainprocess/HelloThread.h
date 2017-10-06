@@ -1,6 +1,6 @@
 #pragma once
 
-#include "wrapperclass.cpp"
+#include "PeersList.h"
 #include "HelloPacket.h"
 #include "HelloSenderThread.h"
 #include "HelloCleanupThread.h"

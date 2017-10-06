@@ -14,7 +14,7 @@ HelloThread::~HelloThread()
 }
 
 void HelloThread::operator() (void) {
-	WrapperClass<Peer>& peers = WrapperClass<Peer>::getInstance();
+	PeersList& peers = PeersList::getInstance();
 
 	HelloSenderThread sender;
 	thread senderThread(sender);
