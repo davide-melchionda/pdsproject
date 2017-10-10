@@ -1,14 +1,15 @@
 // fileshare-mainprocess.cpp : definisce il punto di ingresso dell'applicazione console.
 //
 
+#pragma once
+
 #include "stdafx.h"
 #include "WrapperClass.cpp"
+#include "HelloThread.h"
 #include <condition_variable>
 #include <map>
 #include <mutex>
 #include <vector>
-#include "HelloThread.h"
-
 
 int main()
 {

@@ -1,18 +1,3 @@
-﻿  wrapperclass.cpp
-  PresentationPacket.cpp
-  QueryPacket.cpp
-  PeersList.cpp
-  Peer.cpp
-  KeepalivePacket.cpp
-  JobsList.cpp
-  Job.cpp
-  HelloThread.cpp
-  HelloSenderThread.cpp
-  HelloPacket.cpp
-  HelloCleanupThread.cpp
-  fileshare-mainprocess.cpp
-  ActiveJobsList.cpp
-  Generazione del codice in corso...
-  LINK : C:\Users\vm-dm-win\Documents\GitHub\pdsproject\fileshare-mainprocess\Debug\fileshare-mainprocess.exe non trovato o non compilato dall'ultimo collegamento incrementale; verrà eseguito il collegamento completo
+﻿  HelloPacketParser.cpp
   fileshare-mainprocess.vcxproj -> C:\Users\vm-dm-win\Documents\GitHub\pdsproject\fileshare-mainprocess\Debug\fileshare-mainprocess.exe
   fileshare-mainprocess.vcxproj -> C:\Users\vm-dm-win\Documents\GitHub\pdsproject\fileshare-mainprocess\Debug\fileshare-mainprocess.pdb (Partial PDB)

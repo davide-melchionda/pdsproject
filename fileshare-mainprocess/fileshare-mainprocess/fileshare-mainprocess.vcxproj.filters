@@ -39,15 +39,6 @@
     <ClInclude Include="Peer.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="QueryPacket.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="KeepalivePacket.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="PresentationPacket.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
     <ClInclude Include="ActiveJobsList.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
@@ -58,6 +49,21 @@
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="PeersList.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="HelloNetworkModule.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="HelloPacketParser.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="KeepalivePacket.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="PresentationPacket.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="QueryPacket.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
   </ItemGroup>
@@ -86,15 +92,6 @@
     <ClCompile Include="Peer.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="QueryPacket.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="KeepalivePacket.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="PresentationPacket.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
     <ClCompile Include="ActiveJobsList.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
@@ -105,6 +102,21 @@
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="PeersList.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="HelloNetworkModule.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="HelloPacketParser.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="KeepalivePacket.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="PresentationPacket.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="QueryPacket.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
   </ItemGroup>

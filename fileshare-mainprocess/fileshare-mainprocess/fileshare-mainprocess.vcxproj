@@ -140,7 +140,9 @@
   <ItemGroup>
     <ClInclude Include="ActiveJobsList.h" />
     <ClInclude Include="HelloCleanupThread.h" />
+    <ClInclude Include="HelloNetworkModule.h" />
     <ClInclude Include="HelloPacket.h" />
+    <ClInclude Include="HelloPacketParser.h" />
     <ClInclude Include="HelloSenderThread.h" />
     <ClInclude Include="HelloThread.h" />
     <ClInclude Include="Job.h" />
@@ -148,8 +150,8 @@
     <ClInclude Include="KeepalivePacket.h" />
     <ClInclude Include="Peer.h" />
     <ClInclude Include="PeersList.h" />
-    <ClInclude Include="QueryPacket.h" />
     <ClInclude Include="PresentationPacket.h" />
+    <ClInclude Include="QueryPacket.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
@@ -157,7 +159,9 @@
     <ClCompile Include="ActiveJobsList.cpp" />
     <ClCompile Include="fileshare-mainprocess.cpp" />
     <ClCompile Include="HelloCleanupThread.cpp" />
+    <ClCompile Include="HelloNetworkModule.cpp" />
     <ClCompile Include="HelloPacket.cpp" />
+    <ClCompile Include="HelloPacketParser.cpp" />
     <ClCompile Include="HelloSenderThread.cpp" />
     <ClCompile Include="HelloThread.cpp" />
     <ClCompile Include="Job.cpp" />
@@ -165,8 +169,8 @@
     <ClCompile Include="KeepalivePacket.cpp" />
     <ClCompile Include="Peer.cpp" />
     <ClCompile Include="PeersList.cpp" />
-    <ClCompile Include="QueryPacket.cpp" />
     <ClCompile Include="PresentationPacket.cpp" />
+    <ClCompile Include="QueryPacket.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

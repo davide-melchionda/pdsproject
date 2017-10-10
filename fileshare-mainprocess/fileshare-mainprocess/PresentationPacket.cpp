@@ -4,7 +4,7 @@
 PresentationPacket::PresentationPacket(Peer peer)
 {
 	type = HelloPacket::Presentation;
-	this->peer = new Peer(peer);
+	this->peer = Peer(peer);
 }
 
 
@@ -13,5 +13,5 @@ PresentationPacket::~PresentationPacket()
 }
 
 Peer PresentationPacket::getPeer() {
-	return *peer;
+	return peer;
 }

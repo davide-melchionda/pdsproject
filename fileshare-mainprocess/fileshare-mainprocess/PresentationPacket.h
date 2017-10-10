@@ -5,7 +5,7 @@
 class PresentationPacket : public HelloPacket
 {
 public:
-	Peer* peer;
+	Peer peer;
 	
 	PresentationPacket(Peer peer);
 	~PresentationPacket();

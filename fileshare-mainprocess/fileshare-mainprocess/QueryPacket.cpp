@@ -2,9 +2,10 @@
 #include "QueryPacket.h"
 
 
-QueryPacket::QueryPacket()
+QueryPacket::QueryPacket(std::string ipaddress)
 {
 	type = HelloPacket::Query;
+	this->ipaddress = ipaddress;
 }
 
 

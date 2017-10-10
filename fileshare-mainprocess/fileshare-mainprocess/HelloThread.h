@@ -1,5 +1,6 @@
 #pragma once
 
+#include "HelloNetworkModule.h"
 #include "PeersList.h"
 #include "HelloPacket.h"
 #include "HelloSenderThread.h"
@@ -8,7 +9,6 @@
 #include "KeepalivePacket.h"
 #include "QueryPacket.h"
 #include "PresentationPacket.h"
-
 
 class HelloThread
 {

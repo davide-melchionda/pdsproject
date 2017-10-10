@@ -4,7 +4,9 @@
 class QueryPacket : public HelloPacket
 {
 public:
-	QueryPacket();
+	std::string ipaddress;
+
+	QueryPacket(std::string ipaddress);
 	~QueryPacket();
 };
 

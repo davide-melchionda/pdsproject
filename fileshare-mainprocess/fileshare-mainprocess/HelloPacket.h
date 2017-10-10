@@ -1,6 +1,9 @@
+using namespace std;
+
 #pragma once
 
 #include <string>
+#include "Peer.h"
 
 class HelloPacket
 {
@@ -9,13 +12,27 @@ public:
 		Keepalive, Query, Presentation
 	};
 
-	/*HelloPacket(Type t) :type(t) {};
-	HelloPacket(Type t, std::string b) :type(t), body(b) {};*/
+	/*union Content {
+		struct Keepalive {
+			string name;
+			string ipaddress;
+		} keepalive;
+		struct Query {
+			// No contet
+		} query;
+		struct Presentation {
+			Peer peer;
+		} presentation;
+		Content() {};
+		Content(const Content& c);
+		~Content(){}
+	} content;
 
-	virtual Type getType();
+	HelloPacket(HelloPacket::Type type, HelloPacket::Content content);*/
 
-	~HelloPacket() {};
+	const HelloPacket::Type getType();
 
+	virtual ~HelloPacket() {};
 protected:
-	Type type;
+	HelloPacket::Type type;
 };
