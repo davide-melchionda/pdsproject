@@ -1,10 +1,6 @@
 #include "stdafx.h"
 
-using namespace std;
-
 #include "HelloPacketParser.h"
-
-#include <vector>
 
 HelloPacketParser::HelloPacketParser()
 {
@@ -15,41 +11,36 @@ HelloPacketParser::~HelloPacketParser()
 {
 }
 
-shared_ptr<HelloPacket> HelloPacketParser::unmarshal(std::string stream)
-{
-	//	DEBUG	DEBUG	DEBUG	DEBUG	DEBUG
-	vector<string> names = { "Mario","Fabio","Lucia","Franco","Flavio" };
-	vector<string> ips = { "127.0.0.1","127.0.0.1","127.0.0.1","127.0.0.1","127.0.0.1" };
 
-	//HelloPacket *packet;
+shared_ptr<HelloPacket> HelloPacketParser::unmarshal(json json) {
+	
+	string type = json.at("type");
 
-	//HelloPacket::Content c;
-
-	Peer p(names[rand() % 5], ips[rand() % 5]);
-
-	//Read packet from socket
-	//##############################################
-	switch (rand() % 3) {
-	//switch(2) {
-	case 0:
-		/*c.keepalive.name = names[rand() % 5];
-		c.keepalive.ipaddress = ips[rand() % 5];
-		return HelloPacket(HelloPacket::Type::Keepalive, c);*/
-		//return new KeepalivePacket(names[rand() % 5], ips[rand() % 5]);
-		return shared_ptr<KeepalivePacket>(new KeepalivePacket(names[rand() % 5], ips[rand() % 5]));
-	case 1:
-		/*c.presentation.peer = Peer(names[rand() % 5], ips[rand() % 5]);
-		return HelloPacket(HelloPacket::Type::Presentation, c);*/
-		return shared_ptr<PresentationPacket>(new PresentationPacket(Peer(names[rand() % 5], ips[rand() % 5])));
-	default:
-		//return HelloPacket(HelloPacket::Type::Query, c);
-		return shared_ptr<QueryPacket>(new QueryPacket(ips[rand()%5]));
+	// Checks the type of json object and returns an instance
+	// of the correct sub-class of HelloPacket
+	if (type == "keepalive") {
+		KeepalivePacket* p = new KeepalivePacket();
+		p->fromJson(json);
+		return shared_ptr<KeepalivePacket>(p);
+	} else if (type == "presentation") {
+		PresentationPacket* p = new PresentationPacket();
+		p->fromJson(json);
+		return shared_ptr<PresentationPacket>(p);
+	} else if (type == "query") {
+		QueryPacket* p = new QueryPacket();
+		p->fromJson(json);
+		return shared_ptr<QueryPacket>(p);
+	} else {
+		// If the unmarshalling was not possible, 
+		// returns a null pointer
+		return nullptr;
 	}
-	//##############################################
 }
 
-std::string HelloPacketParser::marshal(HelloPacket packet)
+json HelloPacketParser::marshal(HelloPacket& packet)
 {
-	return "{type: keepalive, name: \"Mario\", ipaddress: 192.168.1.23}";
+	// Returns the json representation of the packet
+	json json = packet.toJson();
+	return json;
 }
 

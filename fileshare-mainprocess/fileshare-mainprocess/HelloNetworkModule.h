@@ -1,18 +1,3 @@
-#pragma once
-
-#include<winsock2.h>
-#include <Ws2tcpip.h>
-#include <mswsock.h>
-
-#pragma comment(lib, "Ws2_32.lib")
-
-#include<stdio.h>
-#include <string>
-
-#ifndef u_int32
-#define u_int32 UINT32  // Unix uses u_int32
-#endif // !u_int32
-
 /*********************************************************************************
 *	The HelloNetworkModule offers a Singleton instance which allows to access to
 *	the services needed to implement the HelloProtocol. The HelloNetworkModule
@@ -20,8 +5,24 @@
 *	or multicast packet).
 **********************************************************************************/
 
+#pragma once
+
+#include<winsock2.h>
+#include <Ws2tcpip.h>
+#include <mswsock.h>
+
+#pragma comment(lib, "Ws2_32.lib")
+#pragma comment(lib, "iphlpapi.lib")
+
+#ifndef u_int32
+#define u_int32 UINT32  // Unix uses u_int32
+#endif // !u_int32
+
+#include<stdio.h>
+#include <string>
 #include <iostream>
 #include <condition_variable>
+#include <ctime>
 
 #include "HelloPacket.h"
 #include "HelloPacketParser.h"
@@ -39,6 +40,9 @@
 class HelloNetworkModule
 {
 private: // Private instance fields
+	
+	Peer local;
+
 	/** Incoming socket */
 	SOCKET multiRecvSocket;
 	
@@ -46,7 +50,7 @@ private: // Private instance fields
 	SOCKET sendSocket;
 
 	/** The callback called to manage a received packet. */
-	void(*packetReceivedCallback)(shared_ptr<HelloPacket>);
+	void(*packetReceivedCallback)(shared_ptr<HelloPacket>, string);
 
 		/** The address of the socket exposed by this applciation. */
 	struct sockaddr_in	server;
@@ -58,6 +62,9 @@ private: // Private instance fields
 	/** An instance of the packet parser which allows to trasnform
 		Json strings in HelloPacket instances and vice versa. */
 	HelloPacketParser parser;
+
+	/** Mutex for the management of the access to the shared send socket. */
+	mutex sendSocketMutex;
 
 protected:
 	/** The constructor is protected: the class implements a Singleton. */
@@ -74,11 +81,11 @@ public:
 
 	/** Sends a unicast packet to the destination ip address. The port
 		on which the packet is sent is that one used by the application. */
-	void sendUnicast(HelloPacket packet, string dest);
+	void sendUnicast(HelloPacket& packet, string dest);
 	
 	/** Sends a multicast packet to all the servers listening on the 
 		common address and port. */
-	void send(HelloPacket packet);
+	void send(HelloPacket& packet);
 	
 	/** Requires to listen on the multiRecvSocket in order to receive
 		packets from the network. */
@@ -86,9 +93,14 @@ public:
 
 	/** Registers a callback which will be invocked when a new packet
 		is received from the network. */
-	void onPacketReceived(void (*f)(shared_ptr<HelloPacket> packet));
+	void onPacketReceived(void (*f)(shared_ptr<HelloPacket> packet, string senderip));
 	
+	/** Returns the peer coresponding to the current user. */
+	const Peer getPeer();
+
+	/** Updates the ip address of the peer and (consequently) his id. */
+	void updatePeerAddress(std::string ipaddress);
+
 	// Destructor
 	~HelloNetworkModule();
 };
-

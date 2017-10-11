@@ -36,7 +36,7 @@
 	}*/
 //}
 
-const HelloPacket::Type HelloPacket::getType()
+HelloPacket::Type HelloPacket::getType() const
 {
 	return type;
 }

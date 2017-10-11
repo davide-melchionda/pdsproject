@@ -147,8 +147,10 @@
     <ClInclude Include="HelloThread.h" />
     <ClInclude Include="Job.h" />
     <ClInclude Include="JobsList.h" />
+    <ClInclude Include="json.hpp" />
     <ClInclude Include="KeepalivePacket.h" />
     <ClInclude Include="Peer.h" />
+    <ClInclude Include="PeerEntry.h" />
     <ClInclude Include="PeersList.h" />
     <ClInclude Include="PresentationPacket.h" />
     <ClInclude Include="QueryPacket.h" />
@@ -168,6 +170,7 @@
     <ClCompile Include="JobsList.cpp" />
     <ClCompile Include="KeepalivePacket.cpp" />
     <ClCompile Include="Peer.cpp" />
+    <ClCompile Include="PeerEntry.cpp" />
     <ClCompile Include="PeersList.cpp" />
     <ClCompile Include="PresentationPacket.cpp" />
     <ClCompile Include="QueryPacket.cpp" />

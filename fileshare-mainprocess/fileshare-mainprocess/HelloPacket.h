@@ -5,6 +5,10 @@ using namespace std;
 #include <string>
 #include "Peer.h"
 
+#include "json.hpp"
+
+using nlohmann::json;
+
 class HelloPacket
 {
 public:
@@ -12,25 +16,10 @@ public:
 		Keepalive, Query, Presentation
 	};
 
-	/*union Content {
-		struct Keepalive {
-			string name;
-			string ipaddress;
-		} keepalive;
-		struct Query {
-			// No contet
-		} query;
-		struct Presentation {
-			Peer peer;
-		} presentation;
-		Content() {};
-		Content(const Content& c);
-		~Content(){}
-	} content;
+	HelloPacket::Type getType() const;
 
-	HelloPacket(HelloPacket::Type type, HelloPacket::Content content);*/
-
-	const HelloPacket::Type getType();
+	virtual json toJson() = 0;
+	virtual void fromJson(json json) = 0;
 
 	virtual ~HelloPacket() {};
 protected:
