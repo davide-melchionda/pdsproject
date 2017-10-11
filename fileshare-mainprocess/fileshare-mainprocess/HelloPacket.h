@@ -1,6 +1,13 @@
+using namespace std;
+
 #pragma once
 
 #include <string>
+#include "Peer.h"
+
+#include "json.hpp"
+
+using nlohmann::json;
 
 class HelloPacket
 {
@@ -9,13 +16,12 @@ public:
 		Keepalive, Query, Presentation
 	};
 
-	/*HelloPacket(Type t) :type(t) {};
-	HelloPacket(Type t, std::string b) :type(t), body(b) {};*/
+	HelloPacket::Type getType() const;
 
-	virtual Type getType();
+	virtual json toJson() = 0;
+	virtual void fromJson(json json) = 0;
 
-	~HelloPacket() {};
-
+	virtual ~HelloPacket() {};
 protected:
-	Type type;
+	HelloPacket::Type type;
 };

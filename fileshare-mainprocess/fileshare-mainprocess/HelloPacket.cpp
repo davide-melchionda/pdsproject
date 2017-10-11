@@ -1,14 +1,42 @@
 #include "stdafx.h"
 #include "HelloPacket.h"
 
-/*void HelloPacket::setType(HelloPacket::Type type) {
+/*HelloPacket::HelloPacket(HelloPacket::Type type, HelloPacket::Content content)
+{
 	this->type = type;
-}
-
-void HelloPacket::setBody(std::string body) {
-	this->body = body;
+	if (type == HelloPacket::Keepalive) {
+		this->content.keepalive.name = content.keepalive.name;
+		this->content.keepalive.ipaddress = content.keepalive.ipaddress;
+	}
+	else if (type == HelloPacket::Type::Presentation) {
+		this->content.presentation.peer = Peer(content.presentation.peer);
+	}
 }*/
 
-HelloPacket::Type HelloPacket::getType() {
+/*HelloPacket::Content::Content(const Content & c)
+{
+	memcpy(this, &c, sizeof(union HelloPacket::Content))w;
+	/*try {
+		this->keepalive.name = c.keepalive.name;
+	}
+	catch (exception) {
+
+	}
+	try {
+		this->keepalive.ipaddress = c.keepalive.ipaddress;
+	}
+	catch (exception) {
+
+	}
+	try {
+		this->presentation.peer= Peer(c.presentation.peer);
+	}
+	catch (exception) {
+
+	}*/
+//}
+
+HelloPacket::Type HelloPacket::getType() const
+{
 	return type;
 }
