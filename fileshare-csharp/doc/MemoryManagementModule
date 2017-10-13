@@ -1,0 +1,10 @@
+SendMemoryManagementModule - Subclass del modulo di memoria
+
+SendMemoryManagementModule.FileIterator getFileIterator(String filename, String timestamp);
+Esegue le seguenti operazioni:
+1. Verifica nella lista dei file già zippati se è presenta il file richiesto nella versione aggiornata al timestamp indicato. Se presente ritorna un FileIterator associato.
+2. Se non presente, accede a disco, recupera il file, verifica che il timestamp sia corrispondente alla data di ultima modifica. Se non lo lancia una eccezione (il file è stato modificato
+	da quando si è deciso di inviarlo). ALTERNATIVA: Mostrare all'utente un messaggio che dice "Il file è stato modificato. Inviarlo comunque?" e decidere in base a questo.
+3. Zippa il file, salva lo zip nella directory in esame. Apre il file zip.
+4. Ritorna un FileIterator appropriato.
+

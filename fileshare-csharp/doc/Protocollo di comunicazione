@@ -1,0 +1,54 @@
+Il protocollo prevede uno scambio di questo tipo
+
+Client				TASK			Server
+||------------------------------------->||
+||										||
+
+   ...	Intervallo di tempo varibile ...
+
+
+||					yes/no				||
+||<-------------------------------------||
+||										||
+||										||
+||<====================================>||
+||					DATA				||
+||<====================================>||
+||										||
+
+
+
+Il protocollo si occupa di fare un minimo di controllo del flusso e gestione della congestione.
+
+====================================================================================================================
+
+GESTIONE DELLA CONGESTIONE
+Il JobScheduler ha il compito di mantenere sotto una certa soglia il numero di thread che stanno eseguendo client attivi in un certo momento.
+
+Il Client riceve dal JobScheduler un'istanza del JobScheduler stesso e su questa può chiamare una delle seguenti funzioni.
+	1. onSendTerminated() - Il JobScheduler sa che può avviare un nuovo thread perché si è liberato un posto nel thread pool virtuale di 10 thread.
+							Invocato quando il Client termina l'invio di un file.
+	2. startTransmission() - Il client chiede al JobScheduler di iniziare a trasmettere. Il JobScheduler contiene tra le altre cose un semaforo che
+								fa sì che si ritorni da questo metodo solo se c'è posto. Questo consente di avere il limite superiore e di bloccar in
+								modo asincrono il thread.
+								Il fatto di fare questa chiamata solo quando si riceve la risposta yes/no dal server fa sì che un thread venga conteggiato
+								come attivo solo quando realmente può inviare dati.
+
+ALTERNATIVA - GESTIONE AD EVENTI
+La soglia è impostata a 10, e ogni volta che il JobScheduler crea un nuovo client si registra a degli eventi che questi può generare.
+	1. Quando il Client lancia l'evento di terminazione il JobScheduler sa che può avviare un nuovo thread perché si è liberato un posto
+		nel thread pool virtuale di 10 thread.
+
+====================================================================================================================
+
+CONTROLLO DEL FLUSSO
+Il Server garantisce a qualsiasi host di poter avere almeno un thread per inviargli file, ma non può garantire a un host di riuscire a inviare più di un file
+alla volta. Per implementare questo sistema usa un "approccio a due soglie".
+Definisce una soglia Low di 10 e una High di 15.
+Ogni volta che un client invia un task al server e questi ha già più di High thread attivi, il server non risponde, forzando il client a restare appeso. La 
+risposta verrà inviata al client soltanto quando si libera un thread, ma solo a patto che l'host non abbia attualmente occupato alcuno degli altri thread che 
+stanno eseguendo trasferimenti. In questo secondo caso si deve aspettare di scendere sotto la soglia Low.
+Analogamente il server non dà risposta a un Cliente se questi lo contatta avendo già un thread acquisito che sta trasferendo dati e si hanno già più di Low
+thread attivi.
+Un thread server di connessione riceve un'istanza della classe Server che la crea e può su di questa chiamare un metodo onRecvterminated() che consente di
+comunicare al Server che la trasmissione è conclusa e che si è liberato un posto nel thread pool virtuale.
