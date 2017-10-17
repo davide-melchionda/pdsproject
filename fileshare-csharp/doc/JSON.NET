@@ -1,9 +1,0 @@
-Per eseguire la serializzazione e deserializzazione viene usata la libreria JSON.NET (consigliata da Microsoft).
-
-Link utili per download e utilizzo (N.B. Non necessario il download dal git per utilizzare la liberia, ma utile sfruttare NuGet).
-
-https://www.newtonsoft.com/json
-https://github.com/JamesNK/Newtonsoft.Json
-https://stackoverflow.com/questions/9366985/json-net-how-to-reference	--> How to import the library in the project
-https://www.youtube.com/watch?v=j28OXdlJ2EI
-https://stackoverflow.com/questions/2441290/json-serialization-of-enum-as-string --> Custom conversion of enum type in string

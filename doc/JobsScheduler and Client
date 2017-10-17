@@ -1,0 +1,25 @@
+Il JobScheduler si interfaccia alla TO_SCHEDULE_FIFO_QUEUE. Questa viene riempita con dei task da avviare.
+
+Il JobScheduler:
+1. Verifica se vi sono Job nella TO_SCHEDULE_FIFO_QUEUE. Se non ce ne sono si mette in wait() in attesa di un inserimento.
+2. Recupera un Job.
+3. Va dal MemoryManagementModule e gli chiede di inizializzare l'operazione di invio chiamando getFileIterator(). Se riceve null o cattura un'eccezione....
+4. Inserisce il Job nella JOBS_LIST.
+5. Avvio un nuovo thread e passagli il riferimento al FileIterator, il riferimento al Job nella JOBS_LIST e quanto serve per inviare.
+
+==============================
+
+Il singolo Client si occupa di inviare i dati interfacciandosi al MemoryManagementModule (non accedendo direttamente al file). E non sa che il file è
+in realtà zippato.
+Il Client potrebbe ricevere dal JobScheduler un'istanza di un FileIterator, che è una classe associata al MemoryManagementModule che consente di muoversi
+all'interno di uno specifico file.
+Il MemoryManagementModule però vuole tener traccia del numero di istanze di FileIterator che ha fornito (un FileIterator potrebbe essere ad esempio
+ottenibile solo tramite un metodo NON STATICO di MemoryManagementModule), così da poter eliminare lo zip quando nessuno sta più inviando nulla.
+La info può arrivare al MemoryManagement tramite una chiamata di un meotdo sul FileIterator o lanciando un eventi.
+Il Client ha dunque la responsabilità di comunicare degli eventi ad altri componenti. Gli eventi da comunicare potrebbero essere:
+	1. Ho terminato un invio correttamente.
+	2. Ho terminato un invio fallendo.
+
+Il JobScheduler ad esempio è interassato alla terminazione di un invio, perché grazie a questa informazione può decidere se schedulare nuovi
+client o meno in conformità con quanto definito dal protocollo di trasferimento (che fissa delle soglie per evitare la congestione della rete).
+
