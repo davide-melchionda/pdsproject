@@ -1,9 +1,8 @@
 ﻿using System;
 using System.IO;
-using System.IO.Compression;
 
-using System.Text;
 using System.Collections.Concurrent;
+using System.IO.Compression;
 
 /// <summary>
 //SendMemoryManagementModule - Subclass del modulo di memoria
