@@ -15,9 +15,8 @@ namespace FileTransfer
 
     public class JobScheduler : ExecutableThread
     {
-        protected JobScheduler()
-        {
-        }
+
+        public Semaphore activeClientsPool = new Semaphore(15, 15); //semaforo che regola il threadpool di invio
 
         protected override void execute()
         {
