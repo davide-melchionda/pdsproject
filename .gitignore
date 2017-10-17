@@ -10,3 +10,11 @@ fileshare-csharp/HelloProtocolPorting/HelloProtocol/obj/
 fileshare-csharp/HelloProtocolPorting/HelloProtocol/App\.config
 
 fileshare-csharp/HelloProtocolPorting/HelloProtocol/HelloProtocol\.csproj
+
+FileShareConsole/\.vs/
+
+FileShareConsole/FileShareConsole/bin/
+
+FileShareConsole/FileShareConsole/obj/
+
+FileShareConsole/FileShareConsole/FileShareConsole\.csproj

@@ -1,8 +1,0 @@
-C:\Users\vm-dm-win\Documents\GitHub\pdsproject\fileshare-csharp\FileShareConsole\FileShareConsole\obj\Debug\FileShareConsole.csprojResolveAssemblyReference.cache
-C:\Users\vm-dm-win\Documents\GitHub\pdsproject\fileshare-csharp\FileShareConsole\FileShareConsole\bin\Debug\FileShareConsole.exe.config
-C:\Users\vm-dm-win\Documents\GitHub\pdsproject\fileshare-csharp\FileShareConsole\FileShareConsole\bin\Debug\FileShareConsole.exe
-C:\Users\vm-dm-win\Documents\GitHub\pdsproject\fileshare-csharp\FileShareConsole\FileShareConsole\bin\Debug\FileShareConsole.pdb
-C:\Users\vm-dm-win\Documents\GitHub\pdsproject\fileshare-csharp\FileShareConsole\FileShareConsole\bin\Debug\Newtonsoft.Json.dll
-C:\Users\vm-dm-win\Documents\GitHub\pdsproject\fileshare-csharp\FileShareConsole\FileShareConsole\bin\Debug\Newtonsoft.Json.xml
-C:\Users\vm-dm-win\Documents\GitHub\pdsproject\fileshare-csharp\FileShareConsole\FileShareConsole\obj\Debug\FileShareConsole.exe
-C:\Users\vm-dm-win\Documents\GitHub\pdsproject\fileshare-csharp\FileShareConsole\FileShareConsole\obj\Debug\FileShareConsole.pdb
