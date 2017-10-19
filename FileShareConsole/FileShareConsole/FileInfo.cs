@@ -1,21 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FileTransfer
+﻿namespace FileTransfer
 {
     public class FileInfo
     {
-        public enum Type { directory, file };
-        public Type type;
-        public string id;
-        public string name;
-        public string sender;
-        public string receiver;
-        public string requestTimestamp;
-        public long size;
-    }
+        public enum TypeEnum { directory, file };
+        private TypeEnum typeInfo;
+        public TypeEnum TypeInfo
+        {
+            get
+            {
+                return typeInfo;
+            }
+            protected set
+            {
+                typeInfo = value;
+            }
+        }
+        public string id { get; set; }
+        public string name { get; set; }
 
+        public string requestTimestamp { get; set; }
+        public long size { get; set; }
+
+
+        public FileInfo(TypeEnum te) {
+            this.typeInfo = te;
+        }
+
+    }
 }

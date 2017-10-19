@@ -1,19 +1,10 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NetworkTransmission
 {
-    public interface Packet {}
-
-    public class TransmissionPacket : Packet
+    public class TransmissionPacket
     {
-
-
         /**
      * Defines the possible values that can be assumed by the 
      * field "Type" in a packet.
@@ -28,7 +19,7 @@ namespace NetworkTransmission
             response    // a Response packet is sent to accept or refuse a request.
         };
 
-        public AuthenticationLayer challange;
+        public AuthenticationLayer challenge;
         private PacketType type;
 
         /**
