@@ -16,8 +16,11 @@ namespace FileTransfer
         public event onPushCallbackType pushHappened;
         public event onPopCallbackType popHappened;
 
-        private JobScheduler jobScheduler;
-        public static BlockingCollection<Job> jobsFifoQueue;
+        public BlockingCollection<Job> jobsFifoQueue;
+
+        public ToScheduleFifoQueue() {
+            jobsFifoQueue = new BlockingCollection<Job>();
+        }
 
         public static ToScheduleFifoQueue Instance
         {
@@ -36,15 +39,23 @@ namespace FileTransfer
         public Job pop() //Se non riesce a poppae nulla restituisce void e mette a dormire il consumer
         {
             Job temp = jobsFifoQueue.Take();
-            new Thread(() => { popHappened(temp); }).Start();
+            if (popHappened != null)
+                new Thread(() => { popHappened(temp); }).Start();
             return temp;
         }
 
         public void push(Job toPush) //inserisce un nuovo job in coda, se si rende conto che la coda era precedentemente vuota risveglia il consumer
         {
             jobsFifoQueue.Add(toPush);
-            new Thread(() => { pushHappened(toPush); }).Start();
+            if (pushHappened != null)
+                new Thread(() => { pushHappened(toPush); }).Start();
 
+        }
+
+        public int Size {
+            get {
+                return jobsFifoQueue.Count;
+            }
         }
     }
 }
