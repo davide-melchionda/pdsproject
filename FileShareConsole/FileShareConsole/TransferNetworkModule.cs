@@ -1,12 +1,11 @@
-﻿using NetworkTransmission;
+﻿using FileTransfer;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
+
 
 namespace NetworkTransmission
 {
@@ -19,6 +18,7 @@ namespace NetworkTransmission
 
         /**
          * Allows to receive a generic byte stream and convert it in a specific packet object
+         * Returns NULL if the received stream doesn't correspond with a known Transmission Packet
          */
 
         public static TransmissionPacket receivePacket(Socket handler)
@@ -78,6 +78,38 @@ namespace NetworkTransmission
             return requestStream;
 
         }
+
+        /**
+         * Tries to enter the pool then sends the file to the receiver 
+         */
+
+        public static void sendFile(TnSClient caller, byte[] transferBlock) {
+
+            caller.protocol.enter();   //TODO Ho avuto risposta affermativa, procedo provando ad acquisire il semaforo (BLOCKING)
+
+            while (caller.iterator.hasNext())
+            {
+                caller.iterator.next(transferBlock);
+                caller.socket.Send(transferBlock);
+
+            }
+        }
+
+        public static void receiveFile(Task task, TnSServer caller, byte[] transferBlock)
+        {
+
+            long receivedBytes = 0;
+            FileStream Fs = new FileStream(task.informations.name, FileMode.OpenOrCreate, FileAccess.Write);
+
+            while (receivedBytes != task.size)
+            {
+                receivedBytes += caller.handler.Receive(transferBlock);
+
+                Fs.Write(transferBlock, 0, 0);
+            }
+            Fs.Close();
+        }
+
 
 
         /**

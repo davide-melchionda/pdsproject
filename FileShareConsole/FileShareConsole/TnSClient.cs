@@ -4,13 +4,13 @@ using System.Net.Sockets;
 using System.Net;
 using static NetProtocol.ProtocolEndpoint;
 using NetProtocol;
+using System.Text;
 
 namespace NetworkTransmission
 {
-        /**
-         * The specific client that performs all the steps that compose our transmission protocol.
-         * 
-         */
+    /**
+     * The specific client that performs all the steps that compose our transmission protocol. 
+     */
 
     class TnSClient : ClientProtocolEndpoint
     {
@@ -19,7 +19,8 @@ namespace NetworkTransmission
         public Task task;                   // Task that provides all the informations about transfer
         public Socket socket;               // The socket on wich we transmit---> The connection has been established by the caller
         public Protocol protocol;
-
+        //private byte[] transferBlock= new byte[JobZipMemoryModuke.BLOCK_SIZE];
+        private byte[] transferBlock = new byte[8192];
 
         public TnSClient(Socket socket, Protocol protocol, FileIterator fIterator, Task involvedTask) : base(socket)
         {
@@ -50,22 +51,27 @@ namespace NetworkTransmission
             if (tPacket.Type.ToString() != "response")
 
             {
-                //TODO This must raise an exception cause we don't expect a server to send requests 
+                //TODO This must raise an exception cause we don't expect a server to send packets different from Responses at this point 
 
             }
 
             ResponsePacket response = (ResponsePacket)tPacket;
-            if (response.Procede)
+            if (!response.Procede)
             {
-                this.protocol.enter();   //TODO Ho avuto risposta affermativa, procedo provando ad acquisire il semaforo (BLOCKING)
+                //TODO nothing to do, the server doesn't want my files
             }
-
-            return new TnSTransferResult(response.Procede);
-
+            else
+            {
+                TransferNetworkModule.sendFile(this);
+            }
         }
 
 
+
     }
+
+
+
     public class TnSTransferResult : TransferResult
     {
         public bool result;
@@ -76,5 +82,5 @@ namespace NetworkTransmission
     }
 
 
-}
+
 

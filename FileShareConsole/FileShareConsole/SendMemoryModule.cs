@@ -112,11 +112,16 @@ namespace FileTransfer
             this.offset = 0;
         }
 
-        public void next(byte[] buffer)
+        public int next(byte[] buffer)
         {
             fileStream.Read(buffer, offset, SendMemoryModule.READ_BLOCK_SIZE);
+            return 0;
         }
 
+        public bool hasNext()
+        {
+            return true;
+        }
         public void close()
         {
             this.fileStream.Close();
