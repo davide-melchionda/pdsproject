@@ -93,7 +93,12 @@ namespace NetworkTransmission
                 caller.socket.Send(transferBlock);
 
             }
+            caller.iterator.close();
         }
+        
+       /**
+        * Receive a file from a client sending blocks of bytes
+        */
 
         public static void receiveFile(Task task, TnSServer caller, byte[] transferBlock)
         {

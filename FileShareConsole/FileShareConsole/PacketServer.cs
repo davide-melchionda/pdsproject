@@ -9,10 +9,10 @@ namespace NetworkTransmission
     class PacketServer : ExecutableThread
     {
 
-        public delegate void PacketReceivedDel(Packet p);
+        public delegate void PacketReceivedDel(TransmissionPacket p);
         public event PacketReceivedDel OnPacketReceived;
 
-        public delegate void TrasmissionEnddDel(Packet p);
+        public delegate void TrasmissionEnddDel(TransmissionPacket p);
         public event TrasmissionEnddDel OnTrasmissionEnd;
 
         public PacketServer() { }

@@ -29,22 +29,23 @@ namespace NetworkTransmission
             this.task = involvedTask;
             this.protocol = protocol;
         }
+        //test constructor
+        public TnSClient(Socket socket, Protocol protocol, Task involvedTask) : base(socket)
+        {
+            this.socket = socket;
+            this.task = involvedTask;
+            this.protocol = protocol;
+        }
+
 
 
         public override TransferResult transfer()
         {
             TransmissionPacket tPacket = null;
 
-            byte[] bytes = new byte[8192];      // Data buffer for incoming data.
-
-            Console.WriteLine("Socket connected to {0}",
-                    this.socket.RemoteEndPoint.ToString());
-
             byte[] msg = TransferNetworkModule.generateRequestStream(task);       // Encode the data string into a byte array.
 
             int bytesSent = TransferNetworkModule.SendPacket(socket, msg);        // Send the data through the socket.
-            Console.WriteLine("data sended to server");
-
 
 
             tPacket = (TransmissionPacket)TransferNetworkModule.receivePacket(this.socket);       // Receive the response from the remote.
@@ -56,20 +57,16 @@ namespace NetworkTransmission
             }
 
             ResponsePacket response = (ResponsePacket)tPacket;
-            if (!response.Procede)
+            if (response.Procede)
             {
-                //TODO nothing to do, the server doesn't want my files
+                TransferNetworkModule.sendFile(this, transferBlock);
             }
-            else
-            {
-                TransferNetworkModule.sendFile(this);
-            }
+
+            socket.Close();
+            return new TnSTransferResult(response.Procede);
         }
 
-
-
     }
-
 
 
     public class TnSTransferResult : TransferResult
@@ -81,6 +78,6 @@ namespace NetworkTransmission
         }
     }
 
-
+}
 
 

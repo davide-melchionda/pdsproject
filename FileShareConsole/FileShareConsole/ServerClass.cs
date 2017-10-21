@@ -2,12 +2,17 @@
 using System.Threading;
 using System.Net.Sockets;
 using System.Net;
+using NetProtocol;
 
 namespace FileTransfer
 {
     public class ServerClass : ExecutableThread
     {
-       
+        private Protocol protocol;
+       public ServerClass(Protocol protocol)
+        {
+            this.protocol = protocol;
+        }
         protected override void execute()
         {
             IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Any, Settings.Instance.TCP_RECEIVING_PORT);
@@ -22,9 +27,11 @@ namespace FileTransfer
                 {
                     Console.WriteLine("Waiting for a connection...");
                     Socket handler = listener.Accept();
-                    ExecutableThread clientHandler = new TnSServer(handler);
-                    clientHandler.run();
-                    
+                    TnSServer server = new TnSServer(handler, protocol);
+
+                    Thread ftpUploadFile = new Thread(delegate() { server.transfer(); });
+                    ftpUploadFile.Start();
+
                 }
             }
             catch (Exception e)

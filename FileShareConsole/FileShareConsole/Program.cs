@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,20 +14,17 @@ namespace FileShareConsole
 {
     class Program
     {
-        static void Main(string[] args) {
-            new ServerClass().run();
-            //new HelloThread().run();
-            System.Threading.Thread.Sleep(1000);
+        static void Main(string[] args)
+        {
+            Protocol proto = new Protocol();
 
-            IPAddress iPAddress = IPAddress.Parse("127.0.0.1");
-            FileTransfer.Task take = new FileTransfer.Task();
-            FileInfo f= new FileInfo(FileInfo.TypeEnum.directory);
+            new ServerClass(proto).run();
+            ////new HelloThread().run();
+            //System.Threading.Thread.Sleep(1000);
 
 
-            Protocol proto;
-            take.informations = f;
-            new TnSClient(iPAddress,proto,  take).run();
-            
+
         }
     }
+
 }

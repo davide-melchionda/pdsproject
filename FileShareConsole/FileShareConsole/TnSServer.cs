@@ -52,6 +52,8 @@ namespace FileTransfer
 
                 TransferNetworkModule.receiveFile(request.Task, this, transferBlock);
 
+                handler.Close();
+
             }
 
             catch (Exception e)
