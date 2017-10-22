@@ -161,6 +161,20 @@ class Settings {
         }
     }
 
+
+    /**
+     * The port on which the tcp server will accept connection requests.
+     */
+    private int servAcceptingPort = /* DEFAULT */ 7070;
+    /**
+     * servAcceptingPort property
+     */
+    public int SERV_ACCEPTING_PORT {
+        get {
+            return servAcceptingPort;
+        }
+    }
+
     public void updatePeerAddress(string newAddress) {
         localPeer.Ipaddress = newAddress;
         localPeer.Id = localPeer.Name + ":" + localPeer.Ipaddress;
