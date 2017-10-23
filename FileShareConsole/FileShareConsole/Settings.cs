@@ -166,6 +166,48 @@ class Settings {
         localPeer.Id = localPeer.Name + ":" + localPeer.Ipaddress;
     }
 
+    private int tcpReceivingPort = /* DEFAULT */ 9000;
+    /**
+     * tcpReceivingPort property
+     */
+    public int TCP_RECEIVING_PORT
+    {
+        get
+        {
+            return tcpReceivingPort;
+        }
+        set
+        {
+            // TODO
+            // Try to write on file the new setting configurations
+            // Throw an exception if something goes wrong
+
+            // ... after the file update
+            tcpReceivingPort = value;
+        }
+    }
+
+    private bool autoAcceptFiles = /* DEFAULT */ true;
+    /**
+     * autoAcceptFiles property
+     */
+    public bool AutoAcceptFiles
+    {
+        get
+        {
+            return autoAcceptFiles;
+        }
+        set
+        {
+            // TODO
+            // Try to write on file the new setting configurations
+            // Throw an exception if something goes wrong
+
+            // ... after the file update
+            autoAcceptFiles = value;
+        }
+    }
+
     /**
      * SINGLETON CREATIONAL PATTERN
      * The protected constructor.

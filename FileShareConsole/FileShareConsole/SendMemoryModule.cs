@@ -24,7 +24,7 @@ namespace FileTransfer
             this.openedFiles = new ConcurrentDictionary<string, int>();
         }
 
-        public FileIterator getFileIterator(String name, string filePath, Task.FileInfo.Type whatIs, DateTime lastModify)
+        public FileIterator getFileIterator(String name, string filePath, FileInfo.TypeEnum whatIs, DateTime lastModify)
         {
             string zipName = string.Concat(name, lastModify.ToString("yyyyMMdd"));
             Console.WriteLine("lo zip avrà nome: "+zipName+ "\n");
@@ -32,7 +32,7 @@ namespace FileTransfer
             if (!File.Exists(string.Concat(filePath, zipName)))
             { //il file non è already cached
                 //detect whether its a directory or file
-                if (whatIs == Task.FileInfo.Type.directory)
+                if (whatIs == FileInfo.TypeEnum.directory)
                 {
                     Console.WriteLine(zipName+ " è una directory\n");
 
@@ -53,7 +53,7 @@ namespace FileTransfer
             // the file is already cached
             Console.WriteLine(zipName + " esiste già\n");
 
-            long fileLength = new FileInfo(filePath + zipName).Length;
+            //long fileLength = new file.FileInfo(filePath + zipName).Length;
             int count;
             lock (dictionaryLock)
             {
@@ -85,18 +85,18 @@ namespace FileTransfer
             return i;
 
         }
-        public static long DirSize(DirectoryInfo d)
-        {
-            long size = 0;
-            FileInfo[] fis = d.GetFiles();
-            foreach (FileInfo fi in fis)
-                size += fi.Length;
+        //public static long DirSize(DirectoryInfo d)
+        //{
+        //    long size = 0;
+        //    FileInfo[] fis = d.GetFiles();
+        //    foreach (FileInfo fi in fis)
+        //        size += fi.Length;
 
-            DirectoryInfo[] dis = d.GetDirectories();
-            foreach (DirectoryInfo di in dis)
-                size += DirSize(di);
-            return size;
-        }
+        //    DirectoryInfo[] dis = d.GetDirectories();
+        //    foreach (DirectoryInfo di in dis)
+        //        size += DirSize(di);
+        //    return size;
+        //}
     }
     public class FileIterator
     {
@@ -112,11 +112,16 @@ namespace FileTransfer
             this.offset = 0;
         }
 
-        public void next(byte[] buffer)
+        public int next(byte[] buffer)
         {
             fileStream.Read(buffer, offset, SendMemoryModule.READ_BLOCK_SIZE);
+            return 0;
         }
 
+        public bool hasNext()
+        {
+            return true;
+        }
         public void close()
         {
             this.fileStream.Close();
