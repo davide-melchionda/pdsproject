@@ -1,31 +1,40 @@
 ﻿using System.Net.Sockets;
 
-namespace Protocol {
+namespace NetProtocol {
+
+    public abstract class Protocol {
+
+        public abstract void enter();
+
+    }
 
     public abstract class ProtocolEndpoint {
 
-        private Socket socket;
+        protected Socket socket;
+        protected Protocol protocol;
 
-        public ProtocolEndpoint(Socket socket) {
+        public ProtocolEndpoint(Socket socket, Protocol protocol) {
             this.socket = socket;
+            this.protocol = protocol;
         }
 
-        public abstract HandshakeResult handshake();
         public abstract TransferResult transfer();
+
+        internal void tryEnter() {
+            protocol.enter();
+        }
 
         public abstract class ServerProtocolEndpoint : ProtocolEndpoint {
 
-            public ServerProtocolEndpoint(Socket socket) : base(socket) { }
+            public ServerProtocolEndpoint(Socket socket, Protocol protocol) : base(socket, protocol) { }
 
-            public abstract override HandshakeResult handshake();
             public abstract override TransferResult transfer();
         }
 
         public abstract class ClientProtocolEndpoint : ProtocolEndpoint {
 
-            public ClientProtocolEndpoint(Socket socket) : base(socket) { }
+            public ClientProtocolEndpoint(Socket socket, Protocol protocol) : base(socket, protocol) { }
 
-            public abstract override HandshakeResult handshake();
             public abstract override TransferResult transfer();
         }
 

@@ -1,8 +1,8 @@
-﻿using System;
+﻿using FileTransfer;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace NetworkTransmission
 {
@@ -20,7 +20,8 @@ namespace NetworkTransmission
         /**
          * The task containing all the information about transmission.
          */
-        public Task task
+        private Task task;
+        public Task Task
         {
             get
             {

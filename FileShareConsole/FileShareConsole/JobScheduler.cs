@@ -1,29 +1,6 @@
 ﻿using FileShareConsole;
 using System;
 using System.Threading;
-<<<<<<< Updated upstream
-=======
-<<<<<<< Updated upstream
-/// <summary>
-//Il JobScheduler:
-//1. Verifica se vi sono Job nella TO_SCHEDULE_FIFO_QUEUE.Se non ce ne sono si mette in wait() in attesa di un inserimento.
-//2. Recupera un Job.
-//3. Va dal MemoryManagementModule e gli chiede di inizializzare l'operazione di invio chiamando getFileIterator(). Se riceve null o cattura un'eccezione....
-//4. Inserisce il Job nella JOBS_LIST.
-//5. Avvio un nuovo thread e passagli il riferimento al FileIterator, il riferimento al Job nella JOBS_LIST e quanto serve per inviare.
-
-/// </summary>
-/// 
-namespace FileTransfer
-{
-
-    public class JobScheduler : ExecutableThread
-    {
-        protected JobScheduler()
-        {
-=======
-<<<<<<< master
->>>>>>> Stashed changes
 using static StorageModule;
 
 namespace FileTransfer {
@@ -40,30 +17,7 @@ namespace FileTransfer {
         public JobScheduler() {
             // Intantiate the storage managemet module he will use
             storage = new JobZipStorageModule();
-<<<<<<< Updated upstream
-=======
->>>>>>> Stashed changes
->>>>>>> Stashed changes
         }
-=======
-/// <summary>
-//Il JobScheduler:
-//1. Verifica se vi sono Job nella TO_SCHEDULE_FIFO_QUEUE.Se non ce ne sono si mette in wait() in attesa di un inserimento.
-//2. Recupera un Job.
-//3. Va dal MemoryManagementModule e gli chiede di inizializzare l'operazione di invio chiamando getFileIterator(). Se riceve null o cattura un'eccezione....
-//4. Inserisce il Job nella JOBS_LIST.
-//5. Avvio un nuovo thread e passagli il riferimento al FileIterator, il riferimento al Job nella JOBS_LIST e quanto serve per inviare.
-
-/// </summary>
-/// 
-namespace FileTransfer
-{
-
-    public class JobScheduler : ExecutableThread
-    {
-
-        public Semaphore activeClientsPool = new Semaphore(15, 15); //semaforo che regola il threadpool di invio
->>>>>>> Packets hiercarchy and client hineritance
 
         /**
          * Given a job, executes its computation. The computation of a 

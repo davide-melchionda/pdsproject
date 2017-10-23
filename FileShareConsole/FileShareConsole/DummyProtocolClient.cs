@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Net.Sockets;
 using NetworkTransmission;
-using Protocol;
+using NetProtocol;
 using static StorageModule;
 using System.Text;
-using static Protocol.ProtocolEndpoint;
+using static NetProtocol.ProtocolEndpoint;
 using FileShareConsole;
 using System.IO;
 
@@ -15,14 +15,11 @@ namespace FileTransfer {
         private FileIterator iterator;
         private Task task;
 
-        public DummyClient(Socket socket, FileIterator iterator, Task task) : base(socket) {
+        public DummyClient(Socket socket, Protocol protocol, FileIterator iterator, Task task) : base(socket, protocol) {
             this.iterator = iterator;
             this.task = task;
         }
-
-        public override HandshakeResult handshake() {
-            throw new NotImplementedException();
-        }
+        
 
         public override TransferResult transfer() {
             byte[] buf = new Byte[JobZipStorageModule.READ_BLOCK_SIZE+1];
@@ -40,11 +37,7 @@ namespace FileTransfer {
     }
 
     public class DummyServer : ClientProtocolEndpoint {
-        public DummyServer(Socket socket) : base(socket) {
-        }
-
-        public override HandshakeResult handshake() {
-            throw new NotImplementedException();
+        public DummyServer(Socket socket, Protocol protocol) : base(socket, protocol) {
         }
 
         public override TransferResult transfer() {

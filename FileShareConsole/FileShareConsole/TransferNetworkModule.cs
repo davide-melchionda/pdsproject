@@ -83,37 +83,38 @@ namespace NetworkTransmission
          * Tries to enter the pool then sends the file to the receiver 
          */
 
-        public static void sendFile(TnSClient caller, byte[] transferBlock) {
+        //public static void sendFile(TnSClient caller, byte[] transferBlock) {
 
-            caller.protocol.enter();   //TODO Ho avuto risposta affermativa, procedo provando ad acquisire il semaforo (BLOCKING)
+        //     CORR -> Non facciamo vedere il protocollo all'esterno, ma solo il client
+        //    caller.tryEnter();// protocol.enter();   //TODO Ho avuto risposta affermativa, procedo provando ad acquisire il semaforo (BLOCKING)
 
-            while (caller.iterator.hasNext())
-            {
-                caller.iterator.next(transferBlock);
-                caller.socket.Send(transferBlock);
+        //    while (caller.iterator.hasNext())
+        //    {
+        //        caller.iterator.next(transferBlock);
+        //        caller.socket.Send(transferBlock);
 
-            }
-            caller.iterator.close();
-        }
+        //    }
+        //    caller.iterator.close();
+        //}
         
        /**
         * Receive a file from a client sending blocks of bytes
         */
 
-        public static void receiveFile(Task task, TnSServer caller, byte[] transferBlock)
-        {
+        //public static void receiveFile(Task task, TnSServer caller, byte[] transferBlock)
+        //{
 
-            long receivedBytes = 0;
-            FileStream Fs = new FileStream(task.informations.name, FileMode.OpenOrCreate, FileAccess.Write);
+        //    long receivedBytes = 0;
+        //    FileStream Fs = new FileStream(task.informations.name, FileMode.OpenOrCreate, FileAccess.Write);
 
-            while (receivedBytes != task.size)
-            {
-                receivedBytes += caller.handler.Receive(transferBlock);
+        //    while (receivedBytes != task.size)
+        //    {
+        //        receivedBytes += caller.handler.Receive(transferBlock);
 
-                Fs.Write(transferBlock, 0, 0);
-            }
-            Fs.Close();
-        }
+        //        Fs.Write(transferBlock, 0, 0);
+        //    }
+        //    Fs.Close();
+        //}
 
 
 

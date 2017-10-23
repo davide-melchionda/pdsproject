@@ -1,37 +1,12 @@
 ﻿using System;
 using System.IO;
 
-/// <summary>
-/// Summary description for Class1
-/// </summary>
-/// 
+
 namespace FileTransfer
 {
 
-    public class Task
-    {
-<<<<<<< Updated upstream
-=======
-<<<<<<< Updated upstream
-       public class FileInfo
-        {
-            public enum Type { directory, file };
-            public Type type;
-            public string id;
-            public string name;
-            public string sender;
-            public string receiver;
-            public string requestTimestamp;
-            public long size;
-        }
-        //oggetto information contiene le info sul file originario
-        public FileInfo informations;
-        //campi riempiti dal modulo di memoria e utilizzati nell'ambito della trasmissione
+    public class Task {
 
-        public long size;
-=======
-<<<<<<< master
->>>>>>> Stashed changes
         /**
          * The id of a task is a set of unique informations
          */
@@ -137,79 +112,69 @@ namespace FileTransfer
 
         }
 
-        public class FileInfo {
-            /**
-             * Enum that has two values, each one coresponding to one of
-             * the two possible kind of file: directory and simple file.
-             */
-            public enum FType {
-                DIRECTORY,  // Directory files
-                FILE        // Simple files
-            };
+        //public class FileInfo {
+        //    /**
+        //     * Enum that has two values, each one coresponding to one of
+        //     * the two possible kind of file: directory and simple file.
+        //     */
+        //    public enum FType {
+        //        DIRECTORY,  // Directory files
+        //        FILE        // Simple files
+        //    };
 
-            /**
-             * Type of the file
-             */
-            private FType type;
-            /**
-             * type property
-             */
-            public FType Type;
+        //    /**
+        //     * Type of the file
+        //     */
+        //    private FType type;
+        //    /**
+        //     * type property
+        //     */
+        //    public FType Type;
 
-            /**
-             * Name of the file
-             */
-            private string name;
-            /**
-             * name property
-             */
-            public string Name {
-                get { return name; }
-            }
+        //    /**
+        //     * Name of the file
+        //     */
+        //    private string name;
+        //    /**
+        //     * name property
+        //     */
+        //    public string Name {
+        //        get { return name; }
+        //    }
 
-            /**
-             * Size of the file to send
-             */
-            private long size;
-            /**
-             * size property
-             */
-            public long Size {
-                get { return size; }
-            }
+        //    /**
+        //     * Size of the file to send
+        //     */
+        //    private long size;
+        //    /**
+        //     * size property
+        //     */
+        //    public long Size {
+        //        get { return size; }
+        //    }
 
-            /**
-             * Constructor. Receives the path of a file and initialize
-             * allt he iformations about the file itself.
-             */
-            public FileInfo(string filePath) {
-                // Retrieves the path of the file
-                name = Path.GetFileName(filePath);
+        //    /**
+        //     * Constructor. Receives the path of a file and initialize
+        //     * allt he iformations about the file itself.
+        //     */
+        //    public FileInfo(string filePath) {
+        //        // Retrieves the path of the file
+        //        name = Path.GetFileName(filePath);
 
-                // Check if the file is a directory
-                FileAttributes attr = 0;
-                attr = File.GetAttributes(filePath);    
-                if ((attr & FileAttributes.Directory) == FileAttributes.Directory)  // if it is
-                    type = FType.DIRECTORY;
-                else    // otherwise
-                    type = FType.FILE;
+        //        // Check if the file is a directory
+        //        FileAttributes attr = 0;
+        //        attr = File.GetAttributes(filePath);    
+        //        if ((attr & FileAttributes.Directory) == FileAttributes.Directory)  // if it is
+        //            type = FType.DIRECTORY;
+        //        else    // otherwise
+        //            type = FType.FILE;
 
-                // Sets the file size
-                System.IO.FileInfo fi = new System.IO.FileInfo(filePath);
-                size = fi.Length;
+        //        // Sets the file size
+        //        System.IO.FileInfo fi = new System.IO.FileInfo(filePath);
+        //        size = fi.Length;
                 
-            }
-        }
-<<<<<<< Updated upstream
-=======
-=======
-      
-        public FileInfo informations;       //oggetto information contiene le info sul file originario
-
-        public long size;                   //campi riempiti dal modulo di memoria e utilizzati nell'ambito della trasmissione
->>>>>>> Packets hiercarchy and client hineritance
->>>>>>> Stashed changes
->>>>>>> Stashed changes
+        //    }
+        //}
     }
     
 }

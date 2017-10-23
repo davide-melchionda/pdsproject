@@ -16,14 +16,19 @@ namespace FileTransfer
     {
 
         private byte[] transferBlock = new byte[8192];
-        public Socket handler;
+
+        // CORR --> Non serve, il padre ne ha un'istanza
+        //public Socket handler;
+
         public delegate void onRequest(FileInfo file);
         public event onRequest onRequestReceived;
-        Protocol protocol;
+        
+        // CORR --> Non serve, il padre ne ha un'istanza
+        //Protocol protocol;
 
-        public TnSServer(Socket handler, Protocol protocol) : base(handler)
+        public TnSServer(Socket handler, Protocol protocol) : base(handler, protocol)
         {
-            this.handler = handler;
+            //this.handler = handler;
             this.protocol = protocol;
         }
 
@@ -32,7 +37,8 @@ namespace FileTransfer
             try
             {
 
-                TransmissionPacket received = (TransmissionPacket)TransferNetworkModule.receivePacket(handler); //receive a network packet from the client
+                //TransmissionPacket received = (TransmissionPacket)TransferNetworkModule.receivePacket(handler); //receive a network packet from the client
+                TransmissionPacket received = TransferNetworkModule.receivePacket(socket); //receive a network packet from the client
                 if (received.Type.ToString() != "request")
                 {
                     //TODO This must raise an exception cause we don't expect a client to send responsens 
@@ -42,17 +48,28 @@ namespace FileTransfer
 
                 if (!Settings.Instance.AutoAcceptFiles)
                 {
-                    onRequestReceived(request.Task.informations);    // We need the user to know that there's a new transmission to accept or deny
+                    onRequestReceived(request.Task.Info);    // We need the user to know that there's a new transmission to accept or deny
                 }
 
                 else
                 {
-                    int i = TransferNetworkModule.SendPacket(handler, TransferNetworkModule.generateResponsetStream(true));
+                    int i = TransferNetworkModule.SendPacket(socket, TransferNetworkModule.generateResponsetStream(true));
                 }
 
-                TransferNetworkModule.receiveFile(request.Task, this, transferBlock);
+                //TransferNetworkModule.receiveFile(request.Task, this, transferBlock);
+                long receivedBytes = 0;
+                FileStream Fs = new FileStream(request.Task.Info.Name, FileMode.OpenOrCreate, FileAccess.Write);
 
-                handler.Close();
+                while (receivedBytes != request.Task.Size) {
+                    receivedBytes += socket.Receive(transferBlock);
+
+                    Fs.Write(transferBlock, 0, 0);
+                }
+
+                Fs.Close();
+
+                // CORR --> Responsabilità del livello superiore?
+                //socket.Close();
 
             }
 

@@ -69,7 +69,7 @@ namespace FileShareConsole
 
                 // Intializes the remaining info in the task (SentName and Size)
                 j.Task.SentName = Path.GetFileName(zipName);    // name of the zipped file
-                j.Task.Size = new FileInfo(zipName).Length;     // size of the zipped file
+                j.Task.Size = new System.IO.FileInfo(zipName).Length;     // size of the zipped file
 
 
                 // Returns an iterator to the file
@@ -92,7 +92,7 @@ namespace FileShareConsole
          */
         public override FileIterator getIterator(string path) {
 
-            long fileLength = new FileInfo(path).Length;
+            long fileLength = new System.IO.FileInfo(path).Length;
             int count;
             lock (dictionaryLock)
             {
@@ -113,7 +113,7 @@ namespace FileShareConsole
 
             lock (dictionaryLock)
             {
-                long fileLength = new FileInfo(ftiterator.filePath).Length;
+                long fileLength = new System.IO.FileInfo(ftiterator.filePath).Length;
                 int count;
 
                 if (openedFiles.TryGetValue(ftiterator.filePath, out count))
@@ -152,7 +152,7 @@ namespace FileShareConsole
             }
 
             public override int next(byte[] buffer) {
-                long length = new FileInfo(filePath).Length;
+                long length = new System.IO.FileInfo(filePath).Length;
                 int read = 0;
                 if (offset + READ_BLOCK_SIZE <= length)
                     read = fileStream.Read(buffer, offset, READ_BLOCK_SIZE);
@@ -166,7 +166,7 @@ namespace FileShareConsole
             }
 
             public override bool hasNext() {
-                return offset < new FileInfo(filePath).Length;
+                return offset < new System.IO.FileInfo(filePath).Length;
             }
             
             public override void close() {

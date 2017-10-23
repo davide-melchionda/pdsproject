@@ -26,3 +26,5 @@ FileShareConsole/FileShareConsole/Properties/
 *.config
 
 *.sln
+
+FileShareConsole/FileShareConsole/\.vs/

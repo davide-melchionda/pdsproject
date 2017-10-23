@@ -39,7 +39,7 @@ namespace FileShareConsole
 
             
             
-            new SeverClass(proto).run();
+            //new ServerClass(proto).run();
 
 
             PeersList.Instance.put(new Peer("you", "you", "127.0.0.1"));

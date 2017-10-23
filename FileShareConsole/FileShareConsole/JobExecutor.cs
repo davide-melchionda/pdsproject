@@ -1,7 +1,7 @@
-﻿using Protocol;
+﻿using NetProtocol;
 using System.Net;
 using System.Net.Sockets;
-using static Protocol.ProtocolEndpoint;
+using static NetProtocol.ProtocolEndpoint;
 
 namespace FileTransfer {
 
@@ -55,10 +55,11 @@ namespace FileTransfer {
 
             // Create a client for the specific protocol
             // The client receives the socket whith the connection established
-            ClientProtocolEndpoint client = new DummyClient(socket, iterator, job.Task);
+            //ClientProtocolEndpoint client = new DummyClient(socket, new DummyProtocol(), iterator, job.Task);
+            ClientProtocolEndpoint client = new NetworkTransmission.TnSClient(socket, new DummyProtocol(), iterator, job.Task);
 
             // Executes the transmission and obtais a result
-            DummyTransferResult res = (DummyTransferResult)client.transfer();
+            TransferResult res = client.transfer();
             
             // Close the socket
             socket.Close();

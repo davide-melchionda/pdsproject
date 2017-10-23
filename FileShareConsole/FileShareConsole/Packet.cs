@@ -1,20 +1,3 @@
-        [JsonConverter(typeof(StringEnumConverter))] // Enum to string when serialized 
-<<<<<<< Updated upstream
-=======
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace NetworkTransmission
-{
-    public interface Packet
-    {
-    }
-}
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
