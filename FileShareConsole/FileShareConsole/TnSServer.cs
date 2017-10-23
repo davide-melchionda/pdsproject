@@ -15,8 +15,6 @@ namespace FileTransfer
     public class TnSServer : ServerProtocolEndpoint
     {
 
-        private byte[] transferBlock = new byte[8192];
-
         // CORR --> Non serve, il padre ne ha un'istanza
         //public Socket handler;
 
@@ -56,22 +54,29 @@ namespace FileTransfer
                     int i = TransferNetworkModule.SendPacket(socket, TransferNetworkModule.generateResponsetStream(true));
                 }
 
-                //TransferNetworkModule.receiveFile(request.Task, this, transferBlock);
+                //QUI DOVREI RICHIEDERE ALLO SCHEDULER DI ASSEGNARMI UN JOB E 
+
                 long receivedBytes = 0;
-                FileStream Fs = new FileStream(request.Task.Info.Name, FileMode.OpenOrCreate, FileAccess.Write);
 
-                while (receivedBytes != request.Task.Size) {
-                    receivedBytes += socket.Receive(transferBlock);
+                //DEVO RICEVERE DAL JOBSCHEDULER IL NOME DEL JOB ASSEGNATO ALLA MIA RICEZIONE 
+                FileStream Fs = new FileStream(@"C:\Users\franc\Desktop\puttanate.zip", FileMode.OpenOrCreate, FileAccess.Write);
+                byte[] transferedZip = new byte[request.Task.Size];
 
-                    Fs.Write(transferBlock, 0, 0);
+                while (receivedBytes < request.Task.Size) {
+
+                    receivedBytes += socket.Receive(transferedZip);
+
                 }
-
+                //PIUTTOSTO CHE GESTIRE IO IL FILESTREAM DEVO PASSARE IL BUFFER AL COMPONENTE MEMORYMODULE
+                Fs.Write(transferedZip, 0, transferedZip.Length);
+                Fs.Flush();
                 Fs.Close();
+                   
+                    //}
+                    // CORR --> Responsabilità del livello superiore?
+                    //socket.Close();
 
-                // CORR --> Responsabilità del livello superiore?
-                //socket.Close();
-
-            }
+                }
 
             catch (Exception e)
             {

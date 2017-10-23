@@ -1,17 +1,22 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.IO;
 
 
 namespace FileTransfer
 {
 
-    public class Task {
+    public class Task
+    {
 
         /**
          * The id of a task is a set of unique informations
          */
-        public string Id {
+        public string Id
+        {
             get { return Info.Name + sender + receiver + requestTimestamp.ToString("yyyyMMddhhmmss") + requestTimestamp.Millisecond; }
+            
+
         }
 
         /**
@@ -21,8 +26,10 @@ namespace FileTransfer
         /**
          * sender property
          */
-        public string Sender {
+        public string Sender
+        {
             get { return sender; }
+            set { sender = value; }
         }
 
         /**
@@ -32,8 +39,10 @@ namespace FileTransfer
         /**
          * receiver property
          */
-        public string Receiver {
+        public string Receiver
+        {
             get { return receiver; }
+            set { receiver = value; }
         }
 
         /**
@@ -43,8 +52,11 @@ namespace FileTransfer
         /**
          * date property
          */
-        public DateTime RequestTimestamp {
+        public DateTime RequestTimestamp
+        {
             get { return requestTimestamp; }
+            set { requestTimestamp = value; }
+
         }
 
         /**
@@ -54,8 +66,11 @@ namespace FileTransfer
         /**
          * info property
          */
-        public FileInfo Info {
+        public FileInfo Info
+        {
             get { return info; }
+            set { info = value; }
+
         }
 
         /**
@@ -67,11 +82,14 @@ namespace FileTransfer
         /**
          * sentName property
          */
-        public string SentName {
-            get {
+        public string SentName
+        {
+            get
+            {
                 return sentName;
             }
-            set {
+            set
+            {
                 sentName = value;
             }
         }
@@ -86,11 +104,14 @@ namespace FileTransfer
         /**
          * size property
          */
-        public long Size {
-            get {
+        public long Size
+        {
+            get
+            {
                 return size;
             }
-            set {
+            set
+            {
                 size = value;
             }
         }
@@ -99,7 +120,8 @@ namespace FileTransfer
          * Constructor of the task. Takes only few arguments because the others are
          * retrieved from these ones or initialized calling other methods.
          */
-        public Task(string sender, string receiver, string filePath) {
+        public Task(string sender, string receiver, string filePath)
+        {
             // Initialize sender and receiver
             this.sender = sender;
             this.receiver = receiver;
@@ -111,6 +133,17 @@ namespace FileTransfer
             requestTimestamp = DateTime.Now;
 
         }
+        /**
+        * Constructor used by the Json library
+        * 
+        */
+        [JsonConstructor]
+
+        public Task() { }
+     
+
+        
+
 
         //public class FileInfo {
         //    /**
@@ -172,9 +205,9 @@ namespace FileTransfer
         //        // Sets the file size
         //        System.IO.FileInfo fi = new System.IO.FileInfo(filePath);
         //        size = fi.Length;
-                
+
         //    }
         //}
     }
-    
+
 }

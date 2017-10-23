@@ -32,7 +32,7 @@ namespace FileShareConsole
             string filePath = j.FilePath;   // Path of the file
             DateTime lastModify = j.Task.RequestTimestamp;  // The timestamp
 
-            Logger.log(Logger.ZIP_DEBUG, "Called to zip " + filePath);
+            Logger.log(Logger.ZIP_DEBUG, "Called to zip " + filePath+ "\n");
 
             // Constructs the zip file name
             string date = lastModify.ToString("yyyyMMddhhmmss")+lastModify.Millisecond;

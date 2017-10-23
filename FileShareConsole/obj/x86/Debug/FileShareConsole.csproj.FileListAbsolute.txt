@@ -1,0 +1,9 @@
+C:\Users\franc\OneDrive\Documenti\GitKraken\pdsproject\FileShareConsole\obj\x86\Debug\FileShareConsole.csprojResolveAssemblyReference.cache
+C:\Users\franc\OneDrive\Documenti\GitKraken\pdsproject\FileShareConsole\obj\x86\Debug\FileShareConsole.csproj.CoreCompileInputs.cache
+C:\Users\franc\OneDrive\Documenti\GitKraken\pdsproject\FileShareConsole\bin\Debug\ConsoleApplication.exe.config
+C:\Users\franc\OneDrive\Documenti\GitKraken\pdsproject\FileShareConsole\bin\Debug\ConsoleApplication.exe
+C:\Users\franc\OneDrive\Documenti\GitKraken\pdsproject\FileShareConsole\bin\Debug\ConsoleApplication.pdb
+C:\Users\franc\OneDrive\Documenti\GitKraken\pdsproject\FileShareConsole\bin\Debug\Newtonsoft.Json.dll
+C:\Users\franc\OneDrive\Documenti\GitKraken\pdsproject\FileShareConsole\bin\Debug\Newtonsoft.Json.xml
+C:\Users\franc\OneDrive\Documenti\GitKraken\pdsproject\FileShareConsole\obj\x86\Debug\ConsoleApplication.exe
+C:\Users\franc\OneDrive\Documenti\GitKraken\pdsproject\FileShareConsole\obj\x86\Debug\ConsoleApplication.pdb

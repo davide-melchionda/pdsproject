@@ -34,13 +34,8 @@ namespace NetworkTransmission
             this.task = involvedTask;
             //this.protocol = protocol; // CORR --> VEDI SOPRA
         }
-        //test constructor
-        public TnSClient(Socket socket, Protocol protocol, Task involvedTask) : base(socket, protocol)
-        {
-            //this.socket = socket;   // CORR --> VEDI SOPRA
-            this.task = involvedTask;
-            //this.protocol = protocol; // CORR --> VEDI SOPRA
-        }
+      
+       
 
 
 
