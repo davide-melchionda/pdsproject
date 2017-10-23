@@ -18,3 +18,11 @@ FileShareConsole/FileShareConsole/bin/
 FileShareConsole/FileShareConsole/obj/
 
 FileShareConsole/FileShareConsole/FileShareConsole\.csproj
+
+FileShareConsole/packages/
+
+FileShareConsole/FileShareConsole/Properties/
+
+*.config
+
+*.sln

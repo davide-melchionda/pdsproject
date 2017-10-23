@@ -1,10 +1,36 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
+        [JsonConverter(typeof(StringEnumConverter))] // Enum to string when serialized 
+<<<<<<< Updated upstream
+=======
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace NetworkTransmission
 {
-    public class TransmissionPacket
+    public interface Packet
     {
+    }
+}
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace NetworkTransmission
+{
+    public interface Packet {}
+
+    public class TransmissionPacket : Packet
+    {
+
+
         /**
      * Defines the possible values that can be assumed by the 
      * field "Type" in a packet.
@@ -19,7 +45,7 @@ namespace NetworkTransmission
             response    // a Response packet is sent to accept or refuse a request.
         };
 
-        public AuthenticationLayer challenge;
+        public AuthenticationLayer challange;
         private PacketType type;
 
         /**

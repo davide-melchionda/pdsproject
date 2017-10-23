@@ -1,24 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Net.Sockets;
 
-namespace NetProtocol
-{
-    /**
-     * Superclass that must be inherit from the protocol adopted for the file transmission.
-     * It also exposes some functionalities for traffic control.
-     */
-    public class Protocol
-    {
+namespace Protocol {
 
-     /**
-      * Method that allows the generic endpoint handler to start the transfer on the network
-      */
-        public void enter()
-        {
-            //PLACEHOLDER
+    public abstract class ProtocolEndpoint {
+
+        private Socket socket;
+
+        public ProtocolEndpoint(Socket socket) {
+            this.socket = socket;
+        }
+
+        public abstract HandshakeResult handshake();
+        public abstract TransferResult transfer();
+
+        public abstract class ServerProtocolEndpoint : ProtocolEndpoint {
+
+            public ServerProtocolEndpoint(Socket socket) : base(socket) { }
+
+            public abstract override HandshakeResult handshake();
+            public abstract override TransferResult transfer();
+        }
+
+        public abstract class ClientProtocolEndpoint : ProtocolEndpoint {
+
+            public ClientProtocolEndpoint(Socket socket) : base(socket) { }
+
+            public abstract override HandshakeResult handshake();
+            public abstract override TransferResult transfer();
+        }
+
+        public abstract class HandshakeResult {
+
+        }
+
+        public abstract class TransferResult {
+
         }
     }
+    
 }

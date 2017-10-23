@@ -1,4 +1,10 @@
-﻿
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+
 namespace NetworkTransmission
 {
     class ResponsePacket : TransmissionPacket
@@ -6,17 +12,15 @@ namespace NetworkTransmission
         /**
          * The constructor sets the appropriate property Type 
          */
-        public ResponsePacket(bool procede)
+        public ResponsePacket()
         {
-            Type = PacketType.response;
-            this.procede = procede;
+            Type = PacketType.request;
         }
 
         /**
          * The actual will of the receiver to start or deny the transmission.
          */
-        private bool procede;
-        public bool Procede
+        public bool procede
         {
             get
             {
