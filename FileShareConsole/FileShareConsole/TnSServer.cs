@@ -3,7 +3,8 @@ using System.Net.Sockets;
 using NetworkTransmission;
 using static NetProtocol.ProtocolEndpoint;
 using NetProtocol;
-using System.IO;
+using FileShareConsole;
+using static StorageModule;
 
 namespace FileTransfer
 {
@@ -15,18 +16,13 @@ namespace FileTransfer
     public class TnSServer : ServerProtocolEndpoint
     {
 
-        // CORR --> Non serve, il padre ne ha un'istanza
-        //public Socket handler;
-
         public delegate void onRequest(FileInfo file);
         public event onRequest onRequestReceived;
-        
-        // CORR --> Non serve, il padre ne ha un'istanza
-        //Protocol protocol;
+        private byte[] chunk = new byte[8192];
+  
 
         public TnSServer(Socket handler, Protocol protocol) : base(handler, protocol)
         {
-            //this.handler = handler;
             this.protocol = protocol;
         }
 
@@ -44,6 +40,16 @@ namespace FileTransfer
 
                 RequestPacket request = (RequestPacket)received;
 
+
+
+                /*QUI DOBBIAMO RICHIEDERE DI ESSERE SCHEDULATI COME SERVER ATTIVI 
+                {
+
+
+
+                }
+                */
+
                 if (!Settings.Instance.AutoAcceptFiles)
                 {
                     onRequestReceived(request.Task.Info);    // We need the user to know that there's a new transmission to accept or deny
@@ -54,29 +60,22 @@ namespace FileTransfer
                     int i = TransferNetworkModule.SendPacket(socket, TransferNetworkModule.generateResponsetStream(true));
                 }
 
-                //QUI DOVREI RICHIEDERE ALLO SCHEDULER DI ASSEGNARMI UN JOB E 
+                JobZipStorageModule module = new JobZipStorageModule();
+                FileIterator iterator = module.CreateJob(request.Task);  // Sarà l'iteratore ad aggiornare la progress_bar
 
                 long receivedBytes = 0;
+                while (iterator.hasNext())
+                {
 
-                //DEVO RICEVERE DAL JOBSCHEDULER IL NOME DEL JOB ASSEGNATO ALLA MIA RICEZIONE 
-                FileStream Fs = new FileStream(@"C:\Users\franc\Desktop\puttanate.zip", FileMode.OpenOrCreate, FileAccess.Write);
-                byte[] transferedZip = new byte[request.Task.Size];
-
-                while (receivedBytes < request.Task.Size) {
-
-                    receivedBytes += socket.Receive(transferedZip);
+                    receivedBytes = socket.Receive(chunk);
+                    iterator.write(chunk, receivedBytes);   //invio il chunk e l'effettiva quantità di dato, iterator gestirà internamente l'offset
 
                 }
-                //PIUTTOSTO CHE GESTIRE IO IL FILESTREAM DEVO PASSARE IL BUFFER AL COMPONENTE MEMORYMODULE
-                Fs.Write(transferedZip, 0, transferedZip.Length);
-                Fs.Flush();
-                Fs.Close();
-                   
-                    //}
-                    // CORR --> Responsabilità del livello superiore?
-                    //socket.Close();
 
-                }
+                iterator.close();
+                base.socket.Close();
+
+            }
 
             catch (Exception e)
             {
