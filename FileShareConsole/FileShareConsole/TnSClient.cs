@@ -6,6 +6,7 @@ using static NetProtocol.ProtocolEndpoint;
 using NetProtocol;
 using System.Text;
 using static StorageModule;
+using FileShareConsole;
 
 namespace NetworkTransmission
 {
@@ -16,23 +17,16 @@ namespace NetworkTransmission
     class TnSClient : ClientProtocolEndpoint {
 
         public FileIterator iterator;       // Iterator provides the abstraction towards the file location 
-        public Task task;                   // Task that provides all the informations about transfer
-        
-        // CORR --> Non serve: il padre ha il padre ha la sua istanza di socket
-        //public Socket socket;               // The socket on wich we transmit---> The connection has been established by the caller
-            
-        // CORR --> Non serve: il padre ha la sua istanza di protocol
-        //public Protocol protocol; -->
-        
-        //private byte[] transferBlock= new byte[JobZipMemoryModuke.BLOCK_SIZE];
+        public Job job;                   // Task that provides all the informations about transfer
+
+
         private byte[] transferBlock = new byte[8192];
 
-        public TnSClient(Socket socket, Protocol protocol, FileIterator fIterator, Task involvedTask) : base(socket, protocol)
+        public TnSClient(Socket socket, Protocol protocol, Job job) : base(socket, protocol)
         {
-            //this.socket = socket;     // CORR --> VEDI SOPRA
-            this.iterator = fIterator;
-            this.task = involvedTask;
-            //this.protocol = protocol; // CORR --> VEDI SOPRA
+            this.job = job;
+            JobZipStorageModule module= new JobZipStorageModule();
+            iterator=module.prepareJob(job);
         }
       
        
@@ -43,7 +37,7 @@ namespace NetworkTransmission
         {
             TransmissionPacket tPacket = null;
 
-            byte[] msg = TransferNetworkModule.generateRequestStream(task);       // Encode the data string into a byte array.
+            byte[] msg = TransferNetworkModule.generateRequestStream(job.Task);       // Encode the data string into a byte array.
 
             int bytesSent = TransferNetworkModule.SendPacket(socket, msg);        // Send the data through the socket.
 
@@ -52,6 +46,7 @@ namespace NetworkTransmission
             if (tPacket.Type.ToString() != "response")
 
             {
+
                 //TODO This must raise an exception cause we don't expect a server to send packets different from Responses at this point 
 
             }

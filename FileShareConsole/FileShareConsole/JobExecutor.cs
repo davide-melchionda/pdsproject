@@ -56,7 +56,7 @@ namespace FileTransfer {
             // Create a client for the specific protocol
             // The client receives the socket whith the connection established
             //ClientProtocolEndpoint client = new DummyClient(socket, new DummyProtocol(), iterator, job.Task);
-            ClientProtocolEndpoint client = new NetworkTransmission.TnSClient(socket, new DummyProtocol(), iterator, job.Task);
+            ClientProtocolEndpoint client = new NetworkTransmission.TnSClient(socket, new DummyProtocol(), job);
 
             // Executes the transmission and obtais a result
             TransferResult res = client.transfer();
