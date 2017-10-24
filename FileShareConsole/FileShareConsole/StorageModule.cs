@@ -51,9 +51,15 @@ public abstract class StorageModule {
 
         /**
          * Puts in the buffer of byte given as parameter the next block
-         * readed from the file. Returns the number of read byte.
+         * readed from the file. Returns the number of read bytes.
          */
         public abstract int next(byte[] buffer);
+
+        /**
+         * Given a buffer of bytes, write a number of byte equals to the
+         * parameter 'count' to the file. Returns the number of written bytes.
+         */
+        public abstract int write(byte[] buf, int count);
 
         /**
          * Returns 'true' if there is still something to read, 'false' otherwise.

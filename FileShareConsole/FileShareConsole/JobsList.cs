@@ -10,19 +10,39 @@ namespace FileTransfer {
 
     class JobsList {
 
-        //classe che implementa il paradigma singleton
-        private static JobsList instance;
+        /**
+         * The instance of the list of jobs for outgoing transfers
+         */
+        private static JobsList sending;
         /**
          * instance property.
          * Through the get method it's possble to get a reference to the
-         * unique instance of this cass.
+         * unique instance for outgoing transfers of this cass.
          */
-        public static JobsList Instance {
+        public static JobsList Sending {
             get {
-                if (instance == null) {
-                    instance = new JobsList();
+                if (sending == null) {
+                    sending = new JobsList();
                 }
-                return instance;
+                return sending;
+            }
+        }
+
+        /**
+         * The instance of the list of jobs for incoming transfers
+         */
+        private static JobsList receiving;
+        /**
+         * instance property.
+         * Through the get method it's possble to get a reference to the
+         * unique instance for incoming transfers of this cass.
+         */
+        public static JobsList Receiving {
+            get {
+                if (sending == null) {
+                    sending = new JobsList();
+                }
+                return sending;
             }
         }
 

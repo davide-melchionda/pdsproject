@@ -222,6 +222,22 @@ class Settings {
     }
 
     /**
+     * The default path on the file system in which save received files.
+     */
+    private string defaultRecvPath = @"C:\Users\vm-dm-win\Desktop\recv\";
+    /**
+     * defaultRecvPath property
+     */
+    public string DefaultRecvPath {
+        get {
+            return defaultRecvPath;
+        }
+        set {
+            defaultRecvPath = value;
+        }
+    }
+
+    /**
      * SINGLETON CREATIONAL PATTERN
      * The protected constructor.
      * Retrieves the settings from a file.
