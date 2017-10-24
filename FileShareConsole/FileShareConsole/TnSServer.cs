@@ -40,6 +40,16 @@ namespace FileTransfer
 
                 RequestPacket request = (RequestPacket)received;
 
+
+
+                /*QUI DOBBIAMO RICHIEDERE DI ESSERE SCHEDULATI COME SERVER ATTIVI 
+                {
+
+
+
+                }
+                */
+
                 if (!Settings.Instance.AutoAcceptFiles)
                 {
                     onRequestReceived(request.Task.Info);    // We need the user to know that there's a new transmission to accept or deny
@@ -62,6 +72,7 @@ namespace FileTransfer
 
                 }
 
+                iterator.close();
                 base.socket.Close();
 
             }

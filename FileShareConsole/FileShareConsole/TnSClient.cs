@@ -1,10 +1,8 @@
 ﻿using System;
 using FileTransfer;
 using System.Net.Sockets;
-using System.Net;
 using static NetProtocol.ProtocolEndpoint;
 using NetProtocol;
-using System.Text;
 using static StorageModule;
 using FileShareConsole;
 
@@ -54,8 +52,7 @@ namespace NetworkTransmission
             ResponsePacket response = (ResponsePacket)tPacket;
             if (response.Procede)
             {
-                //TransferNetworkModule.sendFile(this, transferBlock);
-                // CORR -> Non facciamo vedere il protocollo all'esterno, ma solo il client
+          
                 protocol.enter();// protocol.enter();   //TODO Ho avuto risposta affermativa, procedo provando ad acquisire il semaforo (BLOCKING)
 
                 while (iterator.hasNext()) {
