@@ -15,7 +15,7 @@ namespace FileTransfer
         }
         protected override void execute()
         {
-            IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Any, Settings.Instance.TCP_RECEIVING_PORT);
+            IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Any, Settings.Instance.SERV_ACCEPTING_PORT);
             Socket listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
             try

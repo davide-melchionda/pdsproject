@@ -17,8 +17,8 @@ namespace FileShareConsole
     class Program
     {
         static void Main(string[] args) {
-            //ServerClass server = new ServerClass(new DummyProtocol());
-            //server.run();
+            ServerClass server = new ServerClass(new DummyProtocol());
+            server.run();
             ////new HelloThread().run();
 
             ////new JobScheduler().run();

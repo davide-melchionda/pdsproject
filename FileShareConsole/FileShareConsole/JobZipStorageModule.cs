@@ -269,7 +269,10 @@ namespace FileShareConsole
                     written = (int)length - offset;
 
                 // Writes bytes in the file
-                fileStream.Write(buf, offset, written);
+                fileStream.Write(buf, 0, written);
+
+                // Update offset
+                offset += written;
 
                 // Returns the number of bytes written.
                 return written;

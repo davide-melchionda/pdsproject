@@ -45,7 +45,7 @@ namespace FileTransfer {
             IPAddress receiverAddr = IPAddress.Parse(receiver.Ipaddress);
             IPEndPoint remoteEP = new IPEndPoint(receiverAddr, Settings.Instance.SERV_ACCEPTING_PORT);
             // Connect to the receiver socket
-            //socket.Connect(remoteEP); // DEBUG
+            socket.Connect(remoteEP);
 
             // Create a client for the specific protocol
             // The client receives the socket whith the connection established

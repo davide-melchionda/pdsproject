@@ -61,9 +61,9 @@ namespace FileTransfer
                 }
 
                 JobZipStorageModule module = new JobZipStorageModule();
-                FileIterator iterator = module.CreateJob(request.Task);  // Sarà l'iteratore ad aggiornare la progress_bar
+                FileIterator iterator = module.createJob(request.Task);  // Sarà l'iteratore ad aggiornare la progress_bar
 
-                long receivedBytes = 0;
+                int receivedBytes = 0;
                 while (iterator.hasNext())
                 {
 
@@ -73,8 +73,6 @@ namespace FileTransfer
                 }
 
                 iterator.close();
-                base.socket.Close();
-
             }
 
             catch (Exception e)

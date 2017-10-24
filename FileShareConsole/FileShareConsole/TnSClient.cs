@@ -58,12 +58,10 @@ namespace NetworkTransmission
                 while (iterator.hasNext()) {
                     iterator.next(transferBlock);
                     socket.Send(transferBlock);
-
                 }
                 iterator.close();
             }
-
-            socket.Close();
+            
             return new TnSTransferResult(response.Procede);
         }
 
