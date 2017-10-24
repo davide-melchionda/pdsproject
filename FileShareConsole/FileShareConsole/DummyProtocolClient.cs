@@ -12,25 +12,33 @@ namespace FileTransfer {
 
     public class DummyClient : ClientProtocolEndpoint {
 
-        private FileIterator iterator;
-        private Task task;
+        private Job job;
 
-        public DummyClient(Socket socket, Protocol protocol, FileIterator iterator, Task task) : base(socket, protocol) {
-            this.iterator = iterator;
-            this.task = task;
+        private FileIterator sendIterator;
+        private FileIterator recvIterator;
+
+        public DummyClient(Socket socket, Protocol protocol, Job job) : base(socket, protocol) {
+            this.job = job;
+            JobZipStorageModule storage = new JobZipStorageModule();
+            sendIterator = storage.prepareJob(job);
+            recvIterator = storage.createJob(job.Task);
         }
         
 
         public override TransferResult transfer() {
             byte[] buf = new Byte[JobZipStorageModule.READ_BLOCK_SIZE+1];
-            while (iterator.hasNext()) {
-                int read = iterator.next(buf);
-                FileStream f = File.Create(@"C:\Users\vm-dm-win\Desktop\exampleFile.txt");
-                f.Write(buf, 0, read);
-                f.Close();
+            while (sendIterator.hasNext()) {
+                int read = sendIterator.next(buf);
+                //filestream f = file.create(@"c:\users\vm-dm-win\desktop\examplefile.txt");
+                //f.write(buf, 0, read);
+                //f.close();
+                recvIterator.write(buf, read);  // Rewrites in another file
             }
 
             System.Threading.Thread.Sleep(10000);
+
+            sendIterator.close();
+            recvIterator.close();
 
             return new DummyTransferResult();
         }

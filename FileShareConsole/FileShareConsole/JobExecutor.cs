@@ -11,11 +11,6 @@ namespace FileTransfer {
     internal class JobExecutor : ExecutableThread {
 
         /**
-         * Iterator which represents the acces point to the file to send
-         */
-        private StorageModule.FileIterator iterator;
-
-        /**
          * The job which represents the transmission operation
          */
         private Job job;
@@ -33,8 +28,7 @@ namespace FileTransfer {
         /**
          * Constructor
          */
-        public JobExecutor(Job job, StorageModule.FileIterator iterator) {
-            this.iterator = iterator;
+        public JobExecutor(Job job) {
             this.job = job;
         }
 

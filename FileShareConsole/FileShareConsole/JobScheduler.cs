@@ -5,18 +5,11 @@ using static StorageModule;
 
 namespace FileTransfer {
     public class JobScheduler {
-        
-        /**
-         * Storage module which will be used to access to files
-         */
-        private StorageModule storage;
 
         /**
          * Constructor
          */
         public JobScheduler() {
-            // Intantiate the storage managemet module he will use
-            storage = new JobZipStorageModule();
         }
 
         /**
@@ -27,20 +20,15 @@ namespace FileTransfer {
          */
         public void scheduleJob(Job job) {
 
-            // Requires memory management module to initialize the file on which
-            // the job will work
-            FileIterator iterator = ((JobZipStorageModule)storage).prepareJob(job);
-
             // Pushes the job in the list of in-service jobs
-            JobsList.Instance.push(job);
+            JobsList.Sending.push(job);
 
             // Schedules a thread to send the packet
-            JobExecutor sender = new JobExecutor(job, iterator);
+            JobExecutor sender = new JobExecutor(job);
             // When the transmissione ends
             sender.OnTrasmissionEnd += () => {
-                iterator.close();   // Close the iterator
-                                    // Removes the job from the active jobs list
-                JobsList.Instance.remove(job.Id);
+                // Removes the job from the active jobs list
+                JobsList.Sending.remove(job.Id);
             };
 
             // Run the sender

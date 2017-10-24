@@ -95,13 +95,27 @@ namespace FileTransfer
             else    // otherwise
                 type = FType.FILE;
 
-            // Sets the file size
-            System.IO.FileInfo fi = new System.IO.FileInfo(filePath);
-            size = fi.Length;
-
+            if (type != FType.DIRECTORY) {
+                // Sets the file size
+                System.IO.FileInfo fi = new System.IO.FileInfo(filePath);
+                size = fi.Length;
+            } else {
+                size = getDirectoryTotSize(new System.IO.DirectoryInfo(filePath));
+            }
         }
 
-     
+        private long getDirectoryTotSize(DirectoryInfo d) {
+            long size = 0;
+            System.IO.FileInfo[] fis = d.GetFiles();
+            foreach (System.IO.FileInfo fi in fis)
+                size += fi.Length;
+
+            DirectoryInfo[] dis = d.GetDirectories();
+            foreach (DirectoryInfo di in dis)
+                size += getDirectoryTotSize(di);
+            return size;
+        }
+
     }
 
 }
