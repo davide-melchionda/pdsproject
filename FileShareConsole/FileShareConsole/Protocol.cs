@@ -5,6 +5,7 @@ namespace NetProtocol {
     public abstract class Protocol {
 
         public abstract void enter();
+        public abstract void release();
 
     }
 

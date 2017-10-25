@@ -72,8 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileShareConsole\authenticationLayer.cs" />
-    <Compile Include="FileShareConsole\ClientClass.cs" />
-    <Compile Include="FileShareConsole\DummyProtocol.cs" />
+    <Compile Include="FileShareConsole\TnSProtocol.cs" />
     <Compile Include="FileShareConsole\DummyProtocolClient.cs" />
     <Compile Include="FileShareConsole\ExecutableThread.cs" />
     <Compile Include="FileShareConsole\FileInfo.cs" />

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using static StorageModule;
 
@@ -17,7 +18,7 @@ namespace FileShareConsole
     class Program
     {
         static void Main(string[] args) {
-            ServerClass server = new ServerClass(new DummyProtocol());
+            ServerClass server = new ServerClass(new TnSProtocol());
             server.run();
             ////new HelloThread().run();
 
@@ -40,9 +41,11 @@ namespace FileShareConsole
             //TnSClient client = new TnSClient(sender, new DummyProtocol(),i, myTask);
             //client.transfer();
             ////i.close();
-            //Console.WriteLine("gay");
 
-            string s = @"C:\Users\vm-dm-win\Desktop\tmp";
+            string s = @"C:\Users\franc\Desktop\temp";
+            string t = @"C:\Users\franc\Desktop\zio.pdf";
+
+            string sr = @"C:\Users\franc\Desktop\zio.jpg";
             //string to = @"C:\Users\vm-dm-win\Desktop\tmpzipped" + DateTime.Now.Millisecond + @".zip";
 
             //ServerClass server = new ServerClass(new DummyProtocol());
@@ -51,7 +54,33 @@ namespace FileShareConsole
             PeersList.Instance.put(new Peer("you", "you", "127.0.0.1"));
 
             JobScheduler scheduler = new JobScheduler();
+            //scheduler.scheduleJob(new Job(new FileTransfer.Task("me", "you", sr), sr));
+            Thread.Sleep(1000);
             scheduler.scheduleJob(new Job(new FileTransfer.Task("me", "you", s), s));
+
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         }
     }
