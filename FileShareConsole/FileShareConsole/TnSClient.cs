@@ -54,7 +54,7 @@ namespace NetworkTransmission
             if (response.Procede)
             {
 
-                protocol.enter();// protocol.enter();   //TODO Ho avuto risposta affermativa, procedo provando ad acquisire il semaforo (BLOCKING)
+                protocol.enter();// protocol.enter();  
                 int i = 0;
                 while (iterator.hasNext())
                 {

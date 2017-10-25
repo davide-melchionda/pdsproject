@@ -1,0 +1,7 @@
+C:\Users\franc\OneDrive\Documenti\GitKraken\pdsproject\FileChooser\bin\Debug\ConsoleApplication.exe.config
+C:\Users\franc\OneDrive\Documenti\GitKraken\pdsproject\FileChooser\bin\Debug\ConsoleApplication.exe
+C:\Users\franc\OneDrive\Documenti\GitKraken\pdsproject\FileChooser\bin\Debug\ConsoleApplication.pdb
+C:\Users\franc\OneDrive\Documenti\GitKraken\pdsproject\FileChooser\obj\x86\Debug\FileChooser.csprojResolveAssemblyReference.cache
+C:\Users\franc\OneDrive\Documenti\GitKraken\pdsproject\FileChooser\obj\x86\Debug\FileChooser.csproj.CoreCompileInputs.cache
+C:\Users\franc\OneDrive\Documenti\GitKraken\pdsproject\FileChooser\obj\x86\Debug\ConsoleApplication.exe
+C:\Users\franc\OneDrive\Documenti\GitKraken\pdsproject\FileChooser\obj\x86\Debug\ConsoleApplication.pdb

@@ -71,7 +71,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FileDaemon.cs" />
     <Compile Include="FileShareConsole\authenticationLayer.cs" />
+    <Compile Include="FileShareConsole\PipeDaemon.cs" />
     <Compile Include="FileShareConsole\TnSProtocol.cs" />
     <Compile Include="FileShareConsole\DummyProtocolClient.cs" />
     <Compile Include="FileShareConsole\ExecutableThread.cs" />
@@ -112,6 +114,8 @@
     <Compile Include="FileShareConsole\TnSServer.cs" />
     <Compile Include="FileShareConsole\ToScheduleFifoQueue.cs" />
     <Compile Include="FileShareConsole\TransferNetworkModule.cs" />
+    <Compile Include="IPCModule.cs" />
+    <Compile Include="PipeModule.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="FileShareConsole\bin\Debug\FileShareConsole.exe" />
