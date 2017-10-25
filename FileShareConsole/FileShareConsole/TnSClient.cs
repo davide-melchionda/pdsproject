@@ -12,7 +12,8 @@ namespace NetworkTransmission
      * The specific client that performs all the steps that compose our transmission protocol. 
      */
 
-    class TnSClient : ClientProtocolEndpoint {
+    class TnSClient : ClientProtocolEndpoint
+    {
 
         public FileIterator iterator;       // Iterator provides the abstraction towards the file location 
         public Job job;                   // Task that provides all the informations about transfer
@@ -23,11 +24,11 @@ namespace NetworkTransmission
         public TnSClient(Socket socket, Protocol protocol, Job job) : base(socket, protocol)
         {
             this.job = job;
-            JobZipStorageModule module= new JobZipStorageModule();
-            iterator=module.prepareJob(job);
+            JobZipStorageModule module = new JobZipStorageModule();
+            iterator = module.prepareJob(job);
         }
-      
-       
+
+
 
 
 
@@ -52,16 +53,18 @@ namespace NetworkTransmission
             ResponsePacket response = (ResponsePacket)tPacket;
             if (response.Procede)
             {
-          
-                protocol.enter();// protocol.enter();   //TODO Ho avuto risposta affermativa, procedo provando ad acquisire il semaforo (BLOCKING)
 
-                while (iterator.hasNext()) {
-                    iterator.next(transferBlock);
-                    socket.Send(transferBlock);
+                protocol.enter();// protocol.enter();   //TODO Ho avuto risposta affermativa, procedo provando ad acquisire il semaforo (BLOCKING)
+                int i = 0;
+                while (iterator.hasNext())
+                {
+                    i = iterator.next(transferBlock);
+                    socket.Send(transferBlock,0,i, SocketFlags.None);
                 }
                 iterator.close();
+                protocol.release();
             }
-            
+
             return new TnSTransferResult(response.Procede);
         }
 

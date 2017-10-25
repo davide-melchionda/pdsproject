@@ -224,7 +224,7 @@ class Settings {
     /**
      * The default path on the file system in which save received files.
      */
-    private string defaultRecvPath = @"C:\Users\vm-dm-win\Desktop\recv\";
+    private string defaultRecvPath = @"C:\Users\franc\Desktop\recv\";
     /**
      * defaultRecvPath property
      */

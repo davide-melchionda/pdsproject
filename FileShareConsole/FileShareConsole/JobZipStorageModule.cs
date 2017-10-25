@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using FileTransfer;
 using System.IO.Compression;
 using System.Collections.Concurrent;
+using System.Text.RegularExpressions;
 
 namespace FileShareConsole
 {
@@ -24,7 +25,8 @@ namespace FileShareConsole
         private ConcurrentDictionary<string, int> openedFiles;
         static object dictionaryLock = new object();
 
-        public JobZipStorageModule() {
+        public JobZipStorageModule()
+        {
             openedFiles = new ConcurrentDictionary<string, int>();
         }
 
@@ -34,26 +36,30 @@ namespace FileShareConsole
          * JobFileIterator is created and returned in order to allow the caller to
          * access to the temporary file to trasnfer.
          */
-        public FileIterator prepareJob(Job j) {
+        public FileIterator prepareJob(Job j)
+        {
             string filePath = j.FilePath;   // Path of the file
             DateTime lastModify = j.Task.RequestTimestamp;  // The timestamp
 
-            Logger.log(Logger.ZIP_DEBUG, "Called to zip " + filePath+ "\n");
+            Logger.log(Logger.ZIP_DEBUG, "Called to zip " + filePath + "\n");
 
             // Constructs the zip file name
-            string date = lastModify.ToString("yyyyMMddhhmmss")+lastModify.Millisecond;
-            string zipName = filePath + date + ".zip";
+            string date = lastModify.ToString("yyyyMMddhhmmss") + lastModify.Millisecond;
+            string zipName = Path.GetDirectoryName(filePath) + Path.GetFileNameWithoutExtension(filePath) + date + ".zip";
 
             // If the file was modified after the lastModify date, throws an exception
-            if (File.GetLastWriteTime(filePath) > lastModify) {
+            if (File.GetLastWriteTime(filePath) > lastModify)
+            {
                 throw new FileVersioningException("The file was modified after the indicated time");
             }
 
             // Check zipped file existence
-            if (!File.Exists(zipName)) {
-                
+            if (!File.Exists(zipName))
+            {
+
                 // If the file was not zipped yet
-                if (!openedFiles.ContainsKey(filePath)) {
+                if (!openedFiles.ContainsKey(filePath))
+                {
 
                     /* Retrieves the file attributes to check if the file is a directory or not
                         because the way to zip is different in the two cases. */
@@ -61,10 +67,13 @@ namespace FileShareConsole
                     attr = File.GetAttributes(filePath);
 
                     // If the file is a directory
-                    if ((attr & FileAttributes.Directory) == FileAttributes.Directory) {
+                    if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
+                    {
                         // zip directory (including base directory)
-                        ZipFile.CreateFromDirectory(filePath, zipName, CompressionLevel.NoCompression, true);
-                    } else {  // otherwise
+                        ZipFile.CreateFromDirectory(filePath, zipName, CompressionLevel.NoCompression, false);
+                    }
+                    else
+                    {  // otherwise
                         // Note: if it's a file, ZipArchive has to work on a new file in order to zip
                         ZipArchive newFile = ZipFile.Open(zipName, ZipArchiveMode.Create);
                         //string p = Path.GetDirectoryName(filePath);
@@ -76,9 +85,9 @@ namespace FileShareConsole
                 // Intializes the remaining info in the task (SentName and Size)
                 j.Task.SentName = Path.GetFileName(zipName);    // name of the zipped file
                 j.Task.Size = new System.IO.FileInfo(zipName).Length;     // size of the zipped file
-                
+
                 // Returns an iterator to the file
-                JobFileIterator jobIterator = (JobFileIterator) getIterator(zipName);
+                JobFileIterator jobIterator = (JobFileIterator)getIterator(zipName);
                 jobIterator.Job = j;
                 return jobIterator;
             }
@@ -93,10 +102,11 @@ namespace FileShareConsole
          * prepares a file coherent with what specified by the Task and returns a FileIterator
          * for this file.
          */
-         public FileIterator createJob(FileTransfer.Task task) {
+        public FileIterator createJob(FileTransfer.Task task)
+        {
             // Retrieves current date and computes a string to uniquely identiy the task
             DateTime now = DateTime.Now;
-            string path = Settings.Instance.DefaultRecvPath + task.Info.Name +  now.ToString("yyyyMMddhhmmss") + now.Millisecond + ".zip";
+            string path = Settings.Instance.DefaultRecvPath + Path.GetFileNameWithoutExtension(task.Info.Name) + now.ToString("yyyyMMddhhmmss") + now.Millisecond + ".zip";
             Job job = new Job(task, path);
 
             // Push the job in the receiving jobs list
@@ -104,19 +114,41 @@ namespace FileShareConsole
 
             // Creates the new file. Note: the file is zipped
             File.Create(path).Close();
-            
+
             // Creates a new iterator to the file
             JobFileIterator iterator = (JobFileIterator)getIterator(path);
             iterator.Job = job;
 
             // Defines the behavior when the iterator is going to be closed
             // registering a callback on the related event.
-            iterator.BeforeIteratorClosed += () => {
-                ZipFile.ExtractToDirectory(path, Path.GetDirectoryName(path));
+            iterator.BeforeIteratorClosed += () =>
+            {
+                if (job.Task.Info.Type == FileTransfer.FileInfo.FType.DIRECTORY)        //MANCAVA IL CASO CHE GESTISCE DECOMPRESSIONE DI FILES
+                {
+                    ZipFile.ExtractToDirectory(path, this.GetUniqueFilePath(Settings.Instance.DefaultRecvPath + job.Task.Info.Name));
+                }
+
+                else
+                    using (ZipArchive archive = ZipFile.OpenRead(path))
+                    {
+                        string tempPath;
+                        foreach (ZipArchiveEntry entry in archive.Entries)
+                        {
+                            tempPath = this.GetUniqueFilePath(Settings.Instance.DefaultRecvPath + entry.Name);
+
+
+                            entry.ExtractToFile(tempPath);
+
+
+                        }
+
+                    }
+
             };
 
             return iterator;
         }
+
 
         /**
          * Creates an iterator which allows the owner to navigate in the file specified by
@@ -124,7 +156,8 @@ namespace FileShareConsole
          * The ZIPStorageModule registers the Iterator so that he can take trace of the
          * numbero of active iterator pointing to that file.
          */
-        public override FileIterator getIterator(string path) {
+        public override FileIterator getIterator(string path)
+        {
 
             long fileLength = new System.IO.FileInfo(path).Length;
             int count;
@@ -141,7 +174,8 @@ namespace FileShareConsole
             return iterator;
         }
 
-        protected override void onIteratorClosed(FileIterator iterator) {
+        protected override void onIteratorClosed(FileIterator iterator)
+        {
 
             JobFileIterator ftiterator = (JobFileIterator)iterator;
 
@@ -162,6 +196,59 @@ namespace FileShareConsole
                         openedFiles.TryAdd(ftiterator.filePath, count);
                 }
             }
+
+
+        }
+
+        /**
+         * Manages the duplicates if needed. It follows a Windows style pattern. 
+        
+         */
+
+        private string GetUniqueFilePath(string filepath)
+        {
+            
+            if (Directory.Exists(filepath))
+            {
+                int number = 1;
+                string tempPath;
+                do
+                {
+                    number++;
+                    tempPath = Path.Combine(string.Format("{0} ({1})", filepath, number));
+                }
+                while (Directory.Exists(tempPath));
+                return tempPath;
+            }
+
+            if (File.Exists(filepath))
+            {
+
+                string folder = Path.GetDirectoryName(filepath);
+                string filename = Path.GetFileNameWithoutExtension(filepath);
+                string extension = Path.GetExtension(filepath);
+                int number = 1;
+
+
+                Match regex = Regex.Match(filepath, @"(.+) \((\d+)\)\.\w+");        // Aggiunge un controllo aggiuntivo per essere certi che abbiamo davanti un file
+                                                                                    // e per catturare eventualmente il valore progressivo già presente tra parentesi
+
+                if (regex.Success)
+                {
+                    filename = regex.Groups[1].Value;
+                    number = int.Parse(regex.Groups[2].Value);
+                }
+
+                do
+                {
+                    number++;
+                    filepath = Path.Combine(folder, string.Format("{0} ({1}){2}", filename, number, extension));
+                }
+                while (File.Exists(filepath));
+            }
+
+            return filepath;
+
         }
 
         public class JobFileIterator : FileIterator
@@ -191,11 +278,14 @@ namespace FileShareConsole
             /**
              * job property.
              */
-            public Job Job {
-                get {
+            public Job Job
+            {
+                get
+                {
                     return job;
                 }
-                set {
+                set
+                {
                     job = value;
                 }
             }
@@ -211,7 +301,8 @@ namespace FileShareConsole
             /**
              * Constructor.
              */
-            public JobFileIterator(StorageModule s, string filePath) : base(s) {
+            public JobFileIterator(StorageModule s, string filePath) : base(s)
+            {
                 fileStream = File.Open(filePath, FileMode.OpenOrCreate);
                 this.filePath = filePath;
                 offset = 0;
@@ -224,13 +315,15 @@ namespace FileShareConsole
              * the update of the completion percentage for the job he's 
              * associated to.
              */
-            public override int next(byte[] buffer) {
+            public override int next(byte[] buffer)
+            {
                 //long length = new System.IO.FileInfo(filePath).Length;
                 long length = job.Task.Size;
                 int read = 0;
                 if (offset + READ_BLOCK_SIZE <= length)
                     read = fileStream.Read(buffer, 0, READ_BLOCK_SIZE);
-                else {
+                else
+                {
                     int toRead = (int)length - offset;
                     read = fileStream.Read(buffer, 0, toRead); // no-overflow
                 }
@@ -246,7 +339,8 @@ namespace FileShareConsole
              * Increments the completion percentage in the job coherently with the
              * just executed writing operation.
              */
-            public override int write(byte[] buf, int count) {
+            public override int write(byte[] buf, int count)
+            {
 
                 // How much bytes were written
                 int written = 0;
@@ -282,15 +376,17 @@ namespace FileShareConsole
              * Returns true if the iterator is not positioned to the end of the file,
              * false otherwise.
              */
-            public override bool hasNext() {
+            public override bool hasNext()
+            {
                 //return offset < new System.IO.FileInfo(filePath).Length;
                 return offset < job.Task.Size;
             }
-            
-            public override void close() {
+
+            public override void close()
+            {
                 // Close the filestream
                 fileStream.Close();
-                
+
                 // If anyone is registered to the closing event
                 // and requires to be executed befor the closing.
                 if (BeforeIteratorClosed != null)
