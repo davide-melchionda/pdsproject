@@ -3,36 +3,20 @@ using System.IO;
 
 namespace FileTransfer
 {
-    //public class FileInfo {
-    //    public enum TypeEnum { directory, file };
-    //    private TypeEnum typeInfo;
-    //    public TypeEnum TypeInfo {
-    //        get {
-    //            return typeInfo;
-    //        }
-    //        protected set {
-    //            typeInfo = value;
-    //        }
-    //    }
-    //    public string id { get; set; }
-    //    public string name { get; set; }
+    /**
+     * Class that models a file or a directory
+     */
 
-    //    public string requestTimestamp { get; set; }
-    //    public long size { get; set; }
+    public class FileInfo
+    {
 
-
-    //    public FileInfo(TypeEnum te) {
-    //        this.typeInfo = te;
-    //    }
-
-    //}
-
-    public class FileInfo {
         /**
          * Enum that has two values, each one coresponding to one of
          * the two possible kind of file: directory and simple file.
          */
-        public enum FType {
+
+        public enum FType
+        {
             DIRECTORY,  // Directory files
             FILE        // Simple files
         };
@@ -50,14 +34,15 @@ namespace FileTransfer
             set { type = value; }
         }
 
-    /**
-     * Name of the file
-     */
-    private string name;
+        /**
+         * Name of the file
+         */
+        private string name;
         /**
          * name property
          */
-        public string Name {
+        public string Name
+        {
             get { return name; }
             set { name = value; }
 
@@ -70,20 +55,22 @@ namespace FileTransfer
         /**
          * size property
          */
-        public long Size {
+        public long Size
+        {
             get { return size; }
-            set { size=value; }
+            set { size = value; }
         }
         /**
       *  A constructor at use of the Json Library
       */
         [JsonConstructor]
-        public FileInfo() {}
+        public FileInfo() { }
         /**
          * Constructor. Receives the path of a file and initialize
          * allt he iformations about the file itself.
          */
-        public FileInfo(string filePath) {
+        public FileInfo(string filePath)
+        {
             // Retrieves the path of the file
             name = Path.GetFileName(filePath);
 
@@ -95,16 +82,20 @@ namespace FileTransfer
             else    // otherwise
                 type = FType.FILE;
 
-            if (type != FType.DIRECTORY) {
+            if (type != FType.DIRECTORY)
+            {
                 // Sets the file size
                 System.IO.FileInfo fi = new System.IO.FileInfo(filePath);
                 size = fi.Length;
-            } else {
+            }
+            else
+            {
                 size = getDirectoryTotSize(new System.IO.DirectoryInfo(filePath));
             }
         }
 
-        private long getDirectoryTotSize(DirectoryInfo d) {
+        private long getDirectoryTotSize(DirectoryInfo d)
+        {
             long size = 0;
             System.IO.FileInfo[] fis = d.GetFiles();
             foreach (System.IO.FileInfo fi in fis)
