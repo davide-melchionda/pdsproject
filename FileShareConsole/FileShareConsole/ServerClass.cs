@@ -21,7 +21,7 @@ namespace FileTransfer
             try
             {
                 listener.Bind(localEndPoint);
-                listener.Listen(0);
+                listener.Listen(50);
 
                 while (true)
                 {

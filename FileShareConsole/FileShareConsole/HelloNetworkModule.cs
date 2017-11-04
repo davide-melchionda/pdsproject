@@ -75,7 +75,7 @@ namespace HelloProtocol {
             try {
                 // Initialize the outgoing (multicast) socket
                 mcastSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-                IPAddress localIP = IPAddress.Any; // Retrieves local ip
+                IPAddress localIP = IPAddress.Any;
                 EndPoint localEP = new IPEndPoint(localIP, Settings.Instance.MCAST_HELLO_PORT);
                 mcastSocket.Bind(localEP);  // Bind
 

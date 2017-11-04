@@ -23,7 +23,7 @@ namespace FileShareConsole
 
         public static int READ_BLOCK_SIZE = 1024;
         private ConcurrentDictionary<string, int> openedFiles;
-        static object dictionaryLock = new object();
+        private static object dictionaryLock = new object();
 
         public JobZipStorageModule()
         {
@@ -121,29 +121,16 @@ namespace FileShareConsole
 
             // Defines the behavior when the iterator is going to be closed
             // registering a callback on the related event.
-            iterator.BeforeIteratorClosed += () =>
-            {
-                if (job.Task.Info.Type == FileTransfer.FileInfo.FType.DIRECTORY)        //MANCAVA IL CASO CHE GESTISCE DECOMPRESSIONE DI FILES
-                {
+            iterator.BeforeIteratorClosed += () => {
+                if (job.Task.Info.Type == FileTransfer.FileInfo.FType.DIRECTORY) {
                     ZipFile.ExtractToDirectory(path, this.GetUniqueFilePath(Settings.Instance.DefaultRecvPath + job.Task.Info.Name));
-                }
-
-                else
-                    using (ZipArchive archive = ZipFile.OpenRead(path))
-                    {
+                }  else using (ZipArchive archive = ZipFile.OpenRead(path)) {
                         string tempPath;
-                        foreach (ZipArchiveEntry entry in archive.Entries)
-                        {
+                        foreach (ZipArchiveEntry entry in archive.Entries) {
                             tempPath = this.GetUniqueFilePath(Settings.Instance.DefaultRecvPath + entry.Name);
-
-
                             entry.ExtractToFile(tempPath);
-
-
                         }
-
                     }
-
             };
 
             return iterator;

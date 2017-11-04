@@ -1,26 +1,15 @@
 ﻿using FileTransfer;
 using HelloProtocol;
-using NetworkTransmission;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
 using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using static StorageModule;
 
-namespace FileShareConsole
-{
+namespace FileShareConsole {
     class Program
     {
         static void Main(string[] args) {
             ServerClass server = new ServerClass(new TnSProtocol());
             server.run();
-            ////new HelloThread().run();
+            HelloThread hello = new HelloThread();
+            hello.run();
 
             ////new JobScheduler().run();
 
@@ -42,46 +31,47 @@ namespace FileShareConsole
             //client.transfer();
             ////i.close();
 
-            string s = @"C:\Users\franc\Desktop\temp";
-            string t = @"C:\Users\franc\Desktop\zio.pdf";
+            //string s = @"C:\Users\franc\Desktop\temp";
 
-            string sr = @"C:\Users\franc\Desktop\zio.jpg";
-            //string to = @"C:\Users\vm-dm-win\Desktop\tmpzipped" + DateTime.Now.Millisecond + @".zip";
+            ////tring t = @"C:\Users\franc\Desktop\zio.pdf";
 
-            //ServerClass server = new ServerClass(new DummyProtocol());
-            //server.run();
+            ////string sr = @"C:\Users\franc\Desktop\zio.jpg";
+            ////string to = @"C:\Users\vm-dm-win\Desktop\tmpzipped" + DateTime.Now.Millisecond + @".zip";
 
-            PeersList.Instance.put(new Peer("you", "you", "127.0.0.1"));
+            ////ServerClass server = new ServerClass(new DummyProtocol());
+            ////server.run();
+
+            string s = @"C:\Users\vm-dm-win\Desktop\tmp\";
+
+            //PeersList.Instance.put(new Peer("you", "you", "127.0.0.1"));
 
             JobScheduler scheduler = new JobScheduler();
-            //scheduler.scheduleJob(new Job(new FileTransfer.Task("me", "you", sr), sr));
-            Thread.Sleep(1000);
-            scheduler.scheduleJob(new Job(new FileTransfer.Task("me", "you", s), s));
-
-            
+            ////scheduler.scheduleJob(new Job(new FileTransfer.Task("me", "you", sr), sr));
+            //Thread.Sleep(1000);
+            //scheduler.scheduleJob(new Job(new FileTransfer.Task("me", "you", s), s));
 
 
 
+            //while (PeersList.Instance.Peers.Count <= 0)
+            //    System.Threading.Thread.Sleep(5000);
 
+            //// 1 FILE
+            //scheduler.scheduleJob(new Job(new FileTransfer.Task(Settings.Instance.LocalPeer.Id,
+            //                                                        PeersList.Instance.Peers.ElementAt(0).Id,
+            //                                                        s + "1.txt"), s + "1.txt"));
 
+            // 1 DIRECTORY
+            //scheduler.scheduleJob(new Job(new FileTransfer.Task(Settings.Instance.LocalPeer.Id,
+            //                                                        PeersList.Instance.Peers.ElementAt(0).Id,
+            //                                                        s), s));
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            // 20 FILES
+            //for (int i = 0; i < 20; i++) {
+            //    scheduler.scheduleJob(new Job(new FileTransfer.Task(Settings.Instance.LocalPeer.Id,
+            //                                                        PeersList.Instance.Peers.ElementAt(0).Id,
+            //                                                        s + (i + 1) + ".txt"), s + (i + 1) + ".txt"));
+            //    //System.Threading.Thread.Sleep(500);
+            //}
         }
     }
 }

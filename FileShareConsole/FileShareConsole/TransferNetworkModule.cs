@@ -21,7 +21,7 @@ namespace NetworkTransmission
          * Returns NULL if the received stream doesn't correspond with a known Transmission Packet
          */
 
-        public static TransmissionPacket receivePacket(Socket handler)
+        public TransmissionPacket receivePacket(Socket handler)
         {
 
             string data = "";
@@ -33,7 +33,7 @@ namespace NetworkTransmission
                 byte[] bytes = new byte[1024];
                 bytesRec = handler.Receive(bytes);
                 data += Encoding.ASCII.GetString(bytes, 0, bytesRec);
-                Console.WriteLine(data);
+                //Console.WriteLine(data);
                 if (data.IndexOf("<EOF>") > -1)
                 {
                     break;
@@ -56,13 +56,12 @@ namespace NetworkTransmission
          * Implements a send in our application logic
          */
 
-        public static int SendPacket(Socket client, byte[] message)
+        public int SendPacket(Socket client, byte[] message)
         {
             int bytesSent = 0;
             while (bytesSent != message.Length)
             {
                 bytesSent = client.Send(message);
-
             }
             return bytesSent;
         }
@@ -71,7 +70,7 @@ namespace NetworkTransmission
          * Returns a byte stream representation of a Request starting from the task 
          */
 
-        public static byte[] generateRequestStream(FileTransfer.Task task)
+        public byte[] generateRequestStream(FileTransfer.Task task)
         {
             RequestPacket request = new RequestPacket(task);
             byte[] requestStream = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(request) + "<EOF>");
@@ -79,49 +78,11 @@ namespace NetworkTransmission
 
         }
 
-        /**
-         * Tries to enter the pool then sends the file to the receiver 
-         */
-
-        //public static void sendFile(TnSClient caller, byte[] transferBlock) {
-
-        //     CORR -> Non facciamo vedere il protocollo all'esterno, ma solo il client
-        //    caller.tryEnter();// protocol.enter();   //TODO Ho avuto risposta affermativa, procedo provando ad acquisire il semaforo (BLOCKING)
-
-        //    while (caller.iterator.hasNext())
-        //    {
-        //        caller.iterator.next(transferBlock);
-        //        caller.socket.Send(transferBlock);
-
-        //    }
-        //    caller.iterator.close();
-        //}
-        
-       /**
-        * Receive a file from a client sending blocks of bytes
-        */
-
-        //public static void receiveFile(Task task, TnSServer caller, byte[] transferBlock)
-        //{
-
-        //    long receivedBytes = 0;
-        //    FileStream Fs = new FileStream(task.informations.name, FileMode.OpenOrCreate, FileAccess.Write);
-
-        //    while (receivedBytes != task.size)
-        //    {
-        //        receivedBytes += caller.handler.Receive(transferBlock);
-
-        //        Fs.Write(transferBlock, 0, 0);
-        //    }
-        //    Fs.Close();
-        //}
-
-
 
         /**
          * Returns a byte stream representation of a Response 
          */
-        public static byte[] generateResponsetStream(bool procede)    
+        public byte[] generateResponsetStream(bool procede)    
         {
             ResponsePacket response = new ResponsePacket(procede);
             byte[] responseStream = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(response) + "<EOF>");

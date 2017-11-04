@@ -56,7 +56,7 @@ class Settings {
      * The port on which the hello protocol works for sending 
      * multicast packet.
      */
-    private int mcastHelloPort = /* DEFAULT */ 8888;
+    private int mcastHelloPort = /* DEFAULT */ 17177;
     /**
      * mcastHelloPort property
      */
@@ -224,7 +224,8 @@ class Settings {
     /**
      * The default path on the file system in which save received files.
      */
-    private string defaultRecvPath = @"C:\Users\franc\Desktop\recv\";
+    //private string defaultRecvPath = @"C:\Users\franc\Desktop\recv\";
+    private string defaultRecvPath = @"C:\Users\vm-dm-win\Desktop\recv\";
     /**
      * defaultRecvPath property
      */

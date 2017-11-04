@@ -8,8 +8,9 @@ class Logger {
 
     public static bool HELLO_DEBUG = false;
     public static bool JOB_SCHEDULE_DEBUG = false;
-    public static bool ZIP_DEBUG = true;
+    public static bool ZIP_DEBUG = false;
     public static bool EXCEPTION_LOGGING = false;
+    public static bool TRANSFER_CLIENT_DEBUG = true;
     
     private Logger() {
 
