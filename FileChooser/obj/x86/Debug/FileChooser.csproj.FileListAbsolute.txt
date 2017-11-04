@@ -1,0 +1,6 @@
+C:\Users\franc\OneDrive\Documenti\GitKraken\pdsproject\FileChooser\obj\x86\Debug\FileChooser.csproj.CoreCompileInputs.cache
+C:\Users\franc\OneDrive\Documenti\GitKraken\pdsproject\FileChooser\bin\Debug\FileChooser.exe.config
+C:\Users\franc\OneDrive\Documenti\GitKraken\pdsproject\FileChooser\bin\Debug\FileChooser.exe
+C:\Users\franc\OneDrive\Documenti\GitKraken\pdsproject\FileChooser\bin\Debug\FileChooser.pdb
+C:\Users\franc\OneDrive\Documenti\GitKraken\pdsproject\FileChooser\obj\x86\Debug\FileChooser.exe
+C:\Users\franc\OneDrive\Documenti\GitKraken\pdsproject\FileChooser\obj\x86\Debug\FileChooser.pdb

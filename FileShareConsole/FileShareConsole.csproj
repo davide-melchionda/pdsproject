@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProjectGuid>{EADCCAE1-510E-422C-818F-05E9E128E0EB}</ProjectGuid>
+    <ProjectGuid>{FE0503C2-88F7-4296-8813-20DF359E48E1}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <NoStandardLibraries>false</NoStandardLibraries>
     <AssemblyName>ConsoleApplication</AssemblyName>
@@ -39,7 +39,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -52,27 +51,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include=".vs\FileShareConsole\v15\.suo" />
-    <None Include=".vs\FileShareConsole\v15\sqlite3\storage.ide" />
     <None Include=".vs\ProjectSettings.json" />
     <None Include=".vs\slnx.sqlite" />
     <None Include=".vs\VSWorkspaceState.json" />
     <None Include="app.config" />
-    <None Include="FileShareConsole\.vs\FileShareConsole\v15\.suo" />
-    <None Include="FileShareConsole\.vs\ProjectSettings.json" />
-    <None Include="FileShareConsole\.vs\slnx.sqlite" />
-    <None Include="FileShareConsole\.vs\VSWorkspaceState.json" />
-    <None Include="FileShareConsole\bin\Debug\FileShareConsole.exe.config" />
-    <None Include="FileShareConsole\obj\Debug\CoreCompileInputs.cache" />
-    <None Include="FileShareConsole\obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
-    <None Include="FileShareConsole\obj\Debug\FileShareConsole.csproj.CopyComplete" />
-    <None Include="FileShareConsole\obj\Debug\FileShareConsole.csproj.CoreCompileInputs.cache" />
-    <None Include="FileShareConsole\obj\Debug\FileShareConsole.csprojResolveAssemblyReference.cache" />
-    <None Include="FileShareConsole\obj\Release\FileShareConsole.csproj.CoreCompileInputs.cache" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileShareConsole\authenticationLayer.cs" />
-    <Compile Include="FileShareConsole\TnSProtocol.cs" />
     <Compile Include="FileShareConsole\DummyProtocolClient.cs" />
     <Compile Include="FileShareConsole\ExecutableThread.cs" />
     <Compile Include="FileShareConsole\FileInfo.cs" />
@@ -82,6 +68,7 @@
     <Compile Include="FileShareConsole\HelloPacket.cs" />
     <Compile Include="FileShareConsole\HelloSenderThread.cs" />
     <Compile Include="FileShareConsole\HelloThread.cs" />
+    <Compile Include="FileShareConsole\IPCModule.cs" />
     <Compile Include="FileShareConsole\Job.cs" />
     <Compile Include="FileShareConsole\JobExecutor.cs" />
     <Compile Include="FileShareConsole\JobScheduler.cs" />
@@ -90,13 +77,12 @@
     <Compile Include="FileShareConsole\KeepalivePacket.cs" />
     <Compile Include="FileShareConsole\Logger.cs" />
     <Compile Include="FileShareConsole\NoSecurity.cs" />
-    <Compile Include="FileShareConsole\obj\Debug\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" />
-    <Compile Include="FileShareConsole\obj\Debug\TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs" />
-    <Compile Include="FileShareConsole\obj\Debug\TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs" />
     <Compile Include="FileShareConsole\Packet.cs" />
     <Compile Include="FileShareConsole\Peer.cs" />
     <Compile Include="FileShareConsole\PeerNotFoundException.cs" />
     <Compile Include="FileShareConsole\PeersList.cs" />
+    <Compile Include="FileShareConsole\PipeDaemon.cs" />
+    <Compile Include="FileShareConsole\PipeModule.cs" />
     <Compile Include="FileShareConsole\PresentationPacket.cs" />
     <Compile Include="FileShareConsole\Program.cs" />
     <Compile Include="FileShareConsole\Protocol.cs" />
@@ -109,24 +95,10 @@
     <Compile Include="FileShareConsole\StorageModule.cs" />
     <Compile Include="FileShareConsole\Task.cs" />
     <Compile Include="FileShareConsole\TnSClient.cs" />
+    <Compile Include="FileShareConsole\TnSProtocol.cs" />
     <Compile Include="FileShareConsole\TnSServer.cs" />
     <Compile Include="FileShareConsole\ToScheduleFifoQueue.cs" />
     <Compile Include="FileShareConsole\TransferNetworkModule.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="FileShareConsole\bin\Debug\FileShareConsole.exe" />
-    <Content Include="FileShareConsole\bin\Debug\FileShareConsole.pdb" />
-    <Content Include="FileShareConsole\bin\Debug\Newtonsoft.Json.dll" />
-    <Content Include="FileShareConsole\bin\Debug\Newtonsoft.Json.xml" />
-    <Content Include="FileShareConsole\FileShareConsole.csproj" />
-    <Content Include="FileShareConsole\obj\Debug\FileShareConsole.csproj.FileListAbsolute.txt" />
-    <Content Include="FileShareConsole\obj\Debug\FileShareConsole.exe" />
-    <Content Include="FileShareConsole\obj\Debug\FileShareConsole.pdb" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="FileShareConsole\bin\Release\" />
-    <Folder Include="FileShareConsole\obj\Debug\TempPE\" />
-    <Folder Include="FileShareConsole\Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
   <ProjectExtensions>

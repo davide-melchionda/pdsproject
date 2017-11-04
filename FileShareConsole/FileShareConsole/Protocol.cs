@@ -23,9 +23,7 @@ namespace NetProtocol {
 
         public abstract TransferResult transfer();
 
-        internal void tryEnter() {
-            protocol.enter();
-        }
+        
 
         public abstract class ServerProtocolEndpoint : ProtocolEndpoint {
 
