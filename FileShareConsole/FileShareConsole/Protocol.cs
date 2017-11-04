@@ -4,9 +4,11 @@ namespace NetProtocol {
 
     public abstract class Protocol {
 
-        public abstract void enter();
-        public abstract void release();
-
+        public abstract void enterClient();
+        public abstract void releaseClient();
+        public abstract void enterServer(string connectionid);
+        public abstract void releaseServer(string connectionid);
+        
     }
 
     public abstract class ProtocolEndpoint {
