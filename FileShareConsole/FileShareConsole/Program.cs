@@ -50,13 +50,13 @@ namespace FileShareConsole
 
             //ServerClass server = new ServerClass(new DummyProtocol());
             //server.run();
-
             PeersList.Instance.put(new Peer("you", "you", "127.0.0.1"));
-
+            PipeDaemon pipeListener = new PipeDaemon();
+            pipeListener.run();
             JobScheduler scheduler = new JobScheduler();
             //scheduler.scheduleJob(new Job(new FileTransfer.Task("me", "you", sr), sr));
             Thread.Sleep(1000);
-            scheduler.scheduleJob(new Job(new FileTransfer.Task("me", "you", s), s));
+            //scheduler.scheduleJob(new Job(new FileTransfer.Task("me", "you", s), s));
 
             
 
