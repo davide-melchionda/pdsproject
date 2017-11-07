@@ -1,11 +1,13 @@
 ﻿using FileTransfer;
 using HelloProtocol;
 using System.Linq;
-using System.Threading;
+using System;
 
 namespace FileShareConsole {
     class Program
     {
+        public static void PipeTest(string stringa) { Console.WriteLine(stringa); }
+
         static void Main(string[] args)
         {
             ServerClass server = new ServerClass(new TnSProtocol());
@@ -39,7 +41,7 @@ namespace FileShareConsole {
             //server.run();
             PipeDaemon pipeListener = new PipeDaemon();
             pipeListener.run();
-
+            pipeListener.popHappened+= PipeTest;
             JobScheduler scheduler = new JobScheduler();
             
             //string s = @"C:\Users\vm-dm-win\Desktop\tmp";
