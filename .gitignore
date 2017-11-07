@@ -28,3 +28,23 @@ FileShareConsole/FileShareConsole/Properties/
 *.sln
 
 FileShareConsole/FileShareConsole/\.vs/
+
+FileShareConsole/bin/
+
+FileShareConsole/obj/
+
+*.csproj
+
+*.user
+
+FileChooser/\.vs/
+
+FileChooser/FileChooser/bin/
+
+FileChooser/FileChooser/\.vs/
+
+FileChooser/FileChooser/obj/
+
+FileChooser/bin/
+
+FileChooser/obj/

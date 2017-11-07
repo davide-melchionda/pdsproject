@@ -74,13 +74,13 @@ namespace FileTransfer
 
             if (type != FType.DIRECTORY) {
                 // Retrieves the name of the file
-                name = Path.GetFileName(filePath);
+                //name = Path.GetFileName(filePath);
                 // Sets the file size
                 System.IO.FileInfo fi = new System.IO.FileInfo(filePath);
                 size = fi.Length;
             } else {
                 // Retrieves the name of the directory
-                name = Path.GetDirectoryName(filePath);
+                //name = Path.GetDirectoryName(filePath);
                 size = getDirectoryTotSize(new System.IO.DirectoryInfo(filePath));
             }
         }

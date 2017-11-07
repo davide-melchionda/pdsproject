@@ -12,8 +12,10 @@ namespace FileShareConsole
 
         protected override void execute()
         {
+            PipeModule.InstantiateServer();
             while (true)
             {
+                //Console.Write(PipeModule.Pop());
                 popHappened?.Invoke(PipeModule.Pop());
             }
         }

@@ -122,15 +122,16 @@ namespace FileShareConsole
             // Defines the behavior when the iterator is going to be closed
             // registering a callback on the related event.
             iterator.BeforeIteratorClosed += () => {
-                if (job.Task.Info.Type == FileTransfer.FileInfo.FType.DIRECTORY) {
-                    ZipFile.ExtractToDirectory(path, this.GetUniqueFilePath(Settings.Instance.DefaultRecvPath + job.Task.Info.Name));
-                }  else using (ZipArchive archive = ZipFile.OpenRead(path)) {
-                        string tempPath;
-                        foreach (ZipArchiveEntry entry in archive.Entries) {
-                            tempPath = this.GetUniqueFilePath(Settings.Instance.DefaultRecvPath + entry.Name);
-                            entry.ExtractToFile(tempPath);
-                        }
-                    }
+                //if (job.Task.Info.Type == FileTransfer.FileInfo.FType.DIRECTORY) {
+                //    ZipFile.ExtractToDirectory(path, Settings.Instance.DefaultRecvPath);
+                //}  else using (ZipArchive archive = ZipFile.OpenRead(path)) {
+                //        string tempPath;
+                //        foreach (ZipArchiveEntry entry in archive.Entries) {
+                //            tempPath = this.GetUniqueFilePath(Settings.Instance.DefaultRecvPath + entry.Name);
+                //            entry.ExtractToFile(tempPath);
+                //        }
+                //    }
+                ZipFile.ExtractToDirectory(path, Settings.Instance.DefaultRecvPath);
             };
 
             return iterator;

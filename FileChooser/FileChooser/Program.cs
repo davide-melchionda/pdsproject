@@ -1,5 +1,6 @@
 ﻿using System.IO.Pipes;
 using System.IO;
+using FileShareConsole;
 
 namespace FileChooser
 {

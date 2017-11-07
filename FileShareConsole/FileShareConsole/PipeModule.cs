@@ -11,16 +11,19 @@ namespace FileShareConsole
     class PipeModule : IPCModule
     {
         private static string IPC_PIPE = "FileSharePipe";
-        private static NamedPipeServerStream pipeServer = new NamedPipeServerStream(IPC_PIPE);
-        private static StreamReader reader = new StreamReader(pipeServer);
+        private static NamedPipeServerStream pipeServer;
+        private static StreamReader reader;
 
-
+        public static void InstantiateServer()
+        {
+            pipeServer = new NamedPipeServerStream(IPC_PIPE);
+            reader = new StreamReader(pipeServer);
+        }
         public static string Pop()
         {
             pipeServer.WaitForConnection();
             string receivedFileName = reader.ReadLine();
             pipeServer.Disconnect();
-            Console.WriteLine(receivedFileName);
             return receivedFileName;
         }
 

@@ -1,19 +1,25 @@
-﻿using System.IO;
+﻿using FileChooser;
+using System;
+using System.IO;
 using System.IO.Pipes;
 
-namespace FileChooser
+namespace FileShareConsole
 {
     /**
-    * The class that provides specific functions to communicate on the IPC system modelled with a Pipe
-    */
+     * The class that provides specific functions to communicate on the IPC system modelled with a Pipe
+     */
 
     class PipeModule : IPCModule
     {
         private static string IPC_PIPE = "FileSharePipe";
-        private static NamedPipeServerStream pipeServer = new NamedPipeServerStream(IPC_PIPE);
-        private static StreamReader reader = new StreamReader(pipeServer);
+        private static NamedPipeServerStream pipeServer;
+        private static StreamReader reader;
 
-
+        public static void InstantiateServer()
+        {
+            pipeServer = new NamedPipeServerStream(IPC_PIPE);
+            reader = new StreamReader(pipeServer);
+        }
         public static string Pop()
         {
             pipeServer.WaitForConnection();
