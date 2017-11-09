@@ -131,7 +131,7 @@ namespace FileShareConsole
                 //            entry.ExtractToFile(tempPath);
                 //        }
                 //    }
-                ZipFile.ExtractToDirectory(path, Settings.Instance.DefaultRecvPath);
+                ZipFile.ExtractToDirectory(path, this.GetUniqueFilePath(Settings.Instance.DefaultRecvPath + job.Task.Info.Name));
             };
 
             return iterator;
