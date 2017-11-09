@@ -122,16 +122,15 @@ namespace FileShareConsole
             // Defines the behavior when the iterator is going to be closed
             // registering a callback on the related event.
             iterator.BeforeIteratorClosed += () => {
-                //if (job.Task.Info.Type == FileTransfer.FileInfo.FType.DIRECTORY) {
-                //    ZipFile.ExtractToDirectory(path, Settings.Instance.DefaultRecvPath);
-                //}  else using (ZipArchive archive = ZipFile.OpenRead(path)) {
-                //        string tempPath;
-                //        foreach (ZipArchiveEntry entry in archive.Entries) {
-                //            tempPath = this.GetUniqueFilePath(Settings.Instance.DefaultRecvPath + entry.Name);
-                //            entry.ExtractToFile(tempPath);
-                //        }
-                //    }
-                ZipFile.ExtractToDirectory(path, this.GetUniqueFilePath(Settings.Instance.DefaultRecvPath + job.Task.Info.Name));
+                if (job.Task.Info.Type == FileTransfer.FileInfo.FType.DIRECTORY) {
+                    ZipFile.ExtractToDirectory(path, GetUniqueFilePath(Settings.Instance.DefaultRecvPath + job.Task.Info.Name));
+                } else using (ZipArchive archive = ZipFile.OpenRead(path)) {
+                        string tempPath;
+                        foreach (ZipArchiveEntry entry in archive.Entries) {
+                            tempPath = GetUniqueFilePath(Settings.Instance.DefaultRecvPath + entry.Name);
+                            entry.ExtractToFile(tempPath);
+                        }
+                    }
             };
 
             return iterator;
@@ -195,28 +194,23 @@ namespace FileShareConsole
 
         private string GetUniqueFilePath(string filepath)
         {
-            
+
+            int number = 0;
+
             if (Directory.Exists(filepath))
             {
-                int number = 1;
                 string tempPath;
-                do
-                {
-                    number++;
-                    tempPath = Path.Combine(string.Format("{0} ({1})", filepath, number));
-                }
-                while (Directory.Exists(tempPath));
+                do {
+                    tempPath = Path.Combine(string.Format("{0} ({1})", filepath, ++number));
+                } while (Directory.Exists(tempPath));
                 return tempPath;
             }
 
             if (File.Exists(filepath))
             {
-
                 string folder = Path.GetDirectoryName(filepath);
                 string filename = Path.GetFileNameWithoutExtension(filepath);
                 string extension = Path.GetExtension(filepath);
-                int number = 1;
-
 
                 Match regex = Regex.Match(filepath, @"(.+) \((\d+)\)\.\w+");        // Aggiunge un controllo aggiuntivo per essere certi che abbiamo davanti un file
                                                                                     // e per catturare eventualmente il valore progressivo già presente tra parentesi
@@ -227,12 +221,9 @@ namespace FileShareConsole
                     number = int.Parse(regex.Groups[2].Value);
                 }
 
-                do
-                {
-                    number++;
-                    filepath = Path.Combine(folder, string.Format("{0} ({1}){2}", filename, number, extension));
-                }
-                while (File.Exists(filepath));
+                do {
+                    filepath = Path.Combine(folder, string.Format("{0} ({1}){2}", filename, ++number, extension));
+                } while (File.Exists(filepath));
             }
 
             return filepath;

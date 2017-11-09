@@ -38,7 +38,6 @@ namespace NetworkTransmission
 
             int bytesSent = network.SendPacket(socket, msg);        // Send the data through the socket.
 
-
             tPacket = (TransmissionPacket)network.receivePacket(this.socket);       // Receive the response from the remote.
             if (tPacket.Type.ToString() != "response")
                 ;//TODO This must raise an exception cause we don't expect a server to send packets different from Responses at this point 

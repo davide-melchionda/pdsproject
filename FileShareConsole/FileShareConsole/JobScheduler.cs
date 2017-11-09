@@ -26,38 +26,19 @@ namespace FileTransfer {
             // Pushes the job in the list of in-service jobs
             JobsList.Sending.push(job);
 
-            ThreadPool.QueueUserWorkItem(new WaitCallback(execute), job);
+            // Schedules a thread to send the packet 
+            JobExecutor sender = new JobExecutor(job);
+            // When the transmissione ends 
+            sender.OnTrasmissionEnd += () => {
+                // Removes the job from the active jobs list 
+                JobsList.Sending.remove(job.Id);
+            };
 
+            // Run the sender 
+            sender.run();
+            
         }
 
-        private  void execute(Object state)
-        {
-            Job job = (Job)state;
-            // Create a TCP/IP  socket.
-            Socket socket = new Socket(AddressFamily.InterNetwork,
-                                        SocketType.Stream,
-                                        ProtocolType.Tcp);
-            // Specifies the receiver address in order to perform conncetion
-            Peer receiver = HelloProtocol.PeersList.Instance.get(job.Task.Receiver);
-            IPAddress receiverAddr = IPAddress.Parse(receiver.Ipaddress);
-            IPEndPoint remoteEP = new IPEndPoint(receiverAddr, Settings.Instance.SERV_ACCEPTING_PORT);
-            // Connect to the receiver socket
-            socket.Connect(remoteEP);
-
-            // Create a client for the specific protocol
-            // The client receives the socket whith the connection established
-            //ClientProtocolEndpoint client = new DummyClient(socket, new DummyProtocol(), iterator, job.Task);
-            ClientProtocolEndpoint client = new NetworkTransmission.TnSClient(socket, new TnSProtocol(), job);
-
-            // Executes the transmission and obtais a result
-            TransferResult res = client.transfer();
-
-            // Close the socket
-            socket.Close();
-            JobsList.Sending.remove(job.Id);
-
-
-        }
     }
 
 }
