@@ -56,3 +56,7 @@ FileShare/FileShare/obj/
 FileShare/packages/
 
 FileShare/\.vs/
+
+FileShare/FileShare/Properties/
+
+FileShare/FileShare/AssemblyInfo\.cs
