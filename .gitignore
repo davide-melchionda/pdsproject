@@ -52,3 +52,7 @@ FileChooser/obj/
 FileShare/FileShare/bin/
 
 FileShare/FileShare/obj/
+
+FileShare/packages/
+
+FileShare/\.vs/
