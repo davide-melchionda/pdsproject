@@ -48,3 +48,18 @@ FileChooser/FileChooser/obj/
 FileChooser/bin/
 
 FileChooser/obj/
+
+FileShare/\.vs/
+
+FileShare/FileShare/bin/
+
+FileShare/FileShare/obj/
+
+FileShare/FileShare/FileShareConsole\.csproj
+
+FileShare/packages/
+
+FileShare/FileShare/Properties/
+
+
+!FileShare/FileShare/bin/Debug/thecoon.ico

@@ -38,7 +38,7 @@ namespace FileShare {
             new HelloThread().run();
 
             new ServerClass(new TnSProtocol()).run();
-
+             
             JobScheduler scheduler = new JobScheduler();
             PipeDaemon pipeListener = new PipeDaemon();
             pipeListener.popHappened += (string path) => {
