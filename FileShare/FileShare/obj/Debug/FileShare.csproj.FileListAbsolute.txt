@@ -1,0 +1,17 @@
+F:\pdsproject\FileShare\FileShare\bin\Debug\FileShare.exe.config
+F:\pdsproject\FileShare\FileShare\bin\Debug\FileShare.exe
+F:\pdsproject\FileShare\FileShare\bin\Debug\FileShare.pdb
+F:\pdsproject\FileShare\FileShare\obj\Debug\FileShare.csprojResolveAssemblyReference.cache
+F:\pdsproject\FileShare\FileShare\obj\Debug\NotificationWindow.g.cs
+F:\pdsproject\FileShare\FileShare\obj\Debug\App.g.cs
+F:\pdsproject\FileShare\FileShare\obj\Debug\FileShare_MarkupCompile.cache
+F:\pdsproject\FileShare\FileShare\obj\Debug\FileShare_MarkupCompile.lref
+F:\pdsproject\FileShare\FileShare\obj\Debug\NotificationWindow.baml
+F:\pdsproject\FileShare\FileShare\obj\Debug\FileShare.g.resources
+F:\pdsproject\FileShare\FileShare\obj\Debug\FileShare.BackgroundForm.resources
+F:\pdsproject\FileShare\FileShare\obj\Debug\FileShare.Properties.Resources.resources
+F:\pdsproject\FileShare\FileShare\obj\Debug\FileShare.csproj.GenerateResource.Cache
+F:\pdsproject\FileShare\FileShare\obj\Debug\FileShare.exe
+F:\pdsproject\FileShare\FileShare\obj\Debug\FileShare.pdb
+F:\pdsproject\FileShare\FileShare\bin\Debug\Newtonsoft.Json.dll
+F:\pdsproject\FileShare\FileShare\bin\Debug\Newtonsoft.Json.xml
