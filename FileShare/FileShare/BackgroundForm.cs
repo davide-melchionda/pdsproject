@@ -34,10 +34,10 @@ namespace FileShare {
         private void notifyIcon1_MouseClick(object sender, MouseEventArgs e) {
             if (isWindowVisible) {
                 notifyWindow.Hide();
-                isWindowVisible = true;
+                isWindowVisible = false;
             } else {
                 notifyWindow.Show();
-                isWindowVisible = false;
+                isWindowVisible = true;
             }
         }
     }
