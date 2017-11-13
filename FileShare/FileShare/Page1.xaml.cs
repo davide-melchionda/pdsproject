@@ -1,13 +1,7 @@
-﻿using FileShareConsole;
-using FileTransfer;
-using HelloProtocol;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -21,19 +15,27 @@ using System.Windows.Shapes;
 
 namespace FileShare {
     /// <summary>
-    /// Logica di interazione per MainWindow.xaml
+    /// Logica di interazione per Page1.xaml
     /// </summary>
-    public partial class NotificationWindow : Window {
-        
-        public NotificationWindow() {
+    public partial class Page1 : Page {
+
+        public Page1() {
             InitializeComponent();
+
+            DataContext = new FileShareDataContext();
         }
 
-        protected override void OnClosed(EventArgs e) {
-            base.OnClosed(e);
+        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e) {
 
-            Application.Current.Shutdown();
         }
-        
+
+        private void ListViewItem_Selected(object sender, RoutedEventArgs e) {
+
+        }
+
+        private void ListView_SelectionChanged_1(object sender, SelectionChangedEventArgs e) {
+
+        }
+
     }
 }

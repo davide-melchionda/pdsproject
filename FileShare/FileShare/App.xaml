@@ -2,8 +2,8 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:FileShare"
-             StartupUri="NotificationWindow.xaml">
-    <Application.Resources>
-         
-    </Application.Resources>
+             Startup="AppStartup"
+             Exit="AppExit"
+             ShutdownMode="OnExplicitShutdown">
+            <!--StartupUri="NotificationWindow.xaml"-->
 </Application>
