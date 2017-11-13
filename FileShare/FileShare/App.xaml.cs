@@ -22,7 +22,9 @@ namespace FileShare {
 
             new HelloThread().run();
 
-            new ServerClass(new TnSProtocol()).run();
+           ServerClass receiver= new ServerClass(new TnSProtocol());
+            receiver.RequestReceived += RequestMessageBox.show;
+            receiver.run();
 
             JobScheduler scheduler = new JobScheduler();
             PipeDaemon pipeListener = new PipeDaemon();
@@ -47,6 +49,7 @@ namespace FileShare {
             // Process completed successfully
             Environment.Exit(0);
         }
+      
 
     }
 }

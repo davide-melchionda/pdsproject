@@ -8,6 +8,8 @@ namespace FileTransfer
 {
     public class ServerClass : ExecutableThread
     {
+        public delegate bool OnRequest(Task task);
+        public event OnRequest RequestReceived;
         private Protocol protocol;
        public ServerClass(Protocol protocol)
         {
@@ -28,7 +30,7 @@ namespace FileTransfer
                     Console.WriteLine("Waiting for a connection...");
                     Socket handler = listener.Accept();
                     TnSServer server = new TnSServer(handler, protocol);
-
+                    server.OnRequestReceived += OnEventFromChild;
                     // Executes the transfer on a dedicated thread
                     Thread ftpUploadFile = new Thread(delegate () { server.transfer(); });
                     ftpUploadFile.Start();
@@ -41,7 +43,11 @@ namespace FileTransfer
             }
 
         }
-
+         private bool OnEventFromChild(Task file)
+        {
+            return RequestReceived( file);
+             
+        }
     }
    
 }
