@@ -24,14 +24,19 @@ namespace FileShare {
     /// Logica di interazione per MainWindow.xaml
     /// </summary>
     public partial class NotificationWindow : Window {
-        
+        private Page1 page;
         public NotificationWindow() {
             InitializeComponent();
+             Page = new Page1();
+            NotificationFrame.Navigate(page);
+
         }
+
+        public Page1 Page { get => page; set => page = value; }
 
         protected override void OnClosed(EventArgs e) {
             base.OnClosed(e);
-
+             
             Application.Current.Shutdown();
         }
         
