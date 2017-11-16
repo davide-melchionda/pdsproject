@@ -73,13 +73,30 @@ namespace FileShare {
                 }
             }
         }
-
-        /**
+      
+         /**
          * When the option 'Exit' is selected in the context menu, the application is
          * shut down.
-         */
-                    private void exitToolStripMenuItem_Click(object sender, EventArgs e) {
-            System.Windows.Application.Current.Shutdown();
+         */      
+        private void SettingsToolStripMenuItem_Click(object sender, System.EventArgs e)
+        {
+
+            SettingsWindow sw = new SettingsWindow();
+            sw.Show();
+
+
         }
+
+        private void ExitToolStripMenuItem_Click(object sender, System.EventArgs e)
+        {
+            base.OnClosed(e);
+            System.Windows.Application a = System.Windows.Application.Current;
+            a.Shutdown();
+        }
+
+        /*private void ShowToolStripMenuItem_Click(object sender, System.EventArgs e)
+        {
+            notifyWindow.Show();
+        }*/
     }
 }

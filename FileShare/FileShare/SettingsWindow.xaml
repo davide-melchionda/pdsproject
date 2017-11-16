@@ -1,23 +1,15 @@
-﻿<Window x:Class="FileShare.NotificationWindow"
+﻿<Window x:Class="FileShare.SettingsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FileShare"
         mc:Ignorable="d"
-        Title="MainWindow" 
-        WindowStyle="None" 
-        ResizeMode="NoResize"
-        Height="350" 
-        Width="525" >
-    <Grid>
-        <Frame Source="Page1.xaml" />
-    </Grid>
-  <!--
 		WindowStyle="None"
+    WindowState="Maximized"
     WindowStartupLocation="CenterScreen"
-        Title="MainWindow" Height="519.167" Width="376.6">
-	<Grid>
-		<Frame Name="NotificationFrame" Margin="0,0,10.2,82.6"/>
-	</Grid>-->
+        Title="SettingsWindow" Height="300" Width="300">
+    <Grid>
+		<Frame Name= "SettingsFrame"/>
+	</Grid>
 </Window>

@@ -18,6 +18,8 @@ namespace NetworkTransmission
         private bool procede;
         public bool Procede
         {
+
+        
             get
             {
                 return procede;
