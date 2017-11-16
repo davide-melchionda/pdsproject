@@ -29,11 +29,11 @@ namespace FileShare {
             InitializeComponent();
         }
 
-        protected override void OnClosed(EventArgs e) {
-            base.OnClosed(e);
+        //protected override void OnClosed(EventArgs e) {
+        //    //base.OnClosed(e);
 
-            Application.Current.Shutdown();
-        }
+        //    //Application.Current.Shutdown();
+        //}
         
     }
 }

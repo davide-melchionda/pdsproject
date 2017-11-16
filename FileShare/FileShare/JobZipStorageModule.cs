@@ -125,12 +125,13 @@ namespace FileShareConsole
                 if (job.Task.Info.Type == FileTransfer.FileInfo.FType.DIRECTORY) {
                     ZipFile.ExtractToDirectory(path, GetUniqueFilePath(Settings.Instance.DefaultRecvPath + job.Task.Info.Name));
                 } else using (ZipArchive archive = ZipFile.OpenRead(path)) {
-                        string tempPath;
-                        foreach (ZipArchiveEntry entry in archive.Entries) {
-                            tempPath = GetUniqueFilePath(Settings.Instance.DefaultRecvPath + entry.Name);
-                            entry.ExtractToFile(tempPath);
-                        }
+                    string tempPath;
+                    foreach (ZipArchiveEntry entry in archive.Entries) {
+                        tempPath = GetUniqueFilePath(Settings.Instance.DefaultRecvPath + entry.Name);
+                        entry.ExtractToFile(tempPath);
                     }
+                }
+                JobsList.Receiving.remove(job.Id);
             };
 
             return iterator;
@@ -346,6 +347,7 @@ namespace FileShareConsole
 
                 // Update offset
                 offset += written;
+                job.SentByte += written;
 
                 // Returns the number of bytes written.
                 return written;

@@ -56,6 +56,22 @@ namespace FileShare {
                     }
             };
 
+            JobsList.Receiving.JobAdded += (Job job) => {
+                App.Current.Dispatcher.Invoke((Action)delegate {
+                    receivingJobs.Add(job);
+                });
+            };
+
+            JobsList.Receiving.JobRemoved += (Job removed) => {
+                foreach (Job j in receivingJobs)
+                    if (j.Id == removed.Id) {
+                        App.Current.Dispatcher.Invoke((Action)delegate {
+                            receivingJobs.Remove(j);
+                        });
+                        break;
+                    }
+            };
+
             peers = new ObservableCollection<Peer>(PeersList.Instance.Peers);
             //peers.Add(Settings.Instance.LocalPeer);
 

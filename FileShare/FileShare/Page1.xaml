@@ -28,31 +28,31 @@
                     <ListView.View>
                         <GridView>
                             <GridViewColumn DisplayMemberBinding="{Binding Path=Task.Info.Name}" Header="File" Width="100"></GridViewColumn>
-                            <GridViewColumn DisplayMemberBinding="{Binding Percentage}" Header="Progress" Width="100"></GridViewColumn>
-                            <!--<GridViewColumn Header="Progress" Width="100">
+                            <!--<GridViewColumn DisplayMemberBinding="{Binding Percentage}" Header="Progress" Width="100"></GridViewColumn>-->
+                            <GridViewColumn Header="Progress" Width="100">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <ProgressBar Maximum="100" Height="25" Width="100" Value="{Binding Percentage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                        <ProgressBar Maximum="100" Height="10" Width="100" Value="{Binding Percentage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
-                            </GridViewColumn>-->
+                            </GridViewColumn>
                         </GridView>
                     </ListView.View>
                 </ListView>
             </TabItem>
             <TabItem Header="Receiving">
-                <ListView SelectionChanged="ListView_SelectionChanged_1" Margin="0,0,-2,-2">
+                <ListView ItemsSource="{Binding receivingJobs}" SelectionChanged="ListView_SelectionChanged_1" Margin="0,0,-2,-2">
                     <ListView.View>
                         <GridView>
                             <GridViewColumn DisplayMemberBinding="{Binding Path=Task.Info.Name}" Header="File" Width="100"></GridViewColumn>
-                            <GridViewColumn DisplayMemberBinding="{Binding Percentage}" Header="Progress" Width="100"></GridViewColumn>
-                            <!--<GridViewColumn Header="Progress" Width="100">
+                            <!--<GridViewColumn DisplayMemberBinding="{Binding Percentage}" Header="Progress" Width="100"></GridViewColumn>-->
+                            <GridViewColumn Header="Progress" Width="100">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <ProgressBar Maximum="100" Height="25" Width="100" Value="{Binding Percentage, Mode=OneWay}"/>
+                                        <ProgressBar Maximum="100" Height="10" Width="100" Value="{Binding Percentage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
-                            </GridViewColumn>-->
+                            </GridViewColumn>
                         </GridView>
                     </ListView.View>
                 </ListView>

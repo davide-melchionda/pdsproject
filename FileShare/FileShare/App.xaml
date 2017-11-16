@@ -5,5 +5,4 @@
              Startup="AppStartup"
              Exit="AppExit"
              ShutdownMode="OnExplicitShutdown">
-            <!--StartupUri="NotificationWindow.xaml"-->
 </Application>
