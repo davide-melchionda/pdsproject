@@ -11,7 +11,7 @@
         Height="350" 
         Width="525" >
     <Grid>
-        <Frame Source="Page1.xaml" />
+        <Frame Name="NotificationFrame" Source="Page1.xaml" />
     </Grid>
   <!--
 		WindowStyle="None"

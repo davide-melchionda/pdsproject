@@ -38,7 +38,7 @@ namespace FileShare {
             if (e.Button != MouseButtons.Right) {
                 
                 // If there is no notification window actually shown
-                if (notificationWindow == null) {
+                //if (notificationWindow == null) {
                     
                     // Create a new window
                     notificationWindow = new NotificationWindow();
@@ -65,12 +65,12 @@ namespace FileShare {
                     notificationWindow.Show();
                     notificationWindow.Activate();
                     
-                } else {    // ... otherwise, if a window already is shown
-                    // Close the window and set the field to null
-                    notificationWindow.Close();
-                    notificationWindow = null;
-                    // N.B. This case never appen
-                }
+                //} else {    // ... otherwise, if a window already is shown
+                //    // Close the window and set the field to null
+                //    notificationWindow.Close();
+                //    notificationWindow = null;
+                //    // N.B. This case never appen
+                //}
             }
         }
       
@@ -94,9 +94,32 @@ namespace FileShare {
             a.Shutdown();
         }
 
-        /*private void ShowToolStripMenuItem_Click(object sender, System.EventArgs e)
-        {
-            notifyWindow.Show();
-        }*/
+        private void ShowToolStripMenuItem_Click(object sender, System.EventArgs e) {
+            //notifyWindow.Show();
+            // Create a new window
+                    notificationWindow = new NotificationWindow();
+                   
+                    // Register a callback on the Deactivated event (when a click outside the
+                    //  window occours)
+                    notificationWindow.Deactivated += (Object window, EventArgs args) => {
+                        // Close the window and set the variable to null
+                        notificationWindow.Close();
+                        notificationWindow = null;
+                    };
+                    
+                    /* Compute the position of the window beore showing it */
+                    var desktopWorkingArea = System.Windows.SystemParameters.WorkArea;
+                    var x = System.Windows.Forms.Cursor.Position.X;
+                    notificationWindow.Top = desktopWorkingArea.Bottom - notificationWindow.Height;
+                    if (((double)x) + (notificationWindow.Width / 2) >= desktopWorkingArea.Right)
+                        notificationWindow.Left = desktopWorkingArea.Right - notificationWindow.Width - 10;
+                    else
+                        notificationWindow.Left = ((double)x) - (notificationWindow.Width / 2);
+
+                    /* Show the window in front (nothing above) and activate it */
+                    notificationWindow.Topmost = true;
+                    notificationWindow.Show();
+                    notificationWindow.Activate();
+        }
     }
 }

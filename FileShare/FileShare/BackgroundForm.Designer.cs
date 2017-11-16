@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 
 namespace FileShare
 {
@@ -92,8 +93,6 @@ namespace FileShare
             this.ResumeLayout(false);
 
         }
-
-       
 
         #endregion
 

@@ -36,11 +36,11 @@ namespace FileShare {
         
         public Page1 Page { get => page; set => page = value; }
 
-        protected override void OnDeactivated(EventArgs e)
-        {
+        //protected override void OnDeactivated(EventArgs e)
+        //{
 
-            this.Hide();
-        }
+        //    this.Hide();
+        //}
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             var hwnd = new WindowInteropHelper(this).Handle;
