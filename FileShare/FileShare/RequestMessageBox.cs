@@ -9,14 +9,12 @@ namespace FileShare
 {
     class RequestMessageBox
     {
-        public static bool show(FileTransfer.Task task)
-        {
-            if (MessageBox.Show("Do you want to accept " + task.Info.Name + " of size: " + BytesToMegabytes(task.Info.Size) + " kb", task.Sender +
-                 " wants to send you a file", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes) return true;
-            return false;
+        public static bool Show(FileTransfer.Task task) {
+            return MessageBox.Show("Do you want to accept " + task.Info.Name + " of size: " + BytesToMegabytes(task.Info.Size) + " kb", task.Sender +
+                 " wants to send you a file", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes;
         }
-        private static double BytesToMegabytes(long bytes)
-        {
+
+        private static double BytesToMegabytes(long bytes) {
             return (bytes / 1024f) / 1024f;
         }
     }

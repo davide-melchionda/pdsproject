@@ -30,7 +30,9 @@ namespace FileTransfer
                     Console.WriteLine("Waiting for a connection...");
                     Socket handler = listener.Accept();
                     TnSServer server = new TnSServer(handler, protocol);
-                    server.OnRequestReceived += OnEventFromChild;
+                    server.OnRequestReceived += (Task task) => {
+                        return RequestReceived(task);
+                    };
                     // Executes the transfer on a dedicated thread
                     Thread ftpUploadFile = new Thread(delegate () { server.transfer(); });
                     ftpUploadFile.Start();
@@ -42,11 +44,6 @@ namespace FileTransfer
                 Console.WriteLine(e.ToString());
             }
 
-        }
-         private bool OnEventFromChild(Task file)
-        {
-            return RequestReceived( file);
-             
         }
     }
    

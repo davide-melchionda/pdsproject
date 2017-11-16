@@ -14,22 +14,37 @@ using System.Windows.Shapes;
 
 namespace FileShare
 {
-    /*
-    * Finestra che ospita la pagina di selezione dei peer destinati a ricevere un file o directory
-    */
+    ///<summary>
+    /// This Window hosts the page which allows the user to select a list of peers designated to 
+    /// receive the file or directory. This file or directory is specified through a parametere 
+    /// (the file path) passed in the constructor of the window.
+    ///</summary>
     public partial class SelectionWindow : Window
     {
-        public string file;
-        public SelectionPage page;
+        /// <summary>
+        /// Delegate which will be the type of the evet triggered when peers will be selected.
+        /// </summary>
+        /// <param name="peers"></param>
+        /// <param name="path"></param>
+        public delegate void OnSelected(List<Peer> peers, string path);
+        /// <summary>
+        /// The event triggered when peers are selected.
+        /// </summary>
+        public event OnSelected Selected;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="filePath"></param>
         public SelectionWindow(string filePath)
         {
             InitializeComponent();
-            file = filePath;
-            page = new SelectionPage(this);
-            this.Page.Navigate(page);
+            // The page which will contain the view
+            SelectionPage page = new SelectionPage(filePath);
+            page.Selected += (List<Peer> peers, string path) => {
+                Selected?.Invoke(peers, path);
+            };
+            Page.Navigate(page);
         }
-
-        public   string File { get => file; set => file = value; }
     }
 }
