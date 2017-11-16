@@ -66,14 +66,19 @@ namespace FileTransfer
             }
             set {
                 sentByte = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SentByte"));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Percentage"));
             }
         }
 
-        public double getPercentage() {
-            // TODO
-            // Computes the percentage
-            return 0.0;
+        public int Percentage {
+            get {
+                // TODO
+                // Computes the percentage
+                return (int)((SentByte * 100) / Task.Size);
+            }
+            //set {
+            //    percentage = value;
+            //}
         }
 
         /**

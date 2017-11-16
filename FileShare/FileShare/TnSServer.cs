@@ -6,6 +6,7 @@ using NetProtocol;
 using FileShareConsole;
 using static StorageModule;
 using System.Net;
+using System.Threading;
 
 namespace FileTransfer
 {
@@ -17,11 +18,11 @@ namespace FileTransfer
     public class TnSServer : ServerProtocolEndpoint
     {
 
-        public delegate void OnRequest(FileInfo file);
+        public delegate bool OnRequest(Task task);
         public event OnRequest OnRequestReceived;
         private TransferNetworkModule network;
         private byte[] chunk = new byte[8192];
-  
+        private static ManualResetEvent mre = new ManualResetEvent(false);
 
         public TnSServer(Socket handler, Protocol protocol) : base(handler, protocol)
         {
@@ -40,29 +41,32 @@ namespace FileTransfer
                 {
                     //TODO This must raise an exception cause we don't expect a client to send responsens 
                 }
-
-                RequestPacket request = (RequestPacket)received;
-
-                // Try to acquire a semaphore to pass the high threshold
-                // If more than a certain number of servers are active, blocks.
-                protocol.enterServer((socket.RemoteEndPoint as IPEndPoint).Address.ToString());
-
-                if (!Settings.Instance.AutoAcceptFiles)
-                    OnRequestReceived(request.Task.Info);    // We need the user to know that there's a new transmission to accept or deny
                 else
-                    network.SendPacket(socket, network.generateResponsetStream(true));
+                {
 
-                JobZipStorageModule module = new JobZipStorageModule();
-                FileIterator iterator = module.createJob(request.Task);
+                    RequestPacket request = (RequestPacket)received;
 
-                int receivedBytes = 0;
-                while (iterator.hasNext()) {
-                    receivedBytes = socket.Receive(chunk);
-                    iterator.write(chunk, receivedBytes);
+                    // Try to acquire a semaphore to pass the high threshold
+                    // If more than a certain number of servers are active, blocks.
+                    protocol.enterServer((socket.RemoteEndPoint as IPEndPoint).Address.ToString());
+
+                    if (!Settings.Instance.AutoAcceptFiles)
+                    OnRequestReceived(request.Task);    // We need the user to know that there's a new transmission to accept or deny
+                    else
+                        network.SendPacket(socket, network.generateResponsetStream(true));
+
+                    JobZipStorageModule module = new JobZipStorageModule();
+                    FileIterator iterator = module.createJob(request.Task);
+
+                    int receivedBytes = 0;
+                    while (iterator.hasNext())
+                    {
+                        receivedBytes = socket.Receive(chunk);
+                        iterator.write(chunk, receivedBytes);
+                    }
+
+                    iterator.close();
                 }
-
-                iterator.close();
-
             } catch (Exception e) {
                 Console.WriteLine("exception raised: " + e.ToString());
             }
