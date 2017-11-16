@@ -7,38 +7,49 @@
       mc:Ignorable="d" d:DesignWidth="300"
       Title="Page1" Height="414">
 
-	<Grid>
-		<TabControl Name="mainTabControl" HorizontalAlignment="Left" Height="415" Margin="0,0,0,-95" VerticalAlignment="Top" Width="517">
-			<TabItem Header="TabItem">
-				<!--<Grid Background="#FFE5E5E5" Margin="-21,-34,-184,-195" HorizontalAlignment="Left" Width="494">-->
-				<ListView x:Name="thelist" x:FieldModifier="public" ItemsSource="{Binding peers}" SelectionChanged="ListView_SelectionChanged_1" Margin="0,0,-0.8,-1.6">
-					<ListView.View>
-						<GridView>
-							<GridViewColumn DisplayMemberBinding="{Binding Id}" Header="Id" Width="100"></GridViewColumn>
-							<GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Name" Width="100"></GridViewColumn>
-							<GridViewColumn DisplayMemberBinding="{Binding Ipaddress}" Header="Ipaddress" Width="100"></GridViewColumn>
+    <Grid>
+		  <TabControl Name="mainTabControl" HorizontalAlignment="Left" Height="415" Margin="0,0,0,-95" VerticalAlignment="Top" Width="517">
+            <TabItem Header="TabItem">
+                <!--<Grid Background="#FFE5E5E5" Margin="-21,-34,-184,-195" HorizontalAlignment="Left" Width="494">-->
+                <ListView x:Name="thelist" x:FieldModifier="public" ItemsSource="{Binding peers}" SelectionChanged="ListView_SelectionChanged_1" Margin="0,0,-2,-2">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn DisplayMemberBinding="{Binding Id}" Header="Id" Width="100"></GridViewColumn>
+                            <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Name" Width="100"></GridViewColumn>
+                            <GridViewColumn DisplayMemberBinding="{Binding Ipaddress}" Header="Ipaddress" Width="100"></GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+                <!--</Grid>-->
+            </TabItem>
+            <TabItem Header="Sending">
+                <ListView ItemsSource="{Binding sendingJobs}" SelectionChanged="ListView_SelectionChanged_1" Margin="0,0,-2,-2">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn DisplayMemberBinding="{Binding Path=Task.Info.Name}" Header="File" Width="100"></GridViewColumn>
+                            <!--<GridViewColumn DisplayMemberBinding="{Binding Percentage}" Header="Progress" Width="100"></GridViewColumn>-->
+                            <GridViewColumn Header="Progress" Width="100">
 
-
-						</GridView>
-					</ListView.View>
-
-				</ListView>
-				<!--</Grid>-->
-			</TabItem>
-			<TabItem Header="Sending">
-				<ListView ItemsSource="{Binding sendingJobs}" SelectionChanged="ListView_SelectionChanged_1" Margin="0,0,-2,-2">
-					<ListView.View>
-						<GridView>
-							<GridViewColumn DisplayMemberBinding="{Binding Path=Task.Info.Name}" Header="File" Width="100"></GridViewColumn>
-							<GridViewColumn DisplayMemberBinding="{Binding Percentage}" Header="Progress" Width="100"></GridViewColumn>
-							<!--<GridViewColumn Header="Progress" Width="100">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <ProgressBar Maximum="100" Height="25" Width="100" Value="{Binding Percentage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                        <ProgressBar Maximum="100" Height="10" Width="100" Value="{Binding Percentage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
-                            </GridViewColumn>-->
-						</GridView>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </TabItem>
+            <TabItem Header="Receiving">
+                <ListView ItemsSource="{Binding receivingJobs}" SelectionChanged="ListView_SelectionChanged_1" Margin="0,0,-2,-2">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn DisplayMemberBinding="{Binding Path=Task.Info.Name}" Header="File" Width="100"></GridViewColumn>
+                            <!--<GridViewColumn DisplayMemberBinding="{Binding Percentage}" Header="Progress" Width="100"></GridViewColumn>-->
+                            <GridViewColumn Header="Progress" Width="100">
+                            <!--</GridViewColumn>-->
+						<!--
+            </GridView>
 					</ListView.View>
 				</ListView>
 			</TabItem>
@@ -48,17 +59,18 @@
 						<GridView>
 							<GridViewColumn DisplayMemberBinding="{Binding Path=Task.Info.Name}" Header="File" Width="100"></GridViewColumn>
 							<GridViewColumn DisplayMemberBinding="{Binding Percentage}" Header="Progress" Width="100"></GridViewColumn>
-							<!--<GridViewColumn Header="Progress" Width="100">
+							-->
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <ProgressBar Maximum="100" Height="25" Width="100" Value="{Binding Percentage, Mode=OneWay}"/>
+                                        <ProgressBar Maximum="100" Height="10" Width="100" Value="{Binding Percentage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
-                            </GridViewColumn>-->
-						</GridView>
-					</ListView.View>
-				</ListView>
-			</TabItem>
-		</TabControl>
-	</Grid>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </TabItem>
+        </TabControl>
+    </Grid>
+
 </Page>

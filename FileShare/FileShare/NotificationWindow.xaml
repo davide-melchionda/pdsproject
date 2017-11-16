@@ -5,10 +5,19 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FileShare"
         mc:Ignorable="d"
+        Title="MainWindow" 
+        WindowStyle="None" 
+        ResizeMode="NoResize"
+        Height="350" 
+        Width="525" >
+    <Grid>
+        <Frame Source="Page1.xaml" />
+    </Grid>
+  <!--
 		WindowStyle="None"
     WindowStartupLocation="CenterScreen"
         Title="MainWindow" Height="519.167" Width="376.6">
 	<Grid>
 		<Frame Name="NotificationFrame" Margin="0,0,10.2,82.6"/>
-	</Grid>
+	</Grid>-->
 </Window>

@@ -28,6 +28,12 @@ namespace FileShare {
 
         }
 
+        //protected override void OnClosed(EventArgs e) {
+        //    //base.OnClosed(e);
+
+        //    //Application.Current.Shutdown();
+        //}
+        
         public Page1 Page { get => page; set => page = value; }
 
         protected override void OnDeactivated(EventArgs e)
@@ -43,6 +49,7 @@ namespace FileShare {
             this.Left = desktopWorkingArea.Right - this.Width;
             this.Top = desktopWorkingArea.Bottom - this.Height;
         }
+
     }
 
     }

@@ -39,10 +39,10 @@ namespace FileTransfer {
          */
         public static JobsList Receiving {
             get {
-                if (sending == null) {
-                    sending = new JobsList();
+                if (receiving== null) {
+                    receiving = new JobsList();
                 }
-                return sending;
+                return receiving;
             }
         }
 

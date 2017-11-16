@@ -44,8 +44,7 @@ namespace FileShare {
             };
             pipeListener.run();
 
-            nw = new NotificationWindow();
-            bf = new BackgroundForm(nw);
+            bf = new BackgroundForm();
         }
 
         
@@ -56,8 +55,6 @@ namespace FileShare {
                 }
 
         public void AppExit(object sender, EventArgs e) {
-            // Close both the windows
-            nw.Close();
             bf.Close();
 
             // Process completed successfully
