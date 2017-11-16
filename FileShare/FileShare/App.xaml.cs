@@ -36,7 +36,7 @@ namespace FileShare {
                     sw.page.OnselectHappened += schedule;
                     sw.Closed += Sw_Closed;
                     sw.Show();
-
+                    
 
 
                 });
@@ -48,6 +48,7 @@ namespace FileShare {
             bf = new BackgroundForm(nw);
         }
 
+        
         private void Sw_Closed(object sender, EventArgs e)
         {
             nw.Show();

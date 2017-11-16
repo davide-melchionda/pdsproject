@@ -221,6 +221,28 @@ class Settings {
         }
     }
 
+    private bool isInvisible = /* DEFAULT */ false;
+
+    /**
+   * If the state is invisible or not. In invisible state the application doesn't show itself to the network
+   */
+    public bool IsInvisible
+    {
+        get
+        {
+            return isInvisible;
+        }
+        set
+        {
+            // TODO
+            // Try to write on file the new setting configurations
+            // Throw an exception if something goes wrong
+
+            // ... after the file update
+            autoAcceptFiles = value;
+        }
+    }
+
     /**
      * The default path on the file system in which save received files.
      */
@@ -238,6 +260,24 @@ class Settings {
             defaultRecvPath = value;
         }
     }
+    /**
+    * Current Username
+    */
+    private string currentUsername = "A user";
+    /**
+     * defaultRecvPath property
+     */
+    public string CurrentUsername
+    {
+        get
+        {
+            return currentUsername;
+        }
+        set
+        {
+            currentUsername = value;
+        }
+    }
 
     /**
      * SINGLETON CREATIONAL PATTERN
@@ -250,7 +290,7 @@ class Settings {
         // Retrieve configuration from a file
 
         // For now: the local peer is randomly initialized
-        localPeer = new Peer("Davide:"+new Random().Next(), "Davide", "unknown_ip");
+        localPeer = new Peer(currentUsername+":"+new Random().Next(), currentUsername, "unknown_ip");
 
     }
 
