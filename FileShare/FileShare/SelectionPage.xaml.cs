@@ -10,38 +10,57 @@ using System.Windows.Shapes;
 
 namespace FileShare
 {
-    /*
-      * Pagina  selezione dei peer destinati a ricevere un file o directory, la conferma della selezione
-      * tramite bottone scatena un evento al quale è registro chi si occupa di chiamare JobScheduler
-      */
+    /// <summary>
+    /// Page which allow the selection of the peers designated to receive the file or directory. The 
+    /// confirm on the button triggers a specific event.
+    /// </summary>
     public partial class SelectionPage : Page
     {
+        /// <summary>
+        /// Delegate which will be the type of the evet triggered when peers will be selected
+        /// </summary>
+        /// <param name="peers"></param>
+        /// <param name="path"></param>
+        public delegate void OnPeersSelected(List<Peer> peers, string path);
+        /// <summary>
+        /// The event triggered when peers are selected.
+        /// </summary>
+        public event OnPeersSelected Selected;
 
-        public delegate void onPeersSelected(List<Peer> peers, string path);
-        public event onPeersSelected OnselectHappened;
-        SelectionWindow parent;
-        public SelectionPage(SelectionWindow parent)
+        /// <summary>
+        /// The path of the file for which the selection will be performed
+        /// </summary>
+        private String filePath;
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="filePath">The path of the file</param>
+        public SelectionPage(String filePath/*SelectionWindow parent*/)
         {
             InitializeComponent();
-            this.parent = parent;
+
+            this.filePath = filePath;
+
+            // Needed in order to show the peers list
             DataContext = new FileShareDataContext();
-            this.fileName.Text = (parent.File);
-            
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-
+        /// <summary>
+        /// On confirmation button clicked.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Button_Click(object sender, RoutedEventArgs e) {
             List<Peer> selected = null;
-            if (thelist.SelectedItems.Count > 0)
-            {
+
+            // If at least one peer was selected
+            if (thelist.SelectedItems.Count > 0) {
+                /* Triggers the evet */
                 selected = thelist.SelectedItems.Cast<Peer>().ToList();
-                parent.Close();
-
-                OnselectHappened?.Invoke(selected, this.parent.File);
-
-            }
-            else MessageBox.Show("Devi selezionare almeno un destinatario");
+                Selected?.Invoke(selected, filePath);
+            } else // Otherwise the user must repeat the selection
+                MessageBox.Show("Devi selezionare almeno un destinatario.");
         }
     }
 }

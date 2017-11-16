@@ -32,17 +32,11 @@ namespace FileTransfer
 
         public override TransferResult transfer()
         {
-            try
-            {
-
-                //TransmissionPacket received = (TransmissionPacket)TransferNetworkModule.receivePacket(handler); //receive a network packet from the client
+            try {   
                 TransmissionPacket received = network.receivePacket(socket); //receive a network packet from the client
-                if (received.Type.ToString() != "request")
-                {
+                if (received.Type.ToString() != "request") {
                     //TODO This must raise an exception cause we don't expect a client to send responsens 
-                }
-                else
-                {
+                } else {
 
                     RequestPacket request = (RequestPacket)received;
 
@@ -50,22 +44,28 @@ namespace FileTransfer
                     // If more than a certain number of servers are active, blocks.
                     protocol.enterServer((socket.RemoteEndPoint as IPEndPoint).Address.ToString());
 
-                    if (!Settings.Instance.AutoAcceptFiles)
-                    OnRequestReceived(request.Task);    // We need the user to know that there's a new transmission to accept or deny
-                    else
+                    // If settings allow us to receive anything or if the user confirms that he wants to accept
+                    if (Settings.Instance.AutoAcceptFiles || OnRequestReceived(request.Task)) {
+                        // Send a positive response
                         network.SendPacket(socket, network.generateResponsetStream(true));
 
-                    JobZipStorageModule module = new JobZipStorageModule();
-                    FileIterator iterator = module.createJob(request.Task);
+                        /* Create a Job for the incoming task. */
+                        JobZipStorageModule module = new JobZipStorageModule();
+                        FileIterator iterator = module.createJob(request.Task);
 
-                    int receivedBytes = 0;
-                    while (iterator.hasNext())
-                    {
-                        receivedBytes = socket.Receive(chunk);
-                        iterator.write(chunk, receivedBytes);
+                        // Start file trasfer
+                        int receivedBytes = 0;
+                        while (iterator.hasNext()) {
+                            receivedBytes = socket.Receive(chunk);
+                            iterator.write(chunk, receivedBytes);
+                        }
+
+                        // Close the iterator so to release resources
+                        iterator.close();
+                    } else { // ... if the user doesn't accepted to receive the file
+                        // Send a negative response
+                        network.SendPacket(socket, network.generateResponsetStream(false));
                     }
-
-                    iterator.close();
                 }
             } catch (Exception e) {
                 Console.WriteLine("exception raised: " + e.ToString());
