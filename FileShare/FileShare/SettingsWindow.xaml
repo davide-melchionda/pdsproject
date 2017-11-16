@@ -6,7 +6,6 @@
         xmlns:local="clr-namespace:FileShare"
         mc:Ignorable="d"
 		WindowStyle="None"
-    WindowState="Maximized"
     WindowStartupLocation="CenterScreen"
         Title="SettingsWindow" Height="300" Width="300">
     <Grid>

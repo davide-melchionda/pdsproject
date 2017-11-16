@@ -16,6 +16,13 @@
 
 			<CheckBox Name="invisibleStateCB" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"> Enable invisible state</CheckBox>
 			<CheckBox Name ="AutoReceiveCB" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged">Enable auto receiving</CheckBox>
+
+			<Button Content="CONFIRM"
+                HorizontalAlignment="right"
+                Margin="10,10,10,10"
+                VerticalAlignment="Top"
+                Width="75"
+                Click="Button_Click"/>
 		</StackPanel>
 	</Grid>
 </Page>

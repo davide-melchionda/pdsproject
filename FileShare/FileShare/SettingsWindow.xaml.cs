@@ -27,5 +27,14 @@ namespace FileShare
             var hwnd = new WindowInteropHelper(this).Handle;
             SetWindowLong(hwnd, GWL_STYLE, GetWindowLong(hwnd, GWL_STYLE) & ~WS_SYSMENU);
         }
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            settings.CurrentUsername = UsernameTB.Text;
+            settings.AutoAcceptFiles = (bool)AutoReceiveCB.IsChecked;
+            settings.AutoAcceptFiles = (bool)invisibleStateCB.IsChecked;
+            parent.Close();
+
+
+        }
     }
 }

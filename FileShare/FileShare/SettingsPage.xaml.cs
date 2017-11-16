@@ -34,5 +34,13 @@ namespace FileShare
             settings.AutoAcceptFiles = (bool)AutoReceiveCB.IsChecked;
             settings.AutoAcceptFiles = (bool)invisibleStateCB.IsChecked;
         }
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            settings.CurrentUsername = UsernameTB.Text;
+            settings.AutoAcceptFiles = (bool)AutoReceiveCB.IsChecked;
+            settings.IsInvisible = (bool)invisibleStateCB.IsChecked;
+
+
+        }
     }
 }
