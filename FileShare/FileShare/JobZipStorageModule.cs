@@ -110,7 +110,7 @@ namespace FileShareConsole
             Job job = new Job(task, path);
 
             // Push the job in the receiving jobs list
-            JobsList.Receiving.push(job);
+            //JobsList.Receiving.push(job);
 
             // Creates the new file. Note: the file is zipped
             File.Create(path).Close();
@@ -131,7 +131,7 @@ namespace FileShareConsole
                         entry.ExtractToFile(tempPath);
                     }
                 }
-                JobsList.Receiving.remove(job.Id);
+                //JobsList.Receiving.remove(job.Id);
             };
 
             return iterator;

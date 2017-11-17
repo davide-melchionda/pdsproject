@@ -13,7 +13,10 @@ namespace FileShare {
     public partial class BackgroundForm : Form {
 
         private Window notificationWindow;
-        //private bool isWindowVisible;
+
+        public enum ErrorNotificationType {
+            Receiving, Sending
+        };
 
         public BackgroundForm() {
             InitializeComponent();
@@ -36,48 +39,53 @@ namespace FileShare {
             
             // If the click was performed with the left button
             if (e.Button != MouseButtons.Right) {
-                
-                // If there is no notification window actually shown
-                //if (notificationWindow == null) {
-                    
-                    // Create a new window
-                    notificationWindow = new NotificationWindow();
-                   
-                    // Register a callback on the Deactivated event (when a click outside the
-                    //  window occours)
-                    notificationWindow.Deactivated += (Object window, EventArgs args) => {
-                        // Close the window and set the variable to null
-                        notificationWindow.Close();
-                        notificationWindow = null;
-                    };
-                    
-                    /* Compute the position of the window beore showing it */
-                    var desktopWorkingArea = System.Windows.SystemParameters.WorkArea;
-                    var x = System.Windows.Forms.Cursor.Position.X;
-                    notificationWindow.Top = desktopWorkingArea.Bottom - notificationWindow.Height;
-                    if (((double)x) + (notificationWindow.Width / 2) >= desktopWorkingArea.Right)
-                        notificationWindow.Left = desktopWorkingArea.Right - notificationWindow.Width - 10;
-                    else
-                        notificationWindow.Left = ((double)x) - (notificationWindow.Width / 2);
 
-                    /* Show the window in front (nothing above) and activate it */
-                    notificationWindow.Topmost = true;
-                    notificationWindow.Show();
-                    notificationWindow.Activate();
-                    
-                //} else {    // ... otherwise, if a window already is shown
-                //    // Close the window and set the field to null
-                //    notificationWindow.Close();
-                //    notificationWindow = null;
-                //    // N.B. This case never appen
-                //}
+                // Create a new window
+                notificationWindow = new NotificationWindow();
+
+                // Register a callback on the Deactivated event (when a click outside the
+                //  window occours)
+                notificationWindow.Deactivated += (Object window, EventArgs args) => {
+                    // Close the window and set the variable to null
+                    //notificationWindow.Close();
+                    //notificationWindow = null;
+                };
+
+                /* Compute the position of the window beore showing it */
+                var desktopWorkingArea = System.Windows.SystemParameters.WorkArea;
+                var x = System.Windows.Forms.Cursor.Position.X;
+                notificationWindow.Top = desktopWorkingArea.Bottom - notificationWindow.Height;
+                if (((double)x) + (notificationWindow.Width / 2) >= desktopWorkingArea.Right)
+                    notificationWindow.Left = desktopWorkingArea.Right - notificationWindow.Width - 10;
+                else
+                    notificationWindow.Left = ((double)x) - (notificationWindow.Width / 2);
+
+                /* Show the window in front (nothing above) and activate it */
+                notificationWindow.Topmost = true;
+                notificationWindow.Show();
+                notificationWindow.Activate();
             }
         }
-      
-         /**
-         * When the option 'Exit' is selected in the context menu, the application is
-         * shut down.
-         */      
+
+        /// <summary>
+        /// Show a balloon tip to notify an error condition to the user
+        /// </summary>
+        /// <param name="type">Which kind of error occourred.</param>
+        internal void NotifyError(ErrorNotificationType type) {
+            switch (type) {
+                case ErrorNotificationType.Receiving:
+                    notifyIcon1.ShowBalloonTip(5000, "Errore durante la ricezione", "Alcuni trasferimenti non sono andati a buon fine a causa di problemi di connessione", ToolTipIcon.Error);
+                    break;
+                case ErrorNotificationType.Sending:
+                    notifyIcon1.ShowBalloonTip(5000, "Errore durante l'invio", "Alcuni trasferimenti in uscita non sono andati a buon fine a causa di problemi di connessione", ToolTipIcon.Error);
+                    break;
+            }
+        }
+
+        /**
+        * When the option 'Exit' is selected in the context menu, the application is
+        * shut down.
+        */
         private void SettingsToolStripMenuItem_Click(object sender, System.EventArgs e)
         {
 
@@ -97,29 +105,29 @@ namespace FileShare {
         private void ShowToolStripMenuItem_Click(object sender, System.EventArgs e) {
             //notifyWindow.Show();
             // Create a new window
-                    notificationWindow = new NotificationWindow();
+            notificationWindow = new NotificationWindow();
                    
-                    // Register a callback on the Deactivated event (when a click outside the
-                    //  window occours)
-                    notificationWindow.Deactivated += (Object window, EventArgs args) => {
-                        // Close the window and set the variable to null
-                        notificationWindow.Close();
-                        notificationWindow = null;
-                    };
+            // Register a callback on the Deactivated event (when a click outside the
+            //  window occours)
+            notificationWindow.Deactivated += (Object window, EventArgs args) => {
+                // Close the window and set the variable to null
+                notificationWindow.Close();
+                notificationWindow = null;
+            };
                     
-                    /* Compute the position of the window beore showing it */
-                    var desktopWorkingArea = System.Windows.SystemParameters.WorkArea;
-                    var x = System.Windows.Forms.Cursor.Position.X;
-                    notificationWindow.Top = desktopWorkingArea.Bottom - notificationWindow.Height;
-                    if (((double)x) + (notificationWindow.Width / 2) >= desktopWorkingArea.Right)
-                        notificationWindow.Left = desktopWorkingArea.Right - notificationWindow.Width - 10;
-                    else
-                        notificationWindow.Left = ((double)x) - (notificationWindow.Width / 2);
+            /* Compute the position of the window beore showing it */
+            var desktopWorkingArea = System.Windows.SystemParameters.WorkArea;
+            var x = System.Windows.Forms.Cursor.Position.X;
+            notificationWindow.Top = desktopWorkingArea.Bottom - notificationWindow.Height;
+            if (((double)x) + (notificationWindow.Width / 2) >= desktopWorkingArea.Right)
+                notificationWindow.Left = desktopWorkingArea.Right - notificationWindow.Width - 10;
+            else
+                notificationWindow.Left = ((double)x) - (notificationWindow.Width / 2);
 
-                    /* Show the window in front (nothing above) and activate it */
-                    notificationWindow.Topmost = true;
-                    notificationWindow.Show();
-                    notificationWindow.Activate();
+            /* Show the window in front (nothing above) and activate it */
+            notificationWindow.Topmost = true;
+            notificationWindow.Show();
+            notificationWindow.Activate();
         }
     }
 }

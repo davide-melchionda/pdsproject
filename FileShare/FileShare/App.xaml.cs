@@ -29,9 +29,12 @@ public partial class App : Application {
             new HelloThread().run();
 
             // Start the thread responsible of receiving request of transferring files
-           ServerClass receiver= new ServerClass(new TnSProtocol());
-           receiver.RequestReceived += RequestMessageBox.Show;
-           receiver.run();
+            ServerClass receiver= new ServerClass();
+            receiver.RequestReceived += RequestMessageBox.Show;
+            receiver.ConnectionError += () => {
+                bf.NotifyError(BackgroundForm.ErrorNotificationType.Receiving);
+            };
+            receiver.run();
 
             /* Create, configura and start the thread responsible of managing the communication on a pipe 
              * with the application which inform this process of the path of the file the user wants to send. */
@@ -52,6 +55,10 @@ public partial class App : Application {
                         sw.Close();
                         /* For each peer in the list schedule a new job on a job scheuler. */
                         JobScheduler scheduler = new JobScheduler();
+                        // Register a callback to execute in case of connection errors
+                        scheduler.ConnectionError += () => {
+                            bf.NotifyError(BackgroundForm.ErrorNotificationType.Sending);
+                        };
                         for (int i = 0; i < selected.Count; i++)
                             scheduler.scheduleJob(new Job(new FileTransfer.Task(Settings.Instance.LocalPeer.Id,
                                                                                     PeersList.Instance.Peers.ElementAt(i).Id,

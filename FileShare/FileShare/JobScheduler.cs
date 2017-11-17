@@ -10,6 +10,15 @@ namespace FileTransfer {
     public class JobScheduler {
 
         /**
+         * Delegate: on connection error during the transfer
+         */
+        public delegate void OnConnectionError();
+        /**
+         * Event on connection error
+         */
+        public event OnConnectionError ConnectionError;
+
+        /**
          * Constructor
          */
         public JobScheduler() {
@@ -32,6 +41,11 @@ namespace FileTransfer {
             sender.OnTrasmissionEnd += () => {
                 // Removes the job from the active jobs list 
                 JobsList.Sending.remove(job.Id);
+            };
+
+            // When a connection error occours
+            sender.ConnectionError += () => {
+                ConnectionError?.Invoke();
             };
 
             // Run the sender 

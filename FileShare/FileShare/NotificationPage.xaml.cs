@@ -17,9 +17,9 @@ namespace FileShare {
     /// <summary>
     /// Logica di interazione per Page1.xaml
     /// </summary>
-    public partial class Page1 : Page {
+    public partial class NotificationPage : Page {
 
-        public Page1() {
+        public NotificationPage() {
             InitializeComponent();
 
             DataContext = new FileShareDataContext();

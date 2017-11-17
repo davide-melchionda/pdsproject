@@ -19,8 +19,8 @@ namespace FileShare {
     class FileShareDataContext {
 
         public ObservableCollection<Peer> peers { get; set; }
-        public ObservableCollection<Job> sendingJobs { get; set; }
-        public ObservableCollection<Job> receivingJobs { get; set; }
+        public ObservableCollection<ListedJob> sendingJobs { get; set; }
+        public ObservableCollection<ListedJob> receivingJobs { get; set; }
 
         public FileShareDataContext() {
             
@@ -42,15 +42,25 @@ namespace FileShare {
 
             JobsList.Sending.JobAdded += (Job job) => {
                 App.Current.Dispatcher.Invoke((Action)delegate {
-                    sendingJobs.Add(job);
+                    sendingJobs.Add(new ListedJob(job));
                 });
             };
 
-            JobsList.Sending.JobRemoved += (Job removed) => {
-                foreach (Job j in sendingJobs)
-                    if (j.Id == removed.Id) {
+            JobsList.Sending.JobRemoved += (Job removedJob) => {
+                foreach (ListedJob listItem in sendingJobs)
+                    if (listItem.Job.Id == removedJob.Id) {
+                        if (removedJob.Percentage != 100) {
+                            listItem.Completed = true;
+                            listItem.Error = true;
+                            listItem.Message = "Errore";
+                        } else {
+                            listItem.Completed = true;
+                            listItem.Error = false;
+                            listItem.Message = "Completato";
+                        }
+                        System.Threading.Thread.Sleep(5000);
                         App.Current.Dispatcher.Invoke((Action)delegate {
-                            sendingJobs.Remove(j);
+                            sendingJobs.Remove(listItem);
                         });
                         break;
                     }
@@ -58,48 +68,39 @@ namespace FileShare {
 
             JobsList.Receiving.JobAdded += (Job job) => {
                 App.Current.Dispatcher.Invoke((Action)delegate {
-                    receivingJobs.Add(job);
+                    receivingJobs.Add(new ListedJob(job));
                 });
             };
 
-            JobsList.Receiving.JobRemoved += (Job removed) => {
-                foreach (Job j in receivingJobs)
-                    if (j.Id == removed.Id) {
+            JobsList.Receiving.JobRemoved += (Job removedJob) => {
+                foreach (ListedJob listItem in receivingJobs)
+                    if (listItem.Job.Id == removedJob.Id) {
+                        if (removedJob.Percentage != 100) {
+                            listItem.Completed = true;
+                            listItem.Error = true;
+                            listItem.Message = "Errore";
+                        } else {
+                            listItem.Completed = true;
+                            listItem.Error = false;
+                            listItem.Message = "Completato";
+                        }
+                        System.Threading.Thread.Sleep(5000);
                         App.Current.Dispatcher.Invoke((Action)delegate {
-                            receivingJobs.Remove(j);
+                            receivingJobs.Remove(listItem);
                         });
                         break;
                     }
             };
 
             peers = new ObservableCollection<Peer>(PeersList.Instance.Peers);
-            //peers.Add(Settings.Instance.LocalPeer);
 
-            receivingJobs = new ObservableCollection<Job>(JobsList.Receiving.Jobs);
+            receivingJobs = new ObservableCollection<ListedJob>();
+            foreach (Job j in JobsList.Receiving.Jobs)
+                receivingJobs.Add(new ListedJob(j));
 
-            sendingJobs = new ObservableCollection<Job>(JobsList.Sending.Jobs);
-
-            //new Thread(() => {
-            //    System.Threading.Thread.Sleep(5000);
-            //    Peer local = (Settings.Instance.LocalPeer);
-            //    Job j = new Job(new FileTransfer.Task("me", "you", @"C:\Users\vm-dm-win\Desktop\Desert.jpg"), @"C:\Users\vm-dm-win\Desktop\Desert.jpg");
-            //    Job j2 = new Job(new FileTransfer.Task("me2", "you2", @"C:\Users\vm-dm-win\Desktop\Desert.jpg"), @"C:\Users\vm-dm-win\Desktop\Desert.jpg");
-            //    PeersList.Instance.put(local);
-            //    JobsList.Sending.push(j);
-            //    JobsList.Sending.push(j2);
-            //    System.Threading.Thread.Sleep(5000);
-            //    PeersList.Instance.del(local.Id);
-            //    JobsList.Sending.remove(j.Id);
-            //    System.Threading.Thread.Sleep(5000);
-            //    //for (int i = 0; i < 50; i++) {
-            //    //    App.Current.Dispatcher.Invoke((Action)delegate {
-            //    //        sendingJobs[0].SentByte += 10;
-            //    //    });
-            //    //    System.Threading.Thread.Sleep(1000);
-            //    //}
-            //    JobsList.Sending.get(j2.Id).SentByte = 20;
-
-            //}).Start();
+            sendingJobs = new ObservableCollection<ListedJob>();
+            foreach (Job j in JobsList.Sending.Jobs)
+                sendingJobs.Add(new ListedJob(j));
 
         }
 

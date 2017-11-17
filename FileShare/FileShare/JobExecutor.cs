@@ -26,6 +26,15 @@ namespace FileTransfer {
         public event TrasmissionEnddDel OnTrasmissionEnd;
 
         /**
+         * Delegate: format of the callback to call when error on connection occours
+         */
+        public delegate void OnConnectionError();
+        /**
+         * Event on which register the callback to manage the connection error
+         */
+        public event OnConnectionError ConnectionError;
+
+        /**
          * Constructor
          */
         public JobExecutor(Job job) {
@@ -44,22 +53,30 @@ namespace FileTransfer {
             Peer receiver = HelloProtocol.PeersList.Instance.get(job.Task.Receiver);
             IPAddress receiverAddr = IPAddress.Parse(receiver.Ipaddress);
             IPEndPoint remoteEP = new IPEndPoint(receiverAddr, Settings.Instance.SERV_ACCEPTING_PORT);
-            // Connect to the receiver socket
-            socket.Connect(remoteEP);
+            try {
+                // Connect to the receiver socket
+                socket.Connect(remoteEP);
 
-            // Create a client for the specific protocol
-            // The client receives the socket whith the connection established
-            //ClientProtocolEndpoint client = new DummyClient(socket, new DummyProtocol(), iterator, job.Task);
-            ClientProtocolEndpoint client = new NetworkTransmission.TnSClient(socket, new TnSProtocol(), job);
+                // Create a client for the specific protocol
+                // The client receives the socket whith the connection established
+                //ClientProtocolEndpoint client = new DummyClient(socket, new DummyProtocol(), iterator, job.Task);
+                ClientProtocolEndpoint client = new NetworkTransmission.TnSClient(socket, new TnSProtocol(), job);
 
-            // Executes the transmission and obtais a result
-            TransferResult res = client.transfer();
+                // Executes the transmission and obtais a result
+                TransferResult res = client.transfer();
 
-            // Close the socket
-            socket.Close();
+                // Close the socket
+                socket.Close();
 
-            // Calls the delegate
-            OnTrasmissionEnd();
+                // Calls the delegate
+                OnTrasmissionEnd();
+
+            } catch (SocketException e) {
+                // Remove the job from the list
+                JobsList.Sending.remove(job.Id);
+                // Trigger the event of conncetion error
+                ConnectionError?.Invoke();
+            }
 
         }
     }
