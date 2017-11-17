@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,8 +13,16 @@ using System.Threading.Tasks;
  * of this class are the parameter of the configuration retrieved from a file
  * at the boot of the application.
  */
-class Settings {
+class Settings : System.ComponentModel.INotifyPropertyChanged
+{
+    public event PropertyChangedEventHandler PropertyChanged;
 
+    protected virtual void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
+    {
+        var handler = PropertyChanged;
+        if (handler != null)
+            handler(this, new PropertyChangedEventArgs(propertyName));
+    }
     /**
      * SINGLETON CREATIONAL PATTERN
      * The unique instance of the class.
@@ -49,6 +59,7 @@ class Settings {
 
             // ... after the file update
             localPeer = value;
+
         }
     }
 
@@ -218,6 +229,8 @@ class Settings {
 
             // ... after the file update
             autoAcceptFiles = value;
+            NotifyPropertyChanged();
+
         }
     }
 
@@ -240,6 +253,17 @@ class Settings {
 
             // ... after the file update
             isInvisible = value;
+            if (isInvisible)
+            {
+                HelloProtocol.HelloSenderThread.visibilityChange.Reset();
+            }
+            else
+            {
+                HelloProtocol.HelloSenderThread.visibilityChange.Set();
+
+            }
+            NotifyPropertyChanged();
+
         }
     }
 
@@ -257,16 +281,42 @@ class Settings {
             return defaultRecvPath;
         }
         set {
-            defaultRecvPath = value;
+            defaultRecvPath = value + "\\"; ;
+            NotifyPropertyChanged();
+        }
+    }
+
+    /**
+ * The default path on the file system in which save received files.
+ */
+    //private string defaultRecvPath = @"C:\Users\franc\Desktop\recv\";
+    private bool alwaysUseDefault = true;
+    //private string defaultRecvPath = @"C:\Users\vm-dm-win\Desktop\recv\";
+    /**
+     * defaultRecvPath property
+     */
+    public bool AlwaysUseDefault
+    {
+        get
+        {
+            return alwaysUseDefault;
+        }
+        set
+        {
+            alwaysUseDefault = value;
+            NotifyPropertyChanged();
+
         }
     }
     /**
     * Current Username
     */
-    private string currentUsername = "A user";
+    private string currentUsername = "An anonymous User";
+
+
     /**
-     * defaultRecvPath property
-     */
+* defaultRecvPath property
+*/
     public string CurrentUsername
     {
         get
@@ -276,6 +326,8 @@ class Settings {
         set
         {
             currentUsername = value;
+            NotifyPropertyChanged();
+
         }
     }
 

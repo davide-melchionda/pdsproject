@@ -11,19 +11,31 @@
 		<StackPanel Margin="10">
 			<Label FontWeight="Bold">Current username</Label>
 
-			<TextBox Name="UsernameTB" ></TextBox>
+			<TextBox Margin="0,0,20,0" Name="UsernameTB" Text="{Binding Path=CurrentUsername}"  ></TextBox>
 			<Label FontWeight="Bold">Application Options</Label>
 
-			<CheckBox Name="invisibleStateCB"> Enable invisible state
+			<CheckBox Name="InvisibleStateCB" IsChecked="{Binding Path=IsInvisible}"> Enable invisible state
 			</CheckBox>
-			<CheckBox Name ="AutoReceiveCB" >Enable auto receiving</CheckBox>
+			<CheckBox Name ="AutoReceiveCB"  IsChecked="{Binding Path=AutoAcceptFiles}" >Enable auto receiving</CheckBox>
+			<StackPanel Orientation="Horizontal">
+				<Label >Default receiving path</Label>
+				<Button Name="ChoosePath" Content="..." 
+				Margin="10,0,0,0"
+				Click="Path_Button_Click"/>
 
-			<Button Content="CONFIRM"
+				
+			</StackPanel>
+			<TextBox Margin="0,0,20,0" Name="DefaultPath" Text="{Binding Path=DefaultRecvPath}"  ></TextBox>
+
+
+			<CheckBox Name ="alwaysDefault" IsChecked="{Binding Path=AlwaysUseDefault}" >Use default path in manual accept receive </CheckBox>
+
+			<!--<Button Content="CONFIRM"
                 HorizontalAlignment="right"
                 Margin="10,10,10,10"
                 VerticalAlignment="Top"
                 Width="75"
-                Click="Button_Click"/>
+                Click="Confirm_Button_Click"/>-->
 		</StackPanel>
 	</Grid>
 </Page>
