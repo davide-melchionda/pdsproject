@@ -18,7 +18,14 @@
 					</GridView>
 				</ListView.View>
 			</ListView>
-			<Button Content="Invia" Click="Button_Click"></Button>
+			
+
+			<Button Content="Invia"
+                HorizontalAlignment="right"
+                Margin="10,10,10,10"
+                VerticalAlignment="Top"
+                Width="75"
+                Click="Button_Click"/>
 		</StackPanel>
 	</Grid>
 </Page>

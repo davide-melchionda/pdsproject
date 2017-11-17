@@ -1,57 +1,52 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using System.Windows.Forms;
 
 namespace FileShare
 {
     /// <summary>
     /// Logica di interazione per SettingsPage.xaml
     /// </summary>
-    public partial class SettingsPage : Page
+    public partial class SettingsPage : Page 
     {
         private Settings settings;
-        Window parent;
 
-        public SettingsPage(Window parent)
+        public SettingsPage()
         {
             settings = Settings.Instance;
-            DataContext = this;
+            DataContext = settings;
             InitializeComponent();
-            this.parent = parent;
-            UsernameTB.Text = settings.CurrentUsername;
-            AutoReceiveCB.IsChecked = settings.AutoAcceptFiles;
-            invisibleStateCB.IsChecked = settings.IsInvisible;
+        
+            
 
         }
 
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Confirm_Button_Click(object sender, RoutedEventArgs e)
         {
-            settings.CurrentUsername = UsernameTB.Text;
-            settings.AutoAcceptFiles = AutoReceiveCB.IsChecked??false;
-            settings.IsInvisible = invisibleStateCB.IsChecked??false;
-            if (settings.IsInvisible)
-            {
-                HelloProtocol.HelloSenderThread.visibilityChange.Reset();
-            }
-            else
-            {
-                HelloProtocol.HelloSenderThread.visibilityChange.Reset();
+            //settings.CurrentUsername = UsernameTB.Text;
+            //settings.AutoAcceptFiles = AutoReceiveCB.IsChecked??false;
+            //settings.IsInvisible = InvisibleStateCB.IsChecked??false;
+            //settings.AlwaysUseDefault = alwaysDefault.IsChecked ?? false;
 
-            }
-            this.parent.Close();
+            //if (settings.IsInvisible)
+            //{
+            //    HelloProtocol.HelloSenderThread.visibilityChange.Reset();
+            //}
+            //else
+            //{
+            //    HelloProtocol.HelloSenderThread.visibilityChange.Reset();
+
+            //}
+
                 
+        }
+        private void Path_Button_Click(object sender, RoutedEventArgs e)
+        {
+            FolderBrowserDialog dialog = new FolderBrowserDialog();
+            dialog.SelectedPath = DefaultPath.Text;
+            dialog.ShowDialog();
+            settings.DefaultRecvPath = dialog.SelectedPath;
         }
     }
 }

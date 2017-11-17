@@ -4,8 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FileShare"
+		 ResizeMode="NoResize"
         mc:Ignorable="d"
-		WindowStyle="None"
     WindowStartupLocation="CenterScreen"
         Title="SettingsWindow" Height="300" Width="300">
     <Grid>
