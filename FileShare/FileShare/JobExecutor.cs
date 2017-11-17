@@ -65,9 +65,6 @@ namespace FileTransfer {
                 // Executes the transmission and obtais a result
                 TransferResult res = client.transfer();
 
-                // Close the socket
-                socket.Close();
-
                 // Calls the delegate
                 OnTrasmissionEnd();
 
@@ -76,6 +73,9 @@ namespace FileTransfer {
                 JobsList.Sending.remove(job.Id);
                 // Trigger the event of conncetion error
                 ConnectionError?.Invoke();
+            } finally {
+                // Close the socket
+                socket.Close();
             }
 
         }

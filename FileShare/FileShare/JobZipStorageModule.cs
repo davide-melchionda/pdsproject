@@ -45,7 +45,7 @@ namespace FileShareConsole
 
             // Constructs the zip file name
             string date = lastModify.ToString("yyyyMMddhhmmss") + lastModify.Millisecond;
-            string zipName = Path.GetDirectoryName(filePath) + Path.GetFileNameWithoutExtension(filePath) + date + ".zip";
+            string zipName = Path.GetDirectoryName(filePath) + @"\" + Path.GetFileNameWithoutExtension(filePath) + date + ".zip";
 
             // If the file was modified after the lastModify date, throws an exception
             if (File.GetLastWriteTime(filePath) > lastModify)
@@ -122,6 +122,10 @@ namespace FileShareConsole
             // Defines the behavior when the iterator is going to be closed
             // registering a callback on the related event.
             iterator.BeforeIteratorClosed += () => {
+                // Job not completed: nothing to extract
+                if (job.SentByte != job.Task.Size)
+                    return;
+
                 if (job.Task.Info.Type == FileTransfer.FileInfo.FType.DIRECTORY) {
                     ZipFile.ExtractToDirectory(path, GetUniqueFilePath(ReceivePath + job.Task.Info.Name));
                 } else using (ZipArchive archive = ZipFile.OpenRead(path)) {

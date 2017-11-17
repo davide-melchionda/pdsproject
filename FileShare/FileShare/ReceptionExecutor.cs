@@ -50,10 +50,11 @@ namespace FileTransfer {
                 ConnectionError?.Invoke();
 
             } finally {
-
+                // Remove the job (if any) from the list
                 if (job != null)
                     JobsList.Receiving.remove(job.Id);
-
+                // Close the socket
+                socket.Close();
             }
         }
     }

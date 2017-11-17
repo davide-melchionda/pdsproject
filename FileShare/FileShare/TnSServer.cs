@@ -38,59 +38,69 @@ namespace FileTransfer
 
         public override TransferResult transfer() {
 
-            TransmissionPacket received = network.receivePacket(socket); //receive a network packet from the client
-            if (received.Type.ToString() != "request") {
-                //TODO This must raise an exception cause we don't expect a client to send responsens 
-            } else {
+            RequestPacket request = null;
+            FileIterator iterator = null;
 
-                RequestPacket request = (RequestPacket)received;
+            try {
 
-                // Try to acquire a semaphore to pass the high threshold
-                // If more than a certain number of servers are active, blocks.
-                protocol.enterServer((socket.RemoteEndPoint as IPEndPoint).Address.ToString());
+                TransmissionPacket received = network.receivePacket(socket); //receive a network packet from the client
+                if (received.Type.ToString() != "request") {
+                    //TODO This must raise an exception cause we don't expect a client to send responsens 
+                } else {
 
-                // If settings allow us to receive anything or if the user confirms that he wants to accept
-                if (Settings.Instance.AutoAcceptFiles || OnRequestReceived(request.Task)) {
-                    // Send a positive response
-                    network.SendPacket(socket, network.generateResponsetStream(true));
-                    string receivePath;
-                    if (Settings.Instance.AlwaysUseDefault)
-                    {
-                        receivePath = Settings.Instance.DefaultRecvPath;
+                    request = (RequestPacket)received;
+
+                    // Try to acquire a semaphore to pass the high threshold
+                    // If more than a certain number of servers are active, blocks.
+                    protocol.enterServer((socket.RemoteEndPoint as IPEndPoint).Address.ToString());
+
+                    // If settings allow us to receive anything or if the user confirms that he wants to accept
+                    if (Settings.Instance.AutoAcceptFiles || OnRequestReceived(request.Task)) {
+                        // Send a positive response
+                        network.SendPacket(socket, network.generateResponsetStream(true));
+                        string receivePath;
+                        if (Settings.Instance.AlwaysUseDefault) {
+                            receivePath = Settings.Instance.DefaultRecvPath;
+                        } else {
+                            FolderBrowserDialog dialog = new FolderBrowserDialog();
+                            dialog.SelectedPath = Settings.Instance.DefaultRecvPath; ;
+                            dialog.ShowDialog();
+                            receivePath = dialog.SelectedPath;
+                        }
+                        /* Create a Job for the incoming task. */
+                        JobZipStorageModule module = new JobZipStorageModule();
+                        iterator = module.createJob(request.Task, receivePath);
+                        // Execute operations when job has been created
+                        JobInitialized?.Invoke(((JobFileIterator)iterator).Job);
+
+                        // Timeout on the receive: more responsive
+                        socket.ReceiveTimeout = 5000;
+
+                        // Start file trasfer
+                        int receivedBytes = 0;
+                        while (iterator.hasNext()) {
+
+                            if (!(iterator as JobFileIterator).Job.Active)
+                                throw new SocketException();
+
+                            receivedBytes = socket.Receive(chunk);
+                            iterator.write(chunk, receivedBytes);
+                        }
+                        
+                    } else { // ... if the user doesn't accepted to receive the file
+                             // Send a negative response
+                        network.SendPacket(socket, network.generateResponsetStream(false));
                     }
-                    else
-                    {
-                        FolderBrowserDialog dialog = new FolderBrowserDialog();
-                        dialog.SelectedPath = Settings.Instance.DefaultRecvPath; ;
-                        dialog.ShowDialog();
-                        receivePath = dialog.SelectedPath;
-                    }
-                    /* Create a Job for the incoming task. */
-                    JobZipStorageModule module = new JobZipStorageModule();
-                    FileIterator iterator = module.createJob(request.Task, receivePath);
-                    // Execute operations when job has been created
-                    JobInitialized?.Invoke(((JobFileIterator)iterator).Job);
-
-                    socket.ReceiveTimeout = 5000;
-
-                    // Start file trasfer
-                    int receivedBytes = 0;
-                    while (iterator.hasNext()) {
-
-                        receivedBytes = socket.Receive(chunk);
-                        iterator.write(chunk, receivedBytes);
-                    }
-
-                    // Close the iterator so to release resources
-                    iterator.close();
-                } else { // ... if the user doesn't accepted to receive the file
-                         // Send a negative response
-                    network.SendPacket(socket, network.generateResponsetStream(false));
                 }
-            }
+            } finally {
 
-            // Release the slot
-            ((TnSProtocol)protocol).releaseServer((socket.RemoteEndPoint as IPEndPoint).Address.ToString());
+                // Close the iterator so to release resources
+                if (iterator != null)
+                    iterator.close();
+                // Release the slot
+                ((TnSProtocol)protocol).releaseServer((socket.RemoteEndPoint as IPEndPoint).Address.ToString());
+
+            }
 
             return new TnSTransferResult(true);
 
