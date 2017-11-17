@@ -1,4 +1,5 @@
-﻿using FileTransfer;
+﻿
+using FileTransfer;
 using HelloProtocol;
 using System;
 using System.Collections.Generic;

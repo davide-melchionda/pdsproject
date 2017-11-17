@@ -71,9 +71,12 @@ namespace FileTransfer
                     // Execute operations when job has been created
                     JobInitialized?.Invoke(((JobFileIterator)iterator).Job);
 
+                    socket.ReceiveTimeout = 5000;
+
                     // Start file trasfer
                     int receivedBytes = 0;
                     while (iterator.hasNext()) {
+
                         receivedBytes = socket.Receive(chunk);
                         iterator.write(chunk, receivedBytes);
                     }

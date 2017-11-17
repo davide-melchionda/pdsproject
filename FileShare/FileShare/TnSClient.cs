@@ -50,6 +50,8 @@ namespace NetworkTransmission
                 protocol.enterClient();// protocol.enter();   //TODO Ho avuto risposta affermativa, procedo provando ad acquisire il semaforo (BLOCKING)
                 int i = 0;
                 while (iterator.hasNext()) {
+                    if (!job.Active)
+                        throw new SocketException();
                     i = iterator.next(transferBlock);
                     socket.Send(transferBlock, 0, i, SocketFlags.None);
                 }

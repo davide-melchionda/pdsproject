@@ -37,5 +37,20 @@ namespace FileShare {
 
         }
 
+        /// <summary>
+        /// Process the operation of deleting a job.
+        /// Need to be async so to avoid blocked gui.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private async void DeactivateJob(object sender, RoutedEventArgs args) {
+            Button button = sender as Button;
+            ListedJob item = button.DataContext as ListedJob;
+            FileShareDataContext f = DataContext as FileShareDataContext;
+            await Task.Run(() => {
+                item.Job.Active = false;
+            }); 
+        }
+
     }
 }
