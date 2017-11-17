@@ -239,7 +239,7 @@ class Settings {
             // Throw an exception if something goes wrong
 
             // ... after the file update
-            autoAcceptFiles = value;
+            isInvisible = value;
         }
     }
 

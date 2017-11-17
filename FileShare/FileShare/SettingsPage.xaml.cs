@@ -20,27 +20,38 @@ namespace FileShare
     /// </summary>
     public partial class SettingsPage : Page
     {
-        Settings settings;
-        public SettingsPage()
+        private Settings settings;
+        Window parent;
+
+        public SettingsPage(Window parent)
         {
-            settings=Settings.Instance;
+            settings = Settings.Instance;
             DataContext = this;
             InitializeComponent();
-            this.AutoReceiveCB.IsChecked = settings.AutoAcceptFiles;
-            this.invisibleStateCB.IsChecked = settings.IsInvisible;
+            this.parent = parent;
+            UsernameTB.Text = settings.CurrentUsername;
+            AutoReceiveCB.IsChecked = settings.AutoAcceptFiles;
+            invisibleStateCB.IsChecked = settings.IsInvisible;
+
         }
-        private void CheckBoxChanged(object sender, RoutedEventArgs e)
-        {
-            settings.AutoAcceptFiles = (bool)AutoReceiveCB.IsChecked;
-            settings.AutoAcceptFiles = (bool)invisibleStateCB.IsChecked;
-        }
+
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             settings.CurrentUsername = UsernameTB.Text;
-            settings.AutoAcceptFiles = (bool)AutoReceiveCB.IsChecked;
-            settings.IsInvisible = (bool)invisibleStateCB.IsChecked;
+            settings.AutoAcceptFiles = AutoReceiveCB.IsChecked??false;
+            settings.IsInvisible = invisibleStateCB.IsChecked??false;
+            if (settings.IsInvisible)
+            {
+                HelloProtocol.HelloSenderThread.visibilityChange.Reset();
+            }
+            else
+            {
+                HelloProtocol.HelloSenderThread.visibilityChange.Reset();
 
-
+            }
+            this.parent.Close();
+                
         }
     }
 }

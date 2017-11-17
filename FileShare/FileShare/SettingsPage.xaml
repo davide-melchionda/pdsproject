@@ -14,8 +14,9 @@
 			<TextBox Name="UsernameTB" ></TextBox>
 			<Label FontWeight="Bold">Application Options</Label>
 
-			<CheckBox Name="invisibleStateCB" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"> Enable invisible state</CheckBox>
-			<CheckBox Name ="AutoReceiveCB" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged">Enable auto receiving</CheckBox>
+			<CheckBox Name="invisibleStateCB"> Enable invisible state
+			</CheckBox>
+			<CheckBox Name ="AutoReceiveCB" >Enable auto receiving</CheckBox>
 
 			<Button Content="CONFIRM"
                 HorizontalAlignment="right"
