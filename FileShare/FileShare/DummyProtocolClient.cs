@@ -21,7 +21,7 @@ namespace FileTransfer {
             this.job = job;
             JobZipStorageModule storage = new JobZipStorageModule();
             sendIterator = storage.prepareJob(job);
-            recvIterator = storage.createJob(job.Task);
+            recvIterator = storage.createJob(job.Task,Settings.Instance.DefaultRecvPath);
         }
         
 

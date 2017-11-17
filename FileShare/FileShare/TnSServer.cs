@@ -8,6 +8,7 @@ using static StorageModule;
 using System.Net;
 using System.Threading;
 using static FileShareConsole.JobZipStorageModule;
+using System.Windows.Forms;
 
 namespace FileTransfer
 {
@@ -52,10 +53,21 @@ namespace FileTransfer
                 if (Settings.Instance.AutoAcceptFiles || OnRequestReceived(request.Task)) {
                     // Send a positive response
                     network.SendPacket(socket, network.generateResponsetStream(true));
-
+                    string receivePath;
+                    if (Settings.Instance.AlwaysUseDefault)
+                    {
+                        receivePath = Settings.Instance.DefaultRecvPath;
+                    }
+                    else
+                    {
+                        FolderBrowserDialog dialog = new FolderBrowserDialog();
+                        dialog.SelectedPath = Settings.Instance.DefaultRecvPath; ;
+                        dialog.ShowDialog();
+                        receivePath = dialog.SelectedPath;
+                    }
                     /* Create a Job for the incoming task. */
                     JobZipStorageModule module = new JobZipStorageModule();
-                    FileIterator iterator = module.createJob(request.Task);
+                    FileIterator iterator = module.createJob(request.Task, receivePath);
                     // Execute operations when job has been created
                     JobInitialized?.Invoke(((JobFileIterator)iterator).Job);
 

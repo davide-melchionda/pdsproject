@@ -102,11 +102,11 @@ namespace FileShareConsole
          * prepares a file coherent with what specified by the Task and returns a FileIterator
          * for this file.
          */
-        public FileIterator createJob(FileTransfer.Task task)
+        public FileIterator createJob(FileTransfer.Task task, string ReceivePath)
         {
             // Retrieves current date and computes a string to uniquely identiy the task
             DateTime now = DateTime.Now;
-            string path = Settings.Instance.DefaultRecvPath + Path.GetFileNameWithoutExtension(task.Info.Name) + now.ToString("yyyyMMddhhmmss") + now.Millisecond + ".zip";
+            string path = ReceivePath + Path.GetFileNameWithoutExtension(task.Info.Name) + now.ToString("yyyyMMddhhmmss") + now.Millisecond + ".zip";
             Job job = new Job(task, path);
 
             // Push the job in the receiving jobs list
@@ -123,11 +123,11 @@ namespace FileShareConsole
             // registering a callback on the related event.
             iterator.BeforeIteratorClosed += () => {
                 if (job.Task.Info.Type == FileTransfer.FileInfo.FType.DIRECTORY) {
-                    ZipFile.ExtractToDirectory(path, GetUniqueFilePath(Settings.Instance.DefaultRecvPath + job.Task.Info.Name));
+                    ZipFile.ExtractToDirectory(path, GetUniqueFilePath(ReceivePath + job.Task.Info.Name));
                 } else using (ZipArchive archive = ZipFile.OpenRead(path)) {
                     string tempPath;
                     foreach (ZipArchiveEntry entry in archive.Entries) {
-                        tempPath = GetUniqueFilePath(Settings.Instance.DefaultRecvPath + entry.Name);
+                        tempPath = GetUniqueFilePath(ReceivePath + entry.Name);
                         entry.ExtractToFile(tempPath);
                     }
                 }

@@ -253,6 +253,15 @@ class Settings : System.ComponentModel.INotifyPropertyChanged
 
             // ... after the file update
             isInvisible = value;
+            if (isInvisible)
+            {
+                HelloProtocol.HelloSenderThread.visibilityChange.Reset();
+            }
+            else
+            {
+                HelloProtocol.HelloSenderThread.visibilityChange.Set();
+
+            }
             NotifyPropertyChanged();
 
         }
@@ -272,7 +281,7 @@ class Settings : System.ComponentModel.INotifyPropertyChanged
             return defaultRecvPath;
         }
         set {
-            defaultRecvPath = value;
+            defaultRecvPath = value + "\\"; ;
             NotifyPropertyChanged();
         }
     }
