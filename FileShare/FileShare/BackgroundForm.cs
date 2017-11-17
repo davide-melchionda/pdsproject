@@ -38,7 +38,7 @@ namespace FileShare {
         private void notifyIcon1_MouseClick(object sender, MouseEventArgs e) {
             
             // If the click was performed with the left button
-            if (e.Button != MouseButtons.Right) {
+            if (e.Button != MouseButtons.Right && notificationWindow == null) {
 
                 // Create a new window
                 notificationWindow = new NotificationWindow();
@@ -47,8 +47,8 @@ namespace FileShare {
                 //  window occours)
                 notificationWindow.Deactivated += (Object window, EventArgs args) => {
                     // Close the window and set the variable to null
-                    //notificationWindow.Close();
-                    //notificationWindow = null;
+                    notificationWindow.Close();
+                    notificationWindow = null;
                 };
 
                 /* Compute the position of the window beore showing it */
