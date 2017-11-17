@@ -7,6 +7,7 @@ using FileShareConsole;
 using static StorageModule;
 using System.Net;
 using System.Threading;
+using static FileShareConsole.JobZipStorageModule;
 
 namespace FileTransfer
 {
@@ -20,6 +21,10 @@ namespace FileTransfer
 
         public delegate bool OnRequest(Task task);
         public event OnRequest OnRequestReceived;
+
+        public delegate void OnJobInitialized(Job j);
+        public event OnJobInitialized JobInitialized;
+
         private TransferNetworkModule network;
         private byte[] chunk = new byte[8192];
         private static ManualResetEvent mre = new ManualResetEvent(false);
@@ -30,45 +35,43 @@ namespace FileTransfer
             network = new TransferNetworkModule();
         }
 
-        public override TransferResult transfer()
-        {
-            try {   
-                TransmissionPacket received = network.receivePacket(socket); //receive a network packet from the client
-                if (received.Type.ToString() != "request") {
-                    //TODO This must raise an exception cause we don't expect a client to send responsens 
-                } else {
+        public override TransferResult transfer() {
 
-                    RequestPacket request = (RequestPacket)received;
+            TransmissionPacket received = network.receivePacket(socket); //receive a network packet from the client
+            if (received.Type.ToString() != "request") {
+                //TODO This must raise an exception cause we don't expect a client to send responsens 
+            } else {
 
-                    // Try to acquire a semaphore to pass the high threshold
-                    // If more than a certain number of servers are active, blocks.
-                    protocol.enterServer((socket.RemoteEndPoint as IPEndPoint).Address.ToString());
+                RequestPacket request = (RequestPacket)received;
 
-                    // If settings allow us to receive anything or if the user confirms that he wants to accept
-                    if (Settings.Instance.AutoAcceptFiles || OnRequestReceived(request.Task)) {
-                        // Send a positive response
-                        network.SendPacket(socket, network.generateResponsetStream(true));
+                // Try to acquire a semaphore to pass the high threshold
+                // If more than a certain number of servers are active, blocks.
+                protocol.enterServer((socket.RemoteEndPoint as IPEndPoint).Address.ToString());
 
-                        /* Create a Job for the incoming task. */
-                        JobZipStorageModule module = new JobZipStorageModule();
-                        FileIterator iterator = module.createJob(request.Task);
+                // If settings allow us to receive anything or if the user confirms that he wants to accept
+                if (Settings.Instance.AutoAcceptFiles || OnRequestReceived(request.Task)) {
+                    // Send a positive response
+                    network.SendPacket(socket, network.generateResponsetStream(true));
 
-                        // Start file trasfer
-                        int receivedBytes = 0;
-                        while (iterator.hasNext()) {
-                            receivedBytes = socket.Receive(chunk);
-                            iterator.write(chunk, receivedBytes);
-                        }
+                    /* Create a Job for the incoming task. */
+                    JobZipStorageModule module = new JobZipStorageModule();
+                    FileIterator iterator = module.createJob(request.Task);
+                    // Execute operations when job has been created
+                    JobInitialized?.Invoke(((JobFileIterator)iterator).Job);
 
-                        // Close the iterator so to release resources
-                        iterator.close();
-                    } else { // ... if the user doesn't accepted to receive the file
-                        // Send a negative response
-                        network.SendPacket(socket, network.generateResponsetStream(false));
+                    // Start file trasfer
+                    int receivedBytes = 0;
+                    while (iterator.hasNext()) {
+                        receivedBytes = socket.Receive(chunk);
+                        iterator.write(chunk, receivedBytes);
                     }
+
+                    // Close the iterator so to release resources
+                    iterator.close();
+                } else { // ... if the user doesn't accepted to receive the file
+                         // Send a negative response
+                    network.SendPacket(socket, network.generateResponsetStream(false));
                 }
-            } catch (Exception e) {
-                Console.WriteLine("exception raised: " + e.ToString());
             }
 
             // Release the slot
