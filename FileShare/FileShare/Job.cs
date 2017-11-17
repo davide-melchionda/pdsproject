@@ -72,17 +72,12 @@ namespace FileTransfer
 
         public int Percentage {
             get {
-                // TODO
-                // Computes the percentage
                 double tmp = (double)SentByte / (double)Task.Size;
                 double val = (tmp * 100);
                 if (val < 0)
                     ;
                 return (int)val;
             }
-            //set {
-            //    percentage = value;
-            //}
         }
 
         /**

@@ -11,13 +11,6 @@
         Height="350" 
         Width="525" >
     <Grid>
-        <Frame Name="NotificationFrame" Source="Page1.xaml" />
+        <Frame Name="NotificationFrame" Source="NotificationPage.xaml" />
     </Grid>
-  <!--
-		WindowStyle="None"
-    WindowStartupLocation="CenterScreen"
-        Title="MainWindow" Height="519.167" Width="376.6">
-	<Grid>
-		<Frame Name="NotificationFrame" Margin="0,0,10.2,82.6"/>
-	</Grid>-->
 </Window>
