@@ -80,6 +80,10 @@ namespace FileTransfer
             }
         }
 
+        public bool Active {
+            get; set;
+        }
+
         /**
          * Public constructor
          */
@@ -87,6 +91,7 @@ namespace FileTransfer
             timestamp = DateTime.Now;
             this.task = task;
             this.filePath = filePath;
+            Active = true;
         }
     }
 }
