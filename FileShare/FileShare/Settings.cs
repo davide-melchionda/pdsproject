@@ -311,7 +311,6 @@ class Settings : System.ComponentModel.INotifyPropertyChanged
     /**
     * Current Username
     */
-    private string currentUsername = "An anonymous User";
 
 
     /**
@@ -321,11 +320,11 @@ class Settings : System.ComponentModel.INotifyPropertyChanged
     {
         get
         {
-            return currentUsername;
+            return this.LocalPeer.Name;
         }
         set
         {
-            currentUsername = value;
+            this.LocalPeer.Name = value;
             NotifyPropertyChanged();
 
         }
@@ -342,7 +341,7 @@ class Settings : System.ComponentModel.INotifyPropertyChanged
         // Retrieve configuration from a file
 
         // For now: the local peer is randomly initialized
-        localPeer = new Peer(currentUsername+":"+new Random().Next(), currentUsername, "unknown_ip");
+        localPeer = new Peer("Anonymouse user"+":"+new Random().Next(), "Anonymouse user", "unknown_ip");
 
     }
 
