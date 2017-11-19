@@ -13,7 +13,9 @@ using System.Threading.Tasks;
  * of this class are the parameter of the configuration retrieved from a file
  * at the boot of the application.
  */
-class Settings : System.ComponentModel.INotifyPropertyChanged
+[Serializable]
+
+public class Settings : System.ComponentModel.INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler PropertyChanged;
 
@@ -187,7 +189,7 @@ class Settings : System.ComponentModel.INotifyPropertyChanged
 
     public void updatePeerAddress(string newAddress) {
         localPeer.Ipaddress = newAddress;
-        localPeer.Id = localPeer.Name + ":" + localPeer.Ipaddress;
+        localPeer.Id = localPeer.Name + ":" + localPeer.Ipaddress+":" + DateTime.Now;
     }
 
     private int tcpReceivingPort = /* DEFAULT */ 9000;
@@ -311,7 +313,6 @@ class Settings : System.ComponentModel.INotifyPropertyChanged
     /**
     * Current Username
     */
-    private string currentUsername = "An anonymous User";
 
 
     /**
@@ -321,11 +322,11 @@ class Settings : System.ComponentModel.INotifyPropertyChanged
     {
         get
         {
-            return currentUsername;
+            return this.LocalPeer.Name;
         }
         set
         {
-            currentUsername = value;
+            this.LocalPeer.Name = value;
             NotifyPropertyChanged();
 
         }
@@ -342,7 +343,7 @@ class Settings : System.ComponentModel.INotifyPropertyChanged
         // Retrieve configuration from a file
 
         // For now: the local peer is randomly initialized
-        localPeer = new Peer(currentUsername+":"+new Random().Next(), currentUsername, "unknown_ip");
+        localPeer = new Peer("Anonymouse user"+":"+new Random().Next(), "Anonymouse user", "unknown_ip");
 
     }
 

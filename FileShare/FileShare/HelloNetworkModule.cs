@@ -154,6 +154,7 @@ namespace HelloProtocol {
 
         }
 
+
         /**
          * Allows to send a unicast hello packet to the common multicast 
          * address used by the hello protocol

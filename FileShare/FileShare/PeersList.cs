@@ -89,20 +89,22 @@ namespace HelloProtocol {
         }
 
         /**
-         * Given a key and a DateTime object, updates the timestamp of the
+         * Given a key and a DateTime object, updates the timestamp and the peer name of the
          * entry related to the peer associated to that key to the DateTime
          * argument.
          * Throws a PeerNotFoundEception if the peer was not present in the
          * table.
          */
-        public void updateTimestamp(string key, DateTime newTime) {
+        public void updatePeer(string key, DateTime newTime, string name) {
             PeerEntry p;
             if (map.TryGetValue(key, out p)) {
                 p.Timestamp = newTime;
+                p.Peer.Name = name;
             } else {
                 throw new PeerNotFoundException();
             }
         }
+
 
         /**
          * Returns a list of all the peers in the table.
