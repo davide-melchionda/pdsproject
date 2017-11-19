@@ -13,7 +13,9 @@ using System.Threading.Tasks;
  * of this class are the parameter of the configuration retrieved from a file
  * at the boot of the application.
  */
-class Settings : System.ComponentModel.INotifyPropertyChanged
+[Serializable]
+
+public class Settings : System.ComponentModel.INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler PropertyChanged;
 
@@ -187,7 +189,7 @@ class Settings : System.ComponentModel.INotifyPropertyChanged
 
     public void updatePeerAddress(string newAddress) {
         localPeer.Ipaddress = newAddress;
-        localPeer.Id = localPeer.Name + ":" + localPeer.Ipaddress;
+        localPeer.Id = localPeer.Name + ":" + localPeer.Ipaddress+":" + DateTime.Now;
     }
 
     private int tcpReceivingPort = /* DEFAULT */ 9000;

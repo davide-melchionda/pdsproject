@@ -24,7 +24,7 @@ public partial class App : Application {
         BackgroundForm bf;
         
         void AppStartup(object sender, StartupEventArgs e) {
-
+            SettingsPersistence.readSettings();
             // Start the thread responsible of the neighbor discovery process
             new HelloThread().run();
 
@@ -82,7 +82,7 @@ public partial class App : Application {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         public void AppExit(object sender, EventArgs e) {
-            bf.Close();
+            bf.Close();SettingsPersistence.writeSettings();
             // Process completed successfully
             Environment.Exit(0);
         }

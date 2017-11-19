@@ -45,6 +45,7 @@ public class Peer {
             ipaddress = value;
         }
     }
+    public Peer() { }
 
     public Peer(string id, string name, string ipaddress) {
         Id = id;
