@@ -32,7 +32,7 @@
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <Grid>
-                                            <ProgressBar Name="SendingProgBar" Maximum="100" Height="10" Width="100" Value="{Binding Path=Job.Percentage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                            <ProgressBar Name="SendingProgBar" Loaded="ProgBarLoaded" Maximum="100" Height="10" Width="100">
                                                 <ProgressBar.Style>
                                                     <Style TargetType="ProgressBar">
                                                         <Setter Property="Visibility" Value="Visible" />
@@ -85,7 +85,7 @@
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <Grid>
-                                            <ProgressBar Name="ReceivingProgBar" Maximum="100" Height="10" Width="100" Value="{Binding Path=Job.Percentage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                            <ProgressBar Name="ReceivingProgBar" Loaded="ProgBarLoaded" Maximum="100" Height="10" Width="100">
                                                 <ProgressBar.Style>
                                                     <Style TargetType="ProgressBar">
                                                         <Setter Property="Visibility" Value="Visible" />
