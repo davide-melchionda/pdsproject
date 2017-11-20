@@ -106,7 +106,7 @@ namespace FileShareConsole
         {
             // Retrieves current date and computes a string to uniquely identiy the task
             DateTime now = DateTime.Now;
-            string path = ReceivePath + Path.GetFileNameWithoutExtension(task.Info.Name) + now.ToString("yyyyMMddhhmmss") + now.Millisecond + ".zip";
+            string path = ReceivePath +"\\"+ Path.GetFileNameWithoutExtension(task.Info.Name) + now.ToString("yyyyMMddhhmmss") + now.Millisecond + ".zip";
             Job job = new Job(task, path);
 
             // Push the job in the receiving jobs list
@@ -127,11 +127,11 @@ namespace FileShareConsole
                     return;
 
                 if (job.Task.Info.Type == FileTransfer.FileInfo.FType.DIRECTORY) {
-                    ZipFile.ExtractToDirectory(path, GetUniqueFilePath(ReceivePath + job.Task.Info.Name));
+                    ZipFile.ExtractToDirectory(path, GetUniqueFilePath(ReceivePath +"\\"+ job.Task.Info.Name));
                 } else using (ZipArchive archive = ZipFile.OpenRead(path)) {
                     string tempPath;
                     foreach (ZipArchiveEntry entry in archive.Entries) {
-                        tempPath = GetUniqueFilePath(ReceivePath + entry.Name);
+                        tempPath = GetUniqueFilePath(ReceivePath +"\\"+ entry.Name);
                         entry.ExtractToFile(tempPath);
                     }
                 }

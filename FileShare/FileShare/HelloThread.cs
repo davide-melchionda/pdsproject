@@ -8,6 +8,7 @@ namespace HelloProtocol
     {
         public HelloThread()
         {
+            AppDomain.CurrentDomain.ProcessExit += new EventHandler(OnProcessExit);
 
         }
 
@@ -57,29 +58,67 @@ namespace HelloProtocol
             }
             else if (packet.Type == HelloPacket.PacketType.Query)
             {  // If it's a query
-                Logger.log(Logger.HELLO_DEBUG, "Packet received from " + senderip + ". Type: " + packet.Type + "\n"); // DEBUG
-                Logger.log(Logger.HELLO_DEBUG, "I'll send a Presentation packet!\n"); // DEBUG
-                // Send a presentation packet to the peer who is requiring information
-                network.sendUnicast(new PresentationPacket(Settings.Instance.LocalPeer), senderip);
+                lock (Settings.Instance)
+                {
+                    if (!Settings.Instance.IsInvisible)
+                    {
+                        Logger.log(Logger.HELLO_DEBUG, "Packet received from " + senderip + ". Type: " + packet.Type + "\n"); // DEBUG
+                        Logger.log(Logger.HELLO_DEBUG, "I'll send a Presentation packet!\n"); // DEBUG
+                                                                                              // Send a presentation packet to the peer who is requiring information
+                        network.sendUnicast(new PresentationPacket(Settings.Instance.LocalPeer), senderip);
+                    }
+                }
             }
             else if (packet.Type == HelloPacket.PacketType.Presentation)
             {  // If it's a presentation
+                Peer localPeer = Settings.Instance.LocalPeer;
                 PresentationPacket presentation = (PresentationPacket)packet;
                 Logger.log(Logger.HELLO_DEBUG, "Packet received from " + presentation.Peer.Id + ". Type: " + packet.Type + "\n"); // DEBUG
-                // If the peer is unknown
-                if (peers.get(presentation.Peer.Id) == null)
+                //Don't accept presentation from myself
+                if (presentation.Peer.Id != localPeer.Id)
                 {
-                    Logger.log(Logger.HELLO_DEBUG, "I don't know the sender. I'll add him in the peers table!\n"); // DEBUG
-                    // Put the peer in the peers table
-                    peers.put(presentation.Peer);
+                    // If the peer is unknown
+
+                    if (peers.get(presentation.Peer.Id) == null)
+                    {
+                        Logger.log(Logger.HELLO_DEBUG, "I don't know the sender. I'll add him in the peers table!\n"); // DEBUG
+                                                                                                                       // Put the peer in the peers table
+                        peers.put(presentation.Peer);
+                    }
+                    else
+                        Logger.log(Logger.HELLO_DEBUG, "I already know the sender. Why does he sent me this packet?\n"); // DEBUG
                 }
-                else
-                    Logger.log(Logger.HELLO_DEBUG, "I already know the sender. Why does he sent me this packet?\n"); // DEBUG
+                Logger.log(Logger.HELLO_DEBUG, "UPDATED PEERS LIST\n"); // DEBUG
+                Logger.log(Logger.HELLO_DEBUG, "KEY\t\tNAME\t\tADDRESS\n"); // DEBUG
+                foreach (Peer p in peers.Peers)
+                    Logger.log(Logger.HELLO_DEBUG, p.Id + "\t\t" + p.Name + "\t\t" + p.Ipaddress + "\n"); // DEBUG
             }
-            Logger.log(Logger.HELLO_DEBUG, "UPDATED PEERS LIST\n"); // DEBUG
-            Logger.log(Logger.HELLO_DEBUG, "KEY\t\tNAME\t\tADDRESS\n"); // DEBUG
-            foreach (Peer p in peers.Peers)
-                Logger.log(Logger.HELLO_DEBUG, p.Id + "\t\t" + p.Name + "\t\t" + p.Ipaddress + "\n"); // DEBUG
+            else if (packet.Type == HelloPacket.PacketType.GoodBye)
+            {  // If it's a GoodBye
+                Peer localPeer = Settings.Instance.LocalPeer;
+                GoodByePacket goodBye = (GoodByePacket)packet;
+                Logger.log(Logger.HELLO_DEBUG, "Packet received from " + goodBye.PeerId + ". Type: " + packet.Type + "\n"); // DEBUG
+                //Don't accept goodBye from myself
+                if (goodBye.PeerId != localPeer.Id)
+                {
+                    // If the peer is unknown i didn't know the sender, no action required
+
+                    if (peers.get(goodBye.PeerId) == null)
+
+                        Logger.log(Logger.HELLO_DEBUG, "I don't know the sender. I'll do nothing!\n"); // DEBUG
+
+
+                    else
+                    {
+                        Logger.log(Logger.HELLO_DEBUG, "I know the sender. I need to remove him from my online peers!\n"); // DEBUG
+                        peers.del(goodBye.PeerId);                                                                      //remove the peer from my peersList
+                    }
+                    Logger.log(Logger.HELLO_DEBUG, "UPDATED PEERS LIST\n"); // DEBUG
+                    Logger.log(Logger.HELLO_DEBUG, "KEY\t\tNAME\t\tADDRESS\n"); // DEBUG
+                    foreach (Peer p in peers.Peers)
+                        Logger.log(Logger.HELLO_DEBUG, p.Id + "\t\t" + p.Name + "\t\t" + p.Ipaddress + "\n"); // DEBUG
+                }
+            }
         }
 
         protected override void execute()
@@ -101,7 +140,9 @@ namespace HelloProtocol
             cleanup.run();
 
             network.HelloPacketReception += onPacketReceived;
-            Settings.Instance.PropertyChanged += Instance_PropertyChanged;
+            Settings.Instance.PropertyChanged += Instance_CurrentUsernameChanged;
+            Settings.Instance.PropertyChanged += Instance_visibilityChanged;
+
             while (true)
             {
                 network.receive();
@@ -116,7 +157,7 @@ namespace HelloProtocol
 
         }
 
-        private void Instance_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void Instance_CurrentUsernameChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             HelloNetworkModule network = HelloNetworkModule.Instance;
 
@@ -125,6 +166,28 @@ namespace HelloProtocol
                 network.send(new PresentationPacket(Settings.Instance.LocalPeer));
 
             }
+        }
+
+        private void Instance_visibilityChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            HelloNetworkModule network = HelloNetworkModule.Instance;
+
+            if (String.Compare(e.PropertyName, "IsInvisible") == 0)
+            {
+                sendGoodbye();
+            }
+        }
+
+        public void OnProcessExit(object sender, EventArgs e)
+        {
+            sendGoodbye();
+        }
+
+        private void sendGoodbye()
+        {
+            HelloNetworkModule network = HelloNetworkModule.Instance;
+            network.send(new GoodByePacket(Settings.Instance.LocalPeer.Id));
+
         }
     }
 }

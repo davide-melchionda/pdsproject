@@ -122,7 +122,6 @@ namespace FileTransfer
          * Increment the value of the element with key 'id' in the dictionary.
          */
          private void dictionaryValueIncrement(string id) {
-            int count;
             activeServersCount.AddOrUpdate(id, 1, (key, value) => value + 1);
         }
 

@@ -1,9 +1,24 @@
 ﻿
-public class Peer {
-    
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+
+public class Peer : INotifyPropertyChanged{
+
     /**
      * Unique identifier of the peer in the network.
      */
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    protected virtual void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
+    {
+        var handler = PropertyChanged;
+        if (handler != null)
+            handler(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+
+
     private string id;
 
     /**
@@ -18,6 +33,7 @@ public class Peer {
      */
     private string ipaddress;
 
+   
     /**
      * Properties coresponding to the fields.
      */
@@ -27,6 +43,7 @@ public class Peer {
         }
         set {
             id = value;
+            NotifyPropertyChanged();
         }
     }
     public string Name {
@@ -35,6 +52,7 @@ public class Peer {
         }
         set {
             name = value;
+            NotifyPropertyChanged();
         }
     }
     public string Ipaddress {
@@ -51,5 +69,6 @@ public class Peer {
         Id = id;
         Name = name;
         Ipaddress = ipaddress;
+        NotifyPropertyChanged();
     }
 }

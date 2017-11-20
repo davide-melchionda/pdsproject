@@ -125,6 +125,8 @@ namespace HelloProtocol {
                 packet = JsonConvert.DeserializeObject<QueryPacket>(jsonRecvPacket);
             else if (o["Type"].ToString() == HelloPacket.PacketType.Presentation.ToString())    // PRESENTATION
                 packet = JsonConvert.DeserializeObject<PresentationPacket>(jsonRecvPacket);
+            else if (o["Type"].ToString() == HelloPacket.PacketType.GoodBye.ToString())    // PRESENTATION
+                packet = JsonConvert.DeserializeObject<GoodByePacket>(jsonRecvPacket);
             else
                 throw new Exception("Error parsing the received string into an HelloPacket: unknown type.");    // DEBUG
 

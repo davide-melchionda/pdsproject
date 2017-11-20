@@ -18,9 +18,14 @@ namespace FileShare
         {
             InitializeComponent();
             SettingsPage page = new SettingsPage();
+            page.OnClosed += Page_OnClosed;
             this.SettingsFrame.Navigate(page);
             //this.Loaded += new RoutedEventHandler(Window_Loaded);
         }
+
+        private void Page_OnClosed()
+        {
+            this.Close();        }
 
         //private void Window_Loaded(object sender, RoutedEventArgs e)
         //{
