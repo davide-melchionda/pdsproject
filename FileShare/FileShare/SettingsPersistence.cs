@@ -9,13 +9,15 @@ using System.ComponentModel;
 
 namespace FileShare
 {
+    /**
+     * Exposes two metods to save settings on close and load settings on start if the file is available
+     */
     class SettingsPersistence
     {
-        private static string settingsFile = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\settingssdss.txt";
-      
+        private static string settingsFile = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\Settings.txt";
+
         public static void readSettings()
         {
-            //Settings.Instance.PropertyChanged += Instance_PropertyChanged;
             JsonSerializerSettings settings = new JsonSerializerSettings();
             settings.Converters.Add(new IPAddressConverter());
 
@@ -25,36 +27,60 @@ namespace FileShare
                 {
                     StringBuilder sb = new StringBuilder();
                     sb.Append(sR.ReadToEnd());
-                    Settings appSettings = (Settings)JsonConvert.DeserializeObject(sb.ToString(), typeof(Settings), settings);
+                    StorableSettings appSettings = (StorableSettings)JsonConvert.DeserializeObject(sb.ToString(), typeof(StorableSettings), settings);
                     Settings.Instance.AlwaysUseDefault = appSettings.AlwaysUseDefault;
-                    Settings.Instance.AutoAcceptFiles = appSettings.AutoAcceptFiles;
+                    Settings.Instance.AutoAcceptFiles = appSettings.AutoAccept;
                     Settings.Instance.CurrentUsername = appSettings.CurrentUsername;
-                    Settings.Instance.DefaultRecvPath = appSettings.DefaultRecvPath;
+                    Settings.Instance.DefaultRecvPath = appSettings.DefaultPath;
                     Settings.Instance.IsInvisible = appSettings.IsInvisible;
-              ;
+
                 }
             }
         }
-
-       
-
+        
         public static void writeSettings()
         {
+            StorableSettings storable= new StorableSettings();
+            storable.IsInvisible = Settings.Instance.IsInvisible;
+            storable.AutoAccept = Settings.Instance.AutoAcceptFiles;
+            storable.CurrentUsername = Settings.Instance.CurrentUsername;
+            storable.DefaultPath = Settings.Instance.DefaultRecvPath;
+            storable.AlwaysUseDefault = Settings.Instance.AlwaysUseDefault;
+          
+            using (StreamWriter sw = File.CreateText(settingsFile))
 
-            using (StreamWriter sw = new StreamWriter(settingsFile))
             {
                 JsonSerializerSettings settings = new JsonSerializerSettings();
                 settings.Converters.Add(new IPAddressConverter());
-                sw.WriteLine(JsonConvert.SerializeObject(Settings.Instance, settings));
-                //TODO non funge poiché ipaddress necessita serializer a se
-              
-             
+                sw.WriteLine(JsonConvert.SerializeObject(storable, settings));
+
+
             }
         }
 
-        //private static void Instance_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        //{
-        //    writeSettings();
-        //}
+        /**
+        * Internal class used to store only the setting's properties that we want to make persistent
+        */
+
+        class StorableSettings
+        {
+            private bool isInvisible;
+            private bool alwaysUseDefault;
+            private bool autoAccept;
+            private string defaultPath;
+            private string currentUsername;
+
+            public bool IsInvisible { get => isInvisible; set => isInvisible = value; }
+            public bool AlwaysUseDefault { get => alwaysUseDefault; set => alwaysUseDefault = value; }
+            public bool AutoAccept { get => autoAccept; set => autoAccept = value; }
+            public string DefaultPath { get => defaultPath; set => defaultPath = value; }
+            public string CurrentUsername { get => currentUsername; set => currentUsername = value; }
+
+            public StorableSettings() { }
+
+        }
     }
+
+
+ 
 }

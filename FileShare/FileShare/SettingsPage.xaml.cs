@@ -10,10 +10,12 @@ namespace FileShare
     public partial class SettingsPage : Page 
     {
         private Settings settings;
-
+        public delegate void Close();
+        public event Close OnClosed;
         public SettingsPage()
         {
-            settings = Settings.Instance;
+              
+        settings = Settings.Instance;
             DataContext = settings;
             InitializeComponent();
         
@@ -22,25 +24,11 @@ namespace FileShare
         }
 
 
-        private void Confirm_Button_Click(object sender, RoutedEventArgs e)
+        private void Close_Button_Click(object sender, RoutedEventArgs e)
         {
-            //settings.CurrentUsername = UsernameTB.Text;
-            //settings.AutoAcceptFiles = AutoReceiveCB.IsChecked??false;
-            //settings.IsInvisible = InvisibleStateCB.IsChecked??false;
-            //settings.AlwaysUseDefault = alwaysDefault.IsChecked ?? false;
-
-            //if (settings.IsInvisible)
-            //{
-            //    HelloProtocol.HelloSenderThread.visibilityChange.Reset();
-            //}
-            //else
-            //{
-            //    HelloProtocol.HelloSenderThread.visibilityChange.Reset();
-
-            //}
-
-                
+            OnClosed();  
         }
+
         private void Path_Button_Click(object sender, RoutedEventArgs e)
         {
             FolderBrowserDialog dialog = new FolderBrowserDialog();

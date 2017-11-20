@@ -22,12 +22,12 @@ public partial class App : Application {
         /// logic behind the notify icon shwon in the system tray. */
         /// </summary> 
         BackgroundForm bf;
-        
+   
         void AppStartup(object sender, StartupEventArgs e) {
             SettingsPersistence.readSettings();
             // Start the thread responsible of the neighbor discovery process
             new HelloThread().run();
-
+            
             // Start the thread responsible of receiving request of transferring files
             ServerClass receiver= new ServerClass();
             receiver.RequestReceived += RequestMessageBox.Show;

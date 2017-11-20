@@ -18,10 +18,13 @@ namespace HelloProtocol {
             Query,          // A query packet is sent when the peer receives a
                             // (keepalive) packet from an unknown peer.
                             // This packet ins sent in unicast.
-            Presentation    // A presentation packet is sent when a peer receives
+            Presentation,   // A presentation packet is sent when a peer receives
                             // a query packet from another peer. It contains all 
                             // the relevan informations about the sender peer.
                             // This packet is sent in unicast.
+            GoodBye         // A GoodBye packet is sent when the application closes
+                            // in a managed way or when the host goes invisible 
+                                              
         };
 
         /**

@@ -30,12 +30,13 @@
 
 			<CheckBox Name ="alwaysDefault" IsChecked="{Binding Path=AlwaysUseDefault}" >Use default path in manual accept receive </CheckBox>
 
-			<!--<Button Content="CONFIRM"
+			<Button Content="Close"
                 HorizontalAlignment="right"
                 Margin="10,10,10,10"
                 VerticalAlignment="Top"
                 Width="75"
-                Click="Confirm_Button_Click"/>-->
+				IsDefault="True"
+                Click="Close_Button_Click"/>
 		</StackPanel>
 	</Grid>
 </Page>

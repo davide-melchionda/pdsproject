@@ -255,15 +255,6 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
 
             // ... after the file update
             isInvisible = value;
-            if (isInvisible)
-            {
-                HelloProtocol.HelloSenderThread.visibilityChange.Reset();
-            }
-            else
-            {
-                HelloProtocol.HelloSenderThread.visibilityChange.Set();
-
-            }
             NotifyPropertyChanged();
 
         }
@@ -273,7 +264,7 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
      * The default path on the file system in which save received files.
      */
     //private string defaultRecvPath = @"C:\Users\franc\Desktop\recv\";
-    private string defaultRecvPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)+ "\\" ;
+    private string defaultRecvPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) ;
     //private string defaultRecvPath = @"C:\Users\vm-dm-win\Desktop\recv\";
     /**
      * defaultRecvPath property
@@ -283,7 +274,7 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
             return defaultRecvPath;
         }
         set {
-            defaultRecvPath = value + "\\"; ;
+            defaultRecvPath = value ; ;
             NotifyPropertyChanged();
         }
     }
