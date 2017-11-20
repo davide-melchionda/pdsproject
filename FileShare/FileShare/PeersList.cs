@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -14,7 +15,7 @@ namespace HelloProtocol {
      ** *******************************************************************/
     internal class PeersList {
 
-        Dictionary<string, PeerEntry> map;
+        private ConcurrentDictionary<string, PeerEntry> map;
 
         /** 
          * SINGLETON CREATIONAL PATTERN
@@ -51,7 +52,7 @@ namespace HelloProtocol {
          * Protected constructor 
          */
         protected PeersList() {
-            map = new Dictionary<string, PeerEntry>();
+            map = new ConcurrentDictionary<string, PeerEntry>();
         }
 
         /**
@@ -61,7 +62,7 @@ namespace HelloProtocol {
          */
         public void put(Peer p) {
             //map.Add(p.Id, new PeerEntry(p, new DateTime()));
-            map.Add(p.Id, new PeerEntry(p, DateTime.Now));
+            map.TryAdd(p.Id, new PeerEntry(p, DateTime.Now));
             if (PeerInserted != null)
                 PeerInserted(p);
         }
@@ -82,10 +83,10 @@ namespace HelloProtocol {
          * Deletes the entry related to the peer with the specified key from the table.
          */
          public void del(string key) {
-            Peer removed = map[key].Peer;
-            map.Remove(key);
-            if (PeerRemoved != null)
-                PeerRemoved(removed);
+            //Peer removed = map[key].Peer;
+            PeerEntry removed = null;
+            map.TryRemove(key, out removed);
+            PeerRemoved?.Invoke(removed.Peer);
         }
 
         /**
