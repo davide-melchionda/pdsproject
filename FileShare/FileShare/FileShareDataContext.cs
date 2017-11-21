@@ -119,6 +119,7 @@ namespace FileShare {
                 while (true) {
                     App.Current.Dispatcher.Invoke((Action)delegate {
                         prog.Value = item.Job.Percentage;
+                        item.UpdateTimeLeft();
                     });
                     if (item.Job.Percentage == 100)
                         break;
@@ -126,62 +127,5 @@ namespace FileShare {
                 }
             });
         }
-
-        ///// <summary>
-        ///// A PropertyChangedEventHandler to manage the change of percentage in a Job. This operation must
-        ///// be carefully handled, in order to avoid heavy work charge on the ui thread.
-        ///// Anyway, the ui thrad can choose if it wants to listen on the changes on the property Percentage
-        ///// of the job (this canges appen quite often) or on the property Parcentage of listedJob (this 
-        ///// changes are quite rare, because they are guaranteed to appen only after a minum time - e.g. 300 ms -
-        ///// from the previous one and only if a real changement in Percentage value appened).
-        ///// Listening on changes on Percentage property of ListedJob is less heavy for a ui thread.
-        ///// </summary>
-        //private class PercentageChangedEventHandler {
-        //    /// <summary>
-        //    /// The listed job on which this PercentageChangedEventHandler will work
-        //    /// </summary>
-        //    public ListedJob ListedJob { get; set; }
-
-        //    /// <summary>
-        //    /// PropertyChangedEventHandler retrieved to manage the change of percentage
-        //    /// on the job associated to ListedJob.
-        //    /// </summary>
-        //    public PropertyChangedEventHandler UpdatePercentage {
-        //        get {
-        //            return updatePercentage;
-        //        }
-        //    }
-
-        //    /// <summary>
-        //    /// Constructor
-        //    /// </summary>
-        //    /// <param name="listedJob"></param>
-        //    public PercentageChangedEventHandler(ListedJob listedJob) {
-        //        this.ListedJob = listedJob;
-        //    }
-
-        //    /// <summary>
-        //    /// The first time 
-        //    /// </summary>
-        //    /// <param name="sender"></param>
-        //    /// <param name="args"></param>
-        //    public async void updatePercentage(object sender, PropertyChangedEventArgs args) {
-        //        if (args.PropertyName == "Percentage") {
-
-        //            ListedJob.Job.PropertyChanged -= updatePercentage;
-
-        //            ListedJob.Percentage = ListedJob.Job.Percentage;    // retrieves Percentage value
-
-        //            await System.Threading.Tasks.Task.Run(() => {
-        //                while (ListedJob.Percentage != 100) {
-        //                    //if (ListedJob.Job.Percentage != ListedJob.Percentage)
-        //                        ListedJob.Percentage = ListedJob.Job.Percentage;
-        //                    System.Threading.Thread.Sleep(1000);
-        //                }
-        //            });
-        //        }
-        //    }
-
-        //}
     }
 }
