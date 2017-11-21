@@ -52,5 +52,10 @@ namespace FileShare {
             }); 
         }
 
+        private void ProgBarLoaded(object sender, RoutedEventArgs args) {
+            ProgressBar prog = sender as ProgressBar;
+            (DataContext as FileShareDataContext).manageProgressBar(prog);
+        }
+
     }
 }

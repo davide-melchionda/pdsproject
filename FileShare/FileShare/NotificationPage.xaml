@@ -27,12 +27,11 @@
                     <ListView.View>
                         <GridView>
                             <GridViewColumn DisplayMemberBinding="{Binding Path=Job.Task.Info.Name}" Header="File" Width="100"></GridViewColumn>
-                            <!--<GridViewColumn DisplayMemberBinding="{Binding Percentage}" Header="Progress" Width="100"></GridViewColumn>-->
                             <GridViewColumn Header="Progress" Width="100">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <Grid>
-                                            <ProgressBar Name="SendingProgBar" Maximum="100" Height="10" Width="100" Value="{Binding Path=Job.Percentage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                            <ProgressBar Name="SendingProgBar" Loaded="ProgBarLoaded" Maximum="100" Height="10" Width="100">
                                                 <ProgressBar.Style>
                                                     <Style TargetType="ProgressBar">
                                                         <Setter Property="Visibility" Value="Visible" />
@@ -65,6 +64,24 @@
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
+                            <GridViewColumn Header="Al completamento" Width="50">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Name="SendingTimeLeft" Text="{Binding RemainingTime}">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding ElementName=SendingTimeLeft, Path=DataContext.Completed}" Value="True">
+                                                            <Setter Property="Visibility" Value="Hidden" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
                             <GridViewColumn Header="Annulla" Width="100">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
@@ -85,7 +102,7 @@
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <Grid>
-                                            <ProgressBar Name="ReceivingProgBar" Maximum="100" Height="10" Width="100" Value="{Binding Path=Job.Percentage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                            <ProgressBar Name="ReceivingProgBar" Loaded="ProgBarLoaded" Maximum="100" Height="10" Width="100">
                                                 <ProgressBar.Style>
                                                     <Style TargetType="ProgressBar">
                                                         <Setter Property="Visibility" Value="Visible" />
@@ -115,6 +132,24 @@
                                                 </TextBlock.Style>
                                             </TextBlock>
                                         </Grid>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="Al completamento" Width="50">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Name="ReceivingTimeLeft" Text="{Binding RemainingTime}">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding ElementName=ReceivingTimeLeft, Path=DataContext.Completed}" Value="True">
+                                                            <Setter Property="Visibility" Value="Hidden" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>

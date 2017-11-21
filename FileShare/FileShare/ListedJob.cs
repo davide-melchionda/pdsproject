@@ -14,7 +14,18 @@ namespace FileShare {
     /// </summary>
     class ListedJob : INotifyPropertyChanged {
 
+        /// <summary>
+        /// Implementation of INotifyPropertyChange: property changed event.
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
+        
+        /// <summary>
+        /// Represents almost the number of seconds occourred from when the transfer started.
+        /// It was preferred to memorize seconds as int instead of a DateTime object due to the
+        /// usage that will be one of this field: it will be useless to mantain all the information
+        /// that a DateTime object mantains.
+        /// </summary>
+        public double transferStartTime;
 
         /// <summary>
         /// Property representing the job wrapped by an instance of this class
@@ -30,6 +41,7 @@ namespace FileShare {
         /// <param name="j"></param>
         public ListedJob(Job j) {
             Job = j;
+            transferStartTime = 0.0;
         }
 
         /// <summary>
@@ -87,6 +99,60 @@ namespace FileShare {
                 message = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Message"));
             }
+        }
+
+        /// <summary>
+        /// An estimate of the time needed to complete the job.
+        /// </summary>
+        private int timeLeft;
+        /// <summary>
+        /// The public property associated to the field timeLeft
+        /// </summary>
+        private int TimeLeft {
+            get {
+                return timeLeft;
+            }
+            set {
+                timeLeft = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TimeLeft"));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RemainingTime"));
+            }
+        }
+
+        public string RemainingTime {
+            get {
+                if (timeLeft > 3600)
+                    return ((int)(timeLeft / 3600)) + "h " +
+                            ((int)((timeLeft % 3600) / 60)) + "m " +
+                            ((timeLeft % 3600) % 60) + "s";
+                else if (timeLeft > 60)
+                    return ((int)(timeLeft / 60)) + "m " + (timeLeft % 60) + "s";
+                else if (timeLeft > 0)
+                    return timeLeft + "s";
+                else
+                    return "";
+            }
+        }
+
+        /// <summary>
+        /// Updates the property TimeLeft in orded to make a more recent estimatio of
+        /// the time remaining to complete the job.
+        /// </summary>
+        internal void UpdateTimeLeft() {
+            // If not start time was setted up, we have to do it
+            if (transferStartTime == 0.0) {
+                if (Job.SentByte > 0)  // but only if trasnfer actually started
+                    transferStartTime = DateTime.UtcNow.Subtract(new DateTime(1970,1,1)).TotalSeconds;   // Set start time to now
+                return;
+            }
+
+            // byteSent : (Now - transferStartTime) = totByteToSent : x
+            // where x is the new TimeLeft value
+            double startSeconds = DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds - transferStartTime;
+            double remainingTime = (startSeconds / Job.SentByte) * (Job.Task.Size - Job.SentByte);
+            if (TimeLeft != (int)Math.Round(remainingTime))
+                TimeLeft = (int)Math.Round(remainingTime);
+            
         }
     }
 }

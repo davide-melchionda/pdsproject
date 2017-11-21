@@ -4,10 +4,12 @@ using HelloProtocol;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace FileShare {
 
@@ -43,6 +45,9 @@ namespace FileShare {
 
             JobsList.Sending.JobAdded += (Job job) => {
                 App.Current.Dispatcher.Invoke((Action)delegate {
+                    //ListedJob listedJob = new ListedJob(job);
+                    //listedJob.Job.PropertyChanged += new PercentageChangedEventHandler(listedJob).UpdatePercentage;
+                    //sendingJobs.Add(listedJob);
                     sendingJobs.Add(new ListedJob(job));
                 });
             };
@@ -69,6 +74,9 @@ namespace FileShare {
 
             JobsList.Receiving.JobAdded += (Job job) => {
                 App.Current.Dispatcher.Invoke((Action)delegate {
+                    //ListedJob listedJob = new ListedJob(job);
+                    //listedJob.Job.PropertyChanged += new PercentageChangedEventHandler(listedJob).UpdatePercentage;
+                    //receivingJobs.Add(listedJob);
                     receivingJobs.Add(new ListedJob(job));
                 });
             };
@@ -105,5 +113,19 @@ namespace FileShare {
 
         }
 
+        public async void manageProgressBar(ProgressBar prog) {
+            ListedJob item = prog.DataContext as ListedJob;
+            await System.Threading.Tasks.Task.Run(() => {
+                while (true) {
+                    App.Current.Dispatcher.Invoke((Action)delegate {
+                        prog.Value = item.Job.Percentage;
+                        item.UpdateTimeLeft();
+                    });
+                    if (item.Job.Percentage == 100)
+                        break;
+                    System.Threading.Thread.Sleep(300);
+                }
+            });
+        }
     }
 }
