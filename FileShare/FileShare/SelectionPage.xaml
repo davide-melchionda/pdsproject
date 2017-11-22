@@ -14,8 +14,17 @@
 			<ListView x:Name="thelist" x:FieldModifier="public" ItemsSource="{Binding peers}" Margin="0,0,-0.8,-1.6">
 				<ListView.View>
 					<GridView>
-						<GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Name" Width="100"></GridViewColumn>
-					</GridView>
+                        <GridViewColumn Width="100">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Image Height="56" Width="56" Source="{Binding Icon}"></Image>
+                                    </Grid>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn DisplayMemberBinding="{Binding Peer.Name}" Header="Name" Width="100"></GridViewColumn>
+                    </GridView>
 				</ListView.View>
 			</ListView>
 			
