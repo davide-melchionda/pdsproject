@@ -1,11 +1,14 @@
-﻿using System;
+﻿using FileShare;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 /**
  * This class represents the configuration of the entire application.
@@ -111,7 +114,7 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
     /**
      * Packet buffer size (maximum number of characters in a packet
      */
-    private int bufSize = /* DEFAULT */ 256;
+    private int bufSize = /* DEFAULT */ 10*1024*1024;    // 10 MB
     /**
      * bufSize property
      */
@@ -307,8 +310,8 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
 
 
     /**
-* defaultRecvPath property
-*/
+    * defaultRecvPath property
+    */
     public string CurrentUsername
     {
         get
@@ -320,6 +323,42 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
             this.LocalPeer.Name = value;
             NotifyPropertyChanged();
 
+        }
+    }
+
+    /// <summary>
+    /// The default size for all icons used as profile pictures for the peers
+    /// </summary>
+    private Size iconSize = new Size(128, 128);
+    /// <summary>
+    /// Property binded to iconSize private instance field
+    /// </summary>
+    public Size IconSize {
+        get {
+            return iconSize;
+        }
+        set {
+            iconSize = value;
+        }
+    }
+
+    /// <summary>
+    /// Path in the file system of the icon image used as profile
+    /// picture by the user.
+    /// </summary>
+    private string picturePath;
+    /// <summary>
+    /// Property linked to picturePath field
+    /// </summary>
+    public string PicturePath {
+        get {
+            return picturePath;
+        }
+        set {
+            //LocalPeer.Icon = ImageAdapter.GetThumbnailImage(new BitmapImage(new Uri(value)), IconSize);
+            LocalPeer.ByteIcon = ImageAdapter.ByteArrayFromImage(new BitmapImage(new Uri(value)), IconSize);
+            picturePath = value;
+            NotifyPropertyChanged();
         }
     }
 

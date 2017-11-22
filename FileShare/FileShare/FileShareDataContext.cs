@@ -21,21 +21,24 @@ namespace FileShare {
      */
     class FileShareDataContext {
 
-        public ObservableCollection<Peer> peers { get; set; }
+        public ObservableCollection<ListedPeer> peers { get; set; }
         public ObservableCollection<ListedJob> sendingJobs { get; set; }
         public ObservableCollection<ListedJob> receivingJobs { get; set; }
+        public ListedPeer Me { get; set; }
 
         public FileShareDataContext() {
-            
+
+            Me = new ListedPeer(Settings.Instance.LocalPeer);
+
             PeersList.Instance.PeerInserted += (Peer inserted) => {
                 App.Current.Dispatcher.Invoke((Action)delegate {
-                    peers.Add(inserted);
+                    peers.Add(new ListedPeer(inserted));
                 });
             };
 
             PeersList.Instance.PeerRemoved += (Peer removed) => {
-                foreach (Peer p in peers)
-                    if (p.Id == removed.Id) {
+                foreach (ListedPeer p in peers)
+                    if (p.Peer.Id == removed.Id) {
                         App.Current.Dispatcher.Invoke((Action)delegate {
                             peers.Remove(p);
                         });
@@ -45,9 +48,6 @@ namespace FileShare {
 
             JobsList.Sending.JobAdded += (Job job) => {
                 App.Current.Dispatcher.Invoke((Action)delegate {
-                    //ListedJob listedJob = new ListedJob(job);
-                    //listedJob.Job.PropertyChanged += new PercentageChangedEventHandler(listedJob).UpdatePercentage;
-                    //sendingJobs.Add(listedJob);
                     sendingJobs.Add(new ListedJob(job));
                 });
             };
@@ -74,9 +74,6 @@ namespace FileShare {
 
             JobsList.Receiving.JobAdded += (Job job) => {
                 App.Current.Dispatcher.Invoke((Action)delegate {
-                    //ListedJob listedJob = new ListedJob(job);
-                    //listedJob.Job.PropertyChanged += new PercentageChangedEventHandler(listedJob).UpdatePercentage;
-                    //receivingJobs.Add(listedJob);
                     receivingJobs.Add(new ListedJob(job));
                 });
             };
@@ -101,7 +98,9 @@ namespace FileShare {
                     }
             };
 
-            peers = new ObservableCollection<Peer>(PeersList.Instance.Peers);
+            peers = new ObservableCollection<ListedPeer>();
+            foreach (Peer p in PeersList.Instance.Peers)
+                peers.Add(new ListedPeer(p));
 
             receivingJobs = new ObservableCollection<ListedJob>();
             foreach (Job j in JobsList.Receiving.Jobs)

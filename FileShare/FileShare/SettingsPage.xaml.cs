@@ -12,14 +12,12 @@ namespace FileShare
         private Settings settings;
         public delegate void Close();
         public event Close OnClosed;
-        public SettingsPage()
-        {
-              
-        settings = Settings.Instance;
-            DataContext = settings;
+
+        public SettingsPage() {
             InitializeComponent();
-        
-            
+
+            settings = Settings.Instance;
+            DataContext = new { Settings = settings,  Me = new ListedPeer(settings.LocalPeer) };
 
         }
 
@@ -36,5 +34,14 @@ namespace FileShare
             dialog.ShowDialog();
             settings.DefaultRecvPath = dialog.SelectedPath;
         }
+
+        private void Profile_Button_Click(object sender, RoutedEventArgs e) {
+            OpenFileDialog dialog = new OpenFileDialog();
+            //dialog.SelectedPath = DefaultPath.Text;
+            dialog.Filter = "File immagine|*.jpg;*.jpeg;*.png;*.ico;*.bmp" ;
+            if (dialog.ShowDialog() == DialogResult.OK)
+                settings.PicturePath = dialog.FileName;
+        }
+
     }
 }

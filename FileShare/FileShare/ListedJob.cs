@@ -25,7 +25,12 @@ namespace FileShare {
         /// usage that will be one of this field: it will be useless to mantain all the information
         /// that a DateTime object mantains.
         /// </summary>
-        public double transferStartTime;
+        private double transferStartTime;
+
+        /// <summary>
+        /// Represents the quantity of byte sent when measuring starts
+        /// </summary>
+        private int sentFromStartTime;
 
         /// <summary>
         /// Property representing the job wrapped by an instance of this class
@@ -141,15 +146,17 @@ namespace FileShare {
         internal void UpdateTimeLeft() {
             // If not start time was setted up, we have to do it
             if (transferStartTime == 0.0) {
-                if (Job.SentByte > 0)  // but only if trasnfer actually started
-                    transferStartTime = DateTime.UtcNow.Subtract(new DateTime(1970,1,1)).TotalSeconds;   // Set start time to now
+                if (Job.SentByte > 0) { // but only if trasnfer actually started
+                    transferStartTime = DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;   // Set start time to now
+                    sentFromStartTime = Job.SentByte;
+                }
                 return;
             }
 
             // byteSent : (Now - transferStartTime) = totByteToSent : x
             // where x is the new TimeLeft value
             double startSeconds = DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds - transferStartTime;
-            double remainingTime = (startSeconds / Job.SentByte) * (Job.Task.Size - Job.SentByte);
+            double remainingTime = (startSeconds / (Job.SentByte - sentFromStartTime)) * (Job.Task.Size - Job.SentByte);
             if (TimeLeft != (int)Math.Round(remainingTime))
                 TimeLeft = (int)Math.Round(remainingTime);
             

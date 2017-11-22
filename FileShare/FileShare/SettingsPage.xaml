@@ -3,20 +3,32 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      mc:Ignorable="d" 
-      d:DesignHeight="300" d:DesignWidth="300"
+      mc:Ignorable="d"
+      d:DesignWidth="600"
+      Height="600"
       Title="SettingsPage">
 
     <Grid>
-		<StackPanel Margin="10">
-			<Label FontWeight="Bold">Current username</Label>
+		<StackPanel Margin="10" CanVerticallyScroll="True">
+            <Label FontWeight="Bold">Profile picture</Label>
+            <Image Height="128" Width="128" Source="{Binding Path=Me.Icon}"></Image>
+            <!--<TextBox Margin="0,0,20,0" Name="PictureTB" Text="{Binding Path=Settings.PicturePath}"></TextBox>-->
+            <StackPanel Orientation="Horizontal">
+                <Button Name="ProfilePictureButton" Content="Change profile picture"
+				Margin="10,0,0,0"
+				Click="Profile_Button_Click"/>
 
-			<TextBox Margin="0,0,20,0" Name="UsernameTB" Text="{Binding Path=CurrentUsername}"  ></TextBox>
-			<Label FontWeight="Bold">Application Options</Label>
 
-			<CheckBox Name="InvisibleStateCB" IsChecked="{Binding Path=IsInvisible}"> Enable invisible state
+            </StackPanel>
+
+            <Label FontWeight="Bold">Current username</Label>
+            <TextBox Margin="0,0,20,0" Name="UsernameTB" Text="{Binding Path=Settings.CurrentUsername}"  ></TextBox>
+
+            <Label FontWeight="Bold">Application Options</Label>
+
+            <CheckBox Name="InvisibleStateCB" IsChecked="{Binding Path=Settings.IsInvisible}"> Enable invisible state
 			</CheckBox>
-			<CheckBox Name ="AutoReceiveCB"  IsChecked="{Binding Path=AutoAcceptFiles}" >Enable auto receiving</CheckBox>
+            <CheckBox Name ="AutoReceiveCB"  IsChecked="{Binding Path=Settings.AutoAcceptFiles}" >Enable auto receiving</CheckBox>
 			<StackPanel Orientation="Horizontal">
 				<Label >Default receiving path</Label>
 				<Button Name="ChoosePath" Content="..." 

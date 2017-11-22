@@ -52,12 +52,13 @@ namespace FileShare
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void Button_Click(object sender, RoutedEventArgs e) {
-            List<Peer> selected = null;
+            List<Peer> selected = new List<Peer>();
 
             // If at least one peer was selected
             if (thelist.SelectedItems.Count > 0) {
                 /* Triggers the evet */
-                selected = thelist.SelectedItems.Cast<Peer>().ToList();
+                foreach (ListedPeer p in thelist.SelectedItems.Cast<ListedPeer>().ToList())
+                    selected.Add(p.Peer);
                 Selected?.Invoke(selected, filePath);
             } else // Otherwise the user must repeat the selection
                 MessageBox.Show("Devi selezionare almeno un destinatario.");

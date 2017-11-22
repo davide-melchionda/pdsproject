@@ -140,7 +140,7 @@ namespace HelloProtocol
             cleanup.run();
 
             network.HelloPacketReception += onPacketReceived;
-            Settings.Instance.PropertyChanged += Instance_CurrentUsernameChanged;
+            Settings.Instance.PropertyChanged += SendPresentationPacket;
             Settings.Instance.PropertyChanged += Instance_visibilityChanged;
 
             while (true)
@@ -157,11 +157,11 @@ namespace HelloProtocol
 
         }
 
-        private void Instance_CurrentUsernameChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void SendPresentationPacket(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             HelloNetworkModule network = HelloNetworkModule.Instance;
 
-            if (String.Compare(e.PropertyName, "CurrentUsername") == 0)
+            if (String.Compare(e.PropertyName, "CurrentUsername") == 0 || String.Compare(e.PropertyName, "PicturePath") == 0)
             {
                 network.send(new PresentationPacket(Settings.Instance.LocalPeer));
 
