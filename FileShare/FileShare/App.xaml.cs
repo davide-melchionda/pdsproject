@@ -25,6 +25,8 @@ public partial class App : Application {
    
         void AppStartup(object sender, StartupEventArgs e) {
             SettingsPersistence.readSettings();
+            GarbageCleanup gc = new GarbageCleanup();
+            gc.run();
             // Start the thread responsible of the neighbor discovery process
             new HelloThread().run();
             
@@ -83,6 +85,8 @@ public partial class App : Application {
         /// <param name="e"></param>
         public void AppExit(object sender, EventArgs e) {
             bf.Close();SettingsPersistence.writeSettings();
+            GarbageCleanup gc = new GarbageCleanup();
+            gc.run();
             // Process completed successfully
             Environment.Exit(0);
         }

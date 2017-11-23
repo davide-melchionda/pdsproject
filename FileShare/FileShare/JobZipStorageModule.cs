@@ -24,9 +24,15 @@ namespace FileShareConsole
         public static int READ_BLOCK_SIZE = 1024;
         private ConcurrentDictionary<string, int> openedFiles;
         private static object dictionaryLock = new object();
+        private string zipTempFolder = Settings.Instance.AppDataPath + "\\temp";
 
         public JobZipStorageModule()
         {
+            System.IO.DirectoryInfo di = new DirectoryInfo(zipTempFolder);
+            if (!di.Exists)
+            {
+                Directory.CreateDirectory(zipTempFolder);
+            }
             openedFiles = new ConcurrentDictionary<string, int>();
         }
 
@@ -43,9 +49,10 @@ namespace FileShareConsole
 
             Logger.log(Logger.ZIP_DEBUG, "Called to zip " + filePath + "\n");
 
+          
             // Constructs the zip file name
             string date = lastModify.ToString("yyyyMMddhhmmss") + lastModify.Millisecond;
-            string zipName = Path.GetDirectoryName(filePath) + @"\" + Path.GetFileNameWithoutExtension(filePath) + date + ".zip";
+            string zipName = zipTempFolder + @"\" + Path.GetFileNameWithoutExtension(filePath) + date + ".zip";
 
             // If the file was modified after the lastModify date, throws an exception
             if (File.GetLastWriteTime(filePath) > lastModify)
@@ -106,7 +113,11 @@ namespace FileShareConsole
         {
             // Retrieves current date and computes a string to uniquely identiy the task
             DateTime now = DateTime.Now;
-            string path = ReceivePath +"\\"+ Path.GetFileNameWithoutExtension(task.Info.Name) + now.ToString("yyyyMMddhhmmss") + now.Millisecond + ".zip";
+            string zipTempFolder = Settings.Instance.AppDataPath + "\\temp";
+
+         
+
+            string path = zipTempFolder + "\\" + Path.GetFileNameWithoutExtension(task.Info.Name) + now.ToString("yyyyMMddhhmmss") + now.Millisecond + ".zip";
             Job job = new Job(task, path);
 
             // Push the job in the receiving jobs list
@@ -126,15 +137,19 @@ namespace FileShareConsole
                 if (job.SentByte != job.Task.Size)
                     return;
 
-                if (job.Task.Info.Type == FileTransfer.FileInfo.FType.DIRECTORY) {
-                    ZipFile.ExtractToDirectory(path, GetUniqueFilePath(ReceivePath +"\\"+ job.Task.Info.Name));
-                } else using (ZipArchive archive = ZipFile.OpenRead(path)) {
-                    string tempPath;
-                    foreach (ZipArchiveEntry entry in archive.Entries) {
-                        tempPath = GetUniqueFilePath(ReceivePath +"\\"+ entry.Name);
-                        entry.ExtractToFile(tempPath);
-                    }
+                if (job.Task.Info.Type == FileTransfer.FileInfo.FType.DIRECTORY)
+                {
+                    ZipFile.ExtractToDirectory(path, GetUniqueFilePath(ReceivePath + "\\" + job.Task.Info.Name));
                 }
+                else using (ZipArchive archive = ZipFile.OpenRead(path))
+                    {
+                        string tempPath;
+                        foreach (ZipArchiveEntry entry in archive.Entries)
+                        {
+                            tempPath = GetUniqueFilePath(ReceivePath + "\\" + entry.Name);
+                            entry.ExtractToFile(tempPath);
+                        }
+                    }
                 //JobsList.Receiving.remove(job.Id);
             };
 
@@ -205,7 +220,8 @@ namespace FileShareConsole
             if (Directory.Exists(filepath))
             {
                 string tempPath;
-                do {
+                do
+                {
                     tempPath = Path.Combine(string.Format("{0} ({1})", filepath, ++number));
                 } while (Directory.Exists(tempPath));
                 return tempPath;
@@ -226,7 +242,8 @@ namespace FileShareConsole
                     number = int.Parse(regex.Groups[2].Value);
                 }
 
-                do {
+                do
+                {
                     filepath = Path.Combine(folder, string.Format("{0} ({1}){2}", filename, ++number, extension));
                 } while (File.Exists(filepath));
             }

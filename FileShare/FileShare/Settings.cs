@@ -264,6 +264,26 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
     }
 
     /**
+ * The default path on the file system in which save settings file.
+ */
+    private string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)+"\\Fileshare";
+    /**
+     * defaultRecvPath property
+     */
+    public string AppDataPath
+    {
+        get
+        {
+            return appDataPath;
+        }
+        set
+        {
+            appDataPath = value; ;
+            NotifyPropertyChanged();
+        }
+    }
+
+    /**
      * The default path on the file system in which save received files.
      */
     //private string defaultRecvPath = @"C:\Users\franc\Desktop\recv\";
@@ -283,7 +303,7 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
     }
 
     /**
- * The default path on the file system in which save received files.
+ * Always use or not the path on the file system in which save received files.
  */
     //private string defaultRecvPath = @"C:\Users\franc\Desktop\recv\";
     private bool alwaysUseDefault = true;

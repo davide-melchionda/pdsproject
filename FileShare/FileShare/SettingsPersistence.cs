@@ -14,7 +14,7 @@ namespace FileShare
      */
     class SettingsPersistence
     {
-        private static string settingsFile = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\Settings.txt";
+        private static string settingsFile = Settings.Instance.AppDataPath+"\\Settings.txt";
 
         public static void readSettings()
         {
@@ -46,8 +46,12 @@ namespace FileShare
             storable.CurrentUsername = Settings.Instance.CurrentUsername;
             storable.DefaultPath = Settings.Instance.DefaultRecvPath;
             storable.AlwaysUseDefault = Settings.Instance.AlwaysUseDefault;
-          
-            using (StreamWriter sw = File.CreateText(settingsFile))
+            System.IO.DirectoryInfo di = new DirectoryInfo(Path.GetDirectoryName(settingsFile));
+            if (!di.Exists)
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(settingsFile));
+            }
+                using (StreamWriter sw = File.CreateText(settingsFile))
 
             {
                 JsonSerializerSettings settings = new JsonSerializerSettings();
