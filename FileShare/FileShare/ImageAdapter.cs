@@ -40,17 +40,12 @@ namespace FileShare {
         /// </summary>
         /// <param name="icon"></param>
         /// <returns></returns>
-        public static byte[] ByteArrayFromImage(ImageSource icon) {
+        public static byte[] ByteArrayFromImage(BitmapSource icon) {
             // Then sets byteIcon
             byte[] bytes = null;
             if (icon != null) {
-                BitmapSource bitmapSource = icon as BitmapSource;
-                JpegBitmapEncoder encoder = new JpegBitmapEncoder();
-                encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
-                using (var stream = new MemoryStream()) {
-                    encoder.Save(stream);
-                    bytes = stream.ToArray();
-                }
+                MemoryStream stream = GetMemoryStream(icon);
+                bytes = stream.ToArray();
             }
             return bytes;
         }
@@ -62,25 +57,31 @@ namespace FileShare {
         /// <param name="icon"></param>
         /// <param name="size"></param>
         /// <returns></returns>
-        public static byte[] ByteArrayFromImage(ImageSource icon, Size size, int maxSize) {
-            // Then sets byteIcon
+        public static byte[] ByteArrayFromImage(BitmapSource icon, int maxSize) {
             byte[] bytes = null;
             if (icon != null) {
-                BitmapSource bitmapSource = icon as BitmapSource;
+                //var stream = GetMemoryStream(icon);
                 JpegBitmapEncoder encoder = new JpegBitmapEncoder();
-                encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
+                encoder.Frames.Add(BitmapFrame.Create(icon));
                 using (var stream = new MemoryStream()) {
                     encoder.Save(stream);
-                    Image b = GetThumbnailImage(new System.Drawing.Bitmap(stream), size);
-                    b.Save(stream, System.Drawing.Imaging.ImageFormat.Jpeg);
+                    Image b = GetThumbnailImage(new System.Drawing.Bitmap(stream), new Size(128, 128));
+                    b.Save(stream, ImageFormat.Jpeg);
                     bytes = stream.ToArray();
-                    while (bytes.Length > maxSize) {
+                    while (bytes.Length > maxSize)
                         bytes = Reduce(b, 80);
-                        //bytes = stream.ToArray();
-                    }
                 }
             }
             return bytes;
+        }
+
+        private static MemoryStream GetMemoryStream(BitmapSource bitmap) {
+            JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(bitmap));
+            using (var stream = new MemoryStream()) {
+                encoder.Save(stream);
+                return stream;
+            }
         }
 
         /// <summary>
@@ -116,24 +117,6 @@ namespace FileShare {
             g.DrawImage(i, rect, 0, 0, w, h, GraphicsUnit.Pixel);
             return (Image)target;
         }
-
-        ///// <summary> 
-        ///// Saves an image as a jpeg image, with the given quality 
-        ///// </summary> 
-        ///// <param name="path"> Path to which the image would be saved. </param> 
-        ///// <param name="quality"> An integer from 0 to 100, with 100 being the highest quality. </param> 
-        //public static void SaveJpeg(string path, Image img, int quality) {
-        //    if (quality < 0 || quality > 100)
-        //        throw new ArgumentOutOfRangeException("quality must be between 0 and 100.");
-
-        //    // Encoder parameter for image quality 
-        //    EncoderParameter qualityParam = new EncoderParameter(Encoder.Quality, quality);
-        //    // JPEG image codec 
-        //    ImageCodecInfo jpegCodec = GetEncoderInfo("image/jpeg");
-        //    EncoderParameters encoderParams = new EncoderParameters(1);
-        //    encoderParams.Param[0] = qualityParam;
-        //    img.Save(path, jpegCodec, encoderParams);
-        //}
 
         /// <summary> 
         /// Returns the image codec with the given mime type 

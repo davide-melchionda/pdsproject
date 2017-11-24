@@ -52,7 +52,7 @@ namespace FileShare {
         public ImageSource Icon {
             get {
                 if (Peer.ByteIcon.Length == 0)
-                    return new BitmapImage(new Uri(Directory.GetCurrentDirectory() + @"\user.ico"));
+                    return new BitmapImage(Settings.Instance.DefaultUserPicture);
                 return icon;
             }
             set {

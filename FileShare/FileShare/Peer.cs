@@ -93,35 +93,9 @@ public class Peer : INotifyPropertyChanged{
     /// </summary>
     public byte[] ByteIcon {
         get {
-            //// Then sets byteIcon
-            //byte[] bytes = null;
-            //if (icon != null) {
-            //    BitmapSource bitmapSource = icon as BitmapSource;
-            //    JpegBitmapEncoder encoder = new JpegBitmapEncoder();
-            //    encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
-            //    using (var stream = new MemoryStream()) {
-            //        encoder.Save(stream);
-            //        bytes = stream.ToArray();
-            //    }
-            //}
-            //return bytes;
             return byteIcon;
         }
         set {
-            //// if no byte: no icon set
-            //if (value.Length == 0) {
-            //    Icon = null;
-            //    return;
-            //}
-
-            //// Sets byte icon
-            //BitmapImage biImg = new BitmapImage();
-            //MemoryStream ms = new MemoryStream(value);
-            //biImg.BeginInit();
-            //biImg.StreamSource = ms;
-            //biImg.EndInit();
-
-            //Icon = biImg as BitmapImage;
             byteIcon = value;
             NotifyPropertyChanged();
         }
