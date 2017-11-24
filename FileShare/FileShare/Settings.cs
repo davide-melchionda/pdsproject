@@ -376,7 +376,7 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
         }
         set {
             //LocalPeer.Icon = ImageAdapter.GetThumbnailImage(new BitmapImage(new Uri(value)), IconSize);
-            LocalPeer.ByteIcon = ImageAdapter.ByteArrayFromImage(new BitmapImage(new Uri(value)), IconSize);
+            LocalPeer.ByteIcon = ImageAdapter.ByteArrayFromImage(new BitmapImage(new Uri(value)), IconSize, 40000);
             picturePath = value;
             NotifyPropertyChanged();
         }
