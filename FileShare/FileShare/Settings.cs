@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.CompilerServices;
@@ -376,9 +377,28 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
         }
         set {
             //LocalPeer.Icon = ImageAdapter.GetThumbnailImage(new BitmapImage(new Uri(value)), IconSize);
-            LocalPeer.ByteIcon = ImageAdapter.ByteArrayFromImage(new BitmapImage(new Uri(value)), IconSize);
+            LocalPeer.ByteIcon = ImageAdapter.ByteArrayFromImage(new BitmapImage(new Uri(value)), MaxThumbnailPictureMemorySize);
             picturePath = value;
             NotifyPropertyChanged();
+        }
+    }
+
+    /// <summary>
+    /// Default picture for the generic user which has not setted a specific profile picture
+    /// </summary>
+    public Uri DefaultUserPicture {
+        get {
+            return new Uri(Directory.GetCurrentDirectory() + @"\user.ico"); /* DEFAULT */
+        }
+    }
+
+    /// <summary>
+    /// The maximum size of a picture. This limit is necessary to allow the picture be sent 
+    /// inside a UDP datagram.
+    /// </summary>
+    public int MaxThumbnailPictureMemorySize {
+        get {
+            return 40000;   /* DEFAULT */
         }
     }
 
