@@ -32,7 +32,7 @@ public partial class App : Application {
             
             // Start the thread responsible of receiving request of transferring files
             ServerClass receiver= new ServerClass();
-            receiver.RequestReceived += RequestMessageBox.Show;
+            receiver.RequestReceived += ShowConfirmWindow;
             receiver.ConnectionError += () => {
                 bf.NotifyError(BackgroundForm.ErrorNotificationType.Receiving);
             };
@@ -76,6 +76,12 @@ public partial class App : Application {
             /* Start the background form which will manage the tray icon 
              * and the notification window */
             bf = new BackgroundForm();
+        }
+
+        public Tuple<string,bool>  ShowConfirmWindow(FileTransfer.Task task)
+        {
+            //mostra la finestra e prende in uscita path e response
+            return new Tuple<string, bool>(null, true);
         }
 
         /// <summary>

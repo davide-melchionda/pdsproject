@@ -7,7 +7,8 @@ using System.Windows;
 
 namespace FileShare
 {
-    class RequestMessageBox
+    class destroyedclass
+
     {
         public static bool Show(FileTransfer.Task task) {
             return MessageBox.Show("Do you want to accept " + task.Info.Name + " of size: " + BytesToMegabytes(task.Info.Size) + " kb", task.Sender +

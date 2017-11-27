@@ -20,7 +20,7 @@ namespace FileTransfer
     public class TnSServer : ServerProtocolEndpoint
     {
 
-        public delegate bool OnRequest(Task task);
+        public delegate Tuple<string, bool> OnRequest(Task task);
         public event OnRequest OnRequestReceived;
 
         public delegate void OnJobInitialized(Job j);
@@ -55,18 +55,20 @@ namespace FileTransfer
                     protocol.enterServer((socket.RemoteEndPoint as IPEndPoint).Address.ToString());
 
                     // If settings allow us to receive anything or if the user confirms that he wants to accept
-                    if (Settings.Instance.AutoAcceptFiles || OnRequestReceived(request.Task)) {
+                    Tuple<string, bool> receiveResponse =OnRequestReceived(request.Task);
+                    if (Settings.Instance.AutoAcceptFiles || receiveResponse.Item2) {
                         // Send a positive response
                         network.SendPacket(socket, network.generateResponsetStream(true));
-                        string receivePath;
-                        if (Settings.Instance.AlwaysUseDefault) {
-                            receivePath = Settings.Instance.DefaultRecvPath;
-                        } else {
-                            FolderBrowserDialog dialog = new FolderBrowserDialog();
-                            dialog.SelectedPath = Settings.Instance.DefaultRecvPath; ;
-                            dialog.ShowDialog();
-                            receivePath = dialog.SelectedPath;
-                        }
+                        string receivePath = receiveResponse.Item1;
+                    
+                        //if (Settings.Instance.AlwaysUseDefault) {
+                        //    receivePath = Settings.Instance.DefaultRecvPath;
+                        //} else {
+                        //    FolderBrowserDialog dialog = new FolderBrowserDialog();
+                        //    dialog.SelectedPath = Settings.Instance.DefaultRecvPath; ;
+                        //    dialog.ShowDialog();
+                        //    receivePath = dialog.SelectedPath;
+                        //}
                         /* Create a Job for the incoming task. */
                         JobZipStorageModule module = new JobZipStorageModule();
                         iterator = module.createJob(request.Task, receivePath);

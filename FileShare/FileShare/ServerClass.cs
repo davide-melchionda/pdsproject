@@ -7,8 +7,8 @@ using NetProtocol;
 namespace FileTransfer {
 
     public class ServerClass : ExecutableThread {
-        
-        public delegate bool OnRequest(Task task);
+
+        public delegate Tuple<string, bool> OnRequest(Task task);
         public event OnRequest RequestReceived;
 
         /**
@@ -36,7 +36,7 @@ namespace FileTransfer {
                     receiver.RequestReceived += (Task task) => {
                         if (RequestReceived != null)
                             return RequestReceived(task);
-                        return true;
+                        return new Tuple<string, bool>(null, true);
                     };
                     receiver.ConnectionError += () => {
                         ConnectionError?.Invoke();
