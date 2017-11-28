@@ -8,7 +8,7 @@ namespace FileTransfer {
 
     public class ServerClass : ExecutableThread {
 
-        public delegate Tuple<string, bool> OnRequest(Task task);
+        public delegate ToAccept OnRequest(ToAccept request);
         public event OnRequest RequestReceived;
 
         /**
@@ -33,10 +33,10 @@ namespace FileTransfer {
                     Socket handler = listener.Accept();
 
                     ReceptionExecutor receiver = new ReceptionExecutor(handler);
-                    receiver.RequestReceived += (Task task) => {
+                    receiver.RequestReceived += (ToAccept request) => {
                         if (RequestReceived != null)
-                            return RequestReceived(task);
-                        return new Tuple<string, bool>(null, true);
+                            return RequestReceived(request);
+                        return request;
                     };
                     receiver.ConnectionError += () => {
                         ConnectionError?.Invoke();

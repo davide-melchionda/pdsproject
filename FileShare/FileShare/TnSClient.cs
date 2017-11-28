@@ -6,12 +6,14 @@ using NetProtocol;
 using static StorageModule;
 using FileShareConsole;
 
-namespace NetworkTransmission {
+namespace NetworkTransmission
+{
     /**
      * The specific client that performs all the steps that compose our transmission protocol. 
      */
 
-    class TnSClient : ClientProtocolEndpoint {
+    class TnSClient : ClientProtocolEndpoint
+    {
 
         private FileIterator iterator;       // Iterator provides the abstraction towards the file location 
         private Job job;                   // Task that provides all the informations about transfer
@@ -20,40 +22,46 @@ namespace NetworkTransmission {
 
         private byte[] transferBlock = new byte[8192];
 
-        public TnSClient(Socket socket, Protocol protocol, Job job) : base(socket, protocol) {
+        public TnSClient(Socket socket, Protocol protocol, Job job) : base(socket, protocol)
+        {
             this.job = job;
             JobZipStorageModule module = new JobZipStorageModule();
             iterator = module.prepareJob(job);
             network = new TransferNetworkModule();
         }
 
-        public override TransferResult transfer() {
+        public override TransferResult transfer()
+        {
 
             ResponsePacket response = null;
             TransmissionPacket tPacket = null;
 
-            try {
 
-                byte[] msg = network.generateRequestStream(job.Task);       // Encode the data string into a byte array.
 
-                int bytesSent = network.SendPacket(socket, msg);        // Send the data through the socket.
+            byte[] msg = network.generateRequestStream(job.Task);       // Encode the data string into a byte array.
 
-                tPacket = (TransmissionPacket)network.receivePacket(this.socket);       // Receive the response from the remote.
-                if (tPacket.Type.ToString() != "response")
-                    throw new SocketException();//TODO This must raise an exception cause we don't expect a server to send packets different from Responses at this point 
+            int bytesSent = network.SendPacket(socket, msg);        // Send the data through the socket.
 
-                response = (ResponsePacket)tPacket;
+            tPacket = (TransmissionPacket)network.receivePacket(this.socket);       // Receive the response from the remote.
+            if (tPacket.Type.ToString() != "response")
+                throw new SocketException();//TODO This must raise an exception cause we don't expect a server to send packets different from Responses at this point 
 
-                Logger.log(Logger.TRANSFER_CLIENT_DEBUG, "Handshake competed. Starting transmission of the file " + job.Task.Info.Name + "\n");
+            response = (ResponsePacket)tPacket;
 
-                if (response.Procede) {
+            Logger.log(Logger.TRANSFER_CLIENT_DEBUG, "Handshake competed. Starting transmission of the file " + job.Task.Info.Name + "\n");
+
+            if (response.Procede)
+            {
+                try
+                {
                     protocol.enterClient();
 
                     // Send timeout: if cannot execute tht send. More responsive
                     socket.SendTimeout = 5000;
 
                     int i = 0;
-                    while (iterator.hasNext()) {
+                    while (iterator.hasNext())
+                    {
                         if (!job.Active)
                             throw new SocketException();
                         i = iterator.next(transferBlock);
@@ -66,11 +74,13 @@ namespace NetworkTransmission {
 
                 }
 
-            } finally {
-                /* Close the file iterator releasing resources and
-                 * releases protocol resources */
-                iterator.close();
-                protocol.releaseClient();
+                finally
+                {
+                    /* Close the file iterator releasing resources and
+                     * releases protocol resources */
+                    iterator.close();
+                    protocol.releaseClient();
+                }
             }
 
             return new TnSTransferResult(response.Procede);
@@ -80,9 +90,11 @@ namespace NetworkTransmission {
     }
 
 
-    public class TnSTransferResult : TransferResult {
+    public class TnSTransferResult : TransferResult
+    {
         public bool result;
-        public TnSTransferResult(bool result) {
+        public TnSTransferResult(bool result)
+        {
             this.result = result;
         }
     }

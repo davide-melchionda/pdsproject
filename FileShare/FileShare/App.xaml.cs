@@ -29,11 +29,21 @@ public partial class App : Application {
             gc.run();
             // Start the thread responsible of the neighbor discovery process
             new HelloThread().run();
-            
             // Start the thread responsible of receiving request of transferring files
             ServerClass receiver= new ServerClass();
-            receiver.RequestReceived += ShowConfirmWindow;
-            receiver.ConnectionError += () => {
+            receiver.RequestReceived += ( ToAccept request) => {
+
+                // On the gui thread
+                Application.Current.Dispatcher.Invoke((Action)delegate
+                {
+                    //mostra la finestra e prende in uscita path e response
+                    ReceiveWindow rw = new ReceiveWindow(request);
+                    rw.ShowDialog();
+
+                });
+                return request;
+            };
+                receiver.ConnectionError += () => {
                 bf.NotifyError(BackgroundForm.ErrorNotificationType.Receiving);
             };
             receiver.run();
@@ -63,8 +73,8 @@ public partial class App : Application {
                         };
                         for (int i = 0; i < selected.Count; i++)
                             scheduler.scheduleJob(new Job(new FileTransfer.Task(Settings.Instance.LocalPeer.Id,
-                                                                                    PeersList.Instance.Peers.ElementAt(i).Id,
-                                                                                    filepath), filepath));
+                                                        Settings.Instance.LocalPeer.Name, PeersList.Instance.Peers.ElementAt(i).Id,
+                                                        PeersList.Instance.Peers.ElementAt(i).Name, filepath), filepath));
                     };                    
                     sw.Show();
                 });
@@ -78,10 +88,13 @@ public partial class App : Application {
             bf = new BackgroundForm();
         }
 
-        public Tuple<string,bool>  ShowConfirmWindow(FileTransfer.Task task)
+        public ToAccept  ShowConfirmWindow(ToAccept request)
         {
             //mostra la finestra e prende in uscita path e response
-            return new Tuple<string, bool>(null, true);
+            ReceiveWindow rw = new ReceiveWindow(request);
+            rw.Show();
+
+            return request;
         }
 
         /// <summary>

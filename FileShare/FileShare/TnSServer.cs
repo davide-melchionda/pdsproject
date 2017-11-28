@@ -16,11 +16,18 @@ namespace FileTransfer
      * The specific server that performs all the steps that compose our transmission protocol.
      * 
      */
-
+    public class ToAccept{
+        private string path;
+        private bool response;
+        private FileTransfer.Task tasktoAccept;
+        public Task TasktoAccept { get => tasktoAccept; set => tasktoAccept = value; }
+        public bool Response { get => response; set => response = value; }
+        public string Path { get => path; set => path = value; }
+    }
     public class TnSServer : ServerProtocolEndpoint
     {
 
-        public delegate Tuple<string, bool> OnRequest(Task task);
+        public delegate ToAccept OnRequest( ToAccept task);
         public event OnRequest OnRequestReceived;
 
         public delegate void OnJobInitialized(Job j);
@@ -55,20 +62,15 @@ namespace FileTransfer
                     protocol.enterServer((socket.RemoteEndPoint as IPEndPoint).Address.ToString());
 
                     // If settings allow us to receive anything or if the user confirms that he wants to accept
-                    Tuple<string, bool> receiveResponse =OnRequestReceived(request.Task);
-                    if (Settings.Instance.AutoAcceptFiles || receiveResponse.Item2) {
+                    ToAccept EmptyRequest = new ToAccept();
+                    EmptyRequest.TasktoAccept = request.Task;
+                    EmptyRequest.Response = false;
+                    EmptyRequest.Path = Settings.Instance.DefaultRecvPath;
+                    if (Settings.Instance.AutoAcceptFiles || OnRequestReceived(EmptyRequest).Response) {
                         // Send a positive response
                         network.SendPacket(socket, network.generateResponsetStream(true));
-                        string receivePath = receiveResponse.Item1;
-                    
-                        //if (Settings.Instance.AlwaysUseDefault) {
-                        //    receivePath = Settings.Instance.DefaultRecvPath;
-                        //} else {
-                        //    FolderBrowserDialog dialog = new FolderBrowserDialog();
-                        //    dialog.SelectedPath = Settings.Instance.DefaultRecvPath; ;
-                        //    dialog.ShowDialog();
-                        //    receivePath = dialog.SelectedPath;
-                        //}
+                        string receivePath = EmptyRequest.Path;
+                 
                         /* Create a Job for the incoming task. */
                         JobZipStorageModule module = new JobZipStorageModule();
                         iterator = module.createJob(request.Task, receivePath);

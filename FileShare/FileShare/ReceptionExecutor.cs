@@ -11,7 +11,7 @@ namespace FileTransfer {
         private Socket socket;
         private Job job;
         
-        public delegate Tuple<string, bool> OnRequest(Task task);
+        public delegate ToAccept OnRequest(ToAccept request);
         public event OnRequest RequestReceived;
 
         /**
@@ -29,10 +29,10 @@ namespace FileTransfer {
 
         protected override void execute() {
             TnSServer server = new TnSServer(socket, new TnSProtocol());
-            server.OnRequestReceived += (Task task) => {
+            server.OnRequestReceived += (ToAccept request) => {
                 if (RequestReceived != null)
-                    return RequestReceived(task);
-                return new Tuple<string, bool>(null, true) ;
+                    return RequestReceived(request);
+                return request;
             };
 
             server.JobInitialized += (Job job) => {
