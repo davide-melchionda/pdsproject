@@ -47,7 +47,6 @@ namespace FileShare {
         public ListedJob(Job j) {
             Job = j;
             transferStartTime = 0.0;
-            Stopped = false;
         }
 
         /// <summary>
@@ -105,13 +104,6 @@ namespace FileShare {
                 message = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Message"));
             }
-        }
-
-        /// <summary>
-        /// The job execution was stoppad due to any reason.
-        /// </summary>
-        public bool Stopped {
-            get; set;
         }
 
         /// <summary>

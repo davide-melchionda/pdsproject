@@ -49,13 +49,14 @@ namespace NetworkTransmission {
                 if (response.Procede) {
                     protocol.enterClient();
 
+                    // Send timeout: if cannot execute tht send. More responsive
+                    socket.SendTimeout = 5000;
+
                     int i = 0;
                     while (iterator.hasNext()) {
                         if (!job.Active)
                             throw new SocketException();
                         i = iterator.next(transferBlock);
-                        
-                        // If the server closes the socket, this instruction will throw a SocketException
                         socket.Send(transferBlock, 0, i, SocketFlags.None);
                     }
 

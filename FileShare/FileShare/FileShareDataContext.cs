@@ -21,30 +21,12 @@ namespace FileShare {
      */
     class FileShareDataContext {
 
-        /**
-         * The instance of the list of jobs for outgoing transfers
-         */
-        private static FileShareDataContext instance;
-        /**
-         * instance property.
-         * Through the get method it's possble to get a reference to the
-         * unique instance for outgoing transfers of this cass.
-         */
-        public static FileShareDataContext Instance {
-            get {
-                if (instance == null) {
-                    instance = new FileShareDataContext();
-                }
-                return instance;
-            }
-        }
-
         public ObservableCollection<ListedPeer> peers { get; set; }
         public ObservableCollection<ListedJob> sendingJobs { get; set; }
         public ObservableCollection<ListedJob> receivingJobs { get; set; }
         public ListedPeer Me { get; set; }
 
-        protected FileShareDataContext() {
+        public FileShareDataContext() {
 
             Me = new ListedPeer(Settings.Instance.LocalPeer);
 
@@ -89,13 +71,13 @@ namespace FileShare {
                         break;
                     }
             };
-            
+
             JobsList.Receiving.JobAdded += (Job job) => {
                 App.Current.Dispatcher.Invoke((Action)delegate {
                     receivingJobs.Add(new ListedJob(job));
                 });
             };
-            
+
             JobsList.Receiving.JobRemoved += (Job removedJob) => {
                 foreach (ListedJob listItem in receivingJobs)
                     if (listItem.Job.Id == removedJob.Id) {
@@ -115,7 +97,7 @@ namespace FileShare {
                         break;
                     }
             };
-            
+
             peers = new ObservableCollection<ListedPeer>();
             foreach (Peer p in PeersList.Instance.Peers)
                 peers.Add(new ListedPeer(p));
@@ -134,16 +116,10 @@ namespace FileShare {
             ListedJob item = prog.DataContext as ListedJob;
             await System.Threading.Tasks.Task.Run(() => {
                 while (true) {
-                    if (item.Job.Active) {
+                    App.Current.Dispatcher.Invoke((Action)delegate {
+                        prog.Value = item.Job.Percentage;
                         item.UpdateTimeLeft();
-                        App.Current.Dispatcher.Invoke((Action)delegate {
-                            prog.Value = item.Job.Percentage;
-                        });
-                    } else {
-                        item.Completed = true;
-                        item.Error = true;
-                        item.Message = "Errore";
-                    }
+                    });
                     if (item.Job.Percentage == 100)
                         break;
                     System.Threading.Thread.Sleep(300);

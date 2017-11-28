@@ -43,7 +43,7 @@ namespace FileShare
             this.filePath = filePath;
 
             // Needed in order to show the peers list
-            DataContext = FileShareDataContext.Instance;
+            DataContext = new FileShareDataContext();
         }
 
         /// <summary>
