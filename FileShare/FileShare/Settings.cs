@@ -398,7 +398,7 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
     /// </summary>
     public int MaxThumbnailPictureMemorySize {
         get {
-            return 40000;   /* DEFAULT */
+            return 40*1024;   /* DEFAULT */
         }
     }
 

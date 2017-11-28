@@ -73,18 +73,18 @@ namespace FileTransfer
                         // Execute operations when job has been created
                         JobInitialized?.Invoke(((JobFileIterator)iterator).Job);
 
-                        // Timeout on the receive: more responsive
-                        socket.ReceiveTimeout = 5000;
-
                         // Start file trasfer
                         int receivedBytes = 0;
                         while (iterator.hasNext()) {
 
-                            if (!(iterator as JobFileIterator).Job.Active)
+                            // socket.Poll(-1, SelectMode.SelectRead) checks the readable status of the socket. It's blocking, and (due to the infinite
+                            // timeout setted as first parameter) unlocks only when data are available or throws an exception when error occours.
+                            if ((socket.Poll(1, SelectMode.SelectRead) && socket.Available == 0) || !(iterator as JobFileIterator).Job.Active) {
                                 throw new SocketException();
-
-                            receivedBytes = socket.Receive(chunk);
-                            iterator.write(chunk, receivedBytes);
+                            } else {
+                                receivedBytes = socket.Receive(chunk);
+                                iterator.write(chunk, receivedBytes);
+                            }
                         }
                         
                     } else { // ... if the user doesn't accepted to receive the file
