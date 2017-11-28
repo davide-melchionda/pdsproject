@@ -22,7 +22,7 @@ namespace FileShare {
         public NotificationPage() {
             InitializeComponent();
 
-            DataContext = new FileShareDataContext();
+            DataContext = FileShareDataContext.Instance;
         }
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e) {
@@ -46,10 +46,12 @@ namespace FileShare {
         private async void DeactivateJob(object sender, RoutedEventArgs args) {
             Button button = sender as Button;
             ListedJob item = button.DataContext as ListedJob;
+            item.Stopped = true;
             FileShareDataContext f = DataContext as FileShareDataContext;
-            await Task.Run(() => {
-                item.Job.Active = false;
-            }); 
+            item.Job.Active = false;
+            //await Task.Run(() => {
+            //    item.Job.Active = false;
+            //});
         }
 
         private void ProgBarLoaded(object sender, RoutedEventArgs args) {

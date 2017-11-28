@@ -48,6 +48,12 @@
                                                             <DataTrigger Binding="{Binding ElementName=SendingProgBar, Path=DataContext.Completed}" Value="True">
                                                                 <Setter Property="Visibility" Value="Hidden" />
                                                             </DataTrigger>
+                                                            <DataTrigger Binding="{Binding ElementName=SendingProgBar, Path=DataContext.Stopped}" Value="True">
+                                                                <Setter Property="Visibility" Value="Hidden" />
+                                                            </DataTrigger>
+                                                            <!--<DataTrigger Binding="{Binding ElementName=SendingProgBar, Path=DataContext.Completed}" Value="True">
+                                                                <Setter Property="Visibility" Value="Hidden" />
+                                                            </DataTrigger>-->
                                                         </Style.Triggers>
                                                     </Style>
                                                 </ProgressBar.Style>
@@ -61,6 +67,9 @@
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding ElementName=Information, Path=DataContext.Completed}" Value="True">
                                                                 <Setter Property="Visibility" Value="Visible"></Setter>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding ElementName=SendingProgBar, Path=DataContext.Stopped}" Value="True">
+                                                                <Setter Property="Visibility" Value="Visible" />
                                                             </DataTrigger>
                                                             <DataTrigger Binding="{Binding ElementName=Information, Path=DataContext.Error}" Value="True">
                                                                 <Setter Property="Foreground" Value="DarkRed"></Setter>
@@ -82,6 +91,9 @@
                                                     <Setter Property="Visibility" Value="Visible" />
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding ElementName=SendingTimeLeft, Path=DataContext.Completed}" Value="True">
+                                                            <Setter Property="Visibility" Value="Hidden" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding ElementName=SendingProgBar, Path=DataContext.Stopped}" Value="True">
                                                             <Setter Property="Visibility" Value="Hidden" />
                                                         </DataTrigger>
                                                     </Style.Triggers>

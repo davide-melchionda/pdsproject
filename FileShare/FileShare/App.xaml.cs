@@ -4,18 +4,15 @@ using FileTransfer;
 using HelloProtocol;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Security.Principal;
 using System.Windows;
 
 namespace FileShare {
     /// <summary>
     /// Logica di interazione per App.xaml
     /// </summary>
-public partial class App : Application {
+    public partial class App : Application {
 
         ///<summary>
         /// A form which will never be shown and which isresponsible of managing the
@@ -24,11 +21,22 @@ public partial class App : Application {
         BackgroundForm bf;
    
         void AppStartup(object sender, StartupEventArgs e) {
+
             SettingsPersistence.readSettings();
-            GarbageCleanup gc = new GarbageCleanup();
-            gc.run();
+            //GarbageCleanup gc = new GarbageCleanup();
+            //gc.run();
+
+            WindowsIdentity wi = WindowsIdentity.GetCurrent();
+            Settings.Instance.LocalPeer.Name = Environment.UserName;//wi.Name;
+
+            Settings.Instance.PicturePath = @"C:\Users\" + Environment.UserName + @"\AppData\Local\Temp\" + Environment.UserName + @".bmp";
+
             // Start the thread responsible of the neighbor discovery process
             new HelloThread().run();
+<<<<<<< HEAD
+=======
+
+>>>>>>> gui
             // Start the thread responsible of receiving request of transferring files
             ServerClass receiver= new ServerClass();
             receiver.RequestReceived += ( ToAccept request) => {
