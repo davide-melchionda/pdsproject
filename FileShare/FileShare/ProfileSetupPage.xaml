@@ -10,11 +10,16 @@
       Title="ProfileSetupPage">
 
 	<Grid>
-		<StackPanel Orientation="Vertical" CanVerticallyScroll="True" Margin="0,0,0,-69">
+		<StackPanel Orientation="Vertical" CanVerticallyScroll="True" Margin="0,0,0,0">
 			<TextBlock HorizontalAlignment="Center" FontSize="16"  Margin="10,10,10,0" Text="You are ready to go!" ></TextBlock>
 			<TextBlock HorizontalAlignment="Center" Margin="15,10,15,10" Text="Just take a moment to setup your public informations." ></TextBlock>
 			<Label HorizontalAlignment="Center" FontWeight="Bold">Profile picture</Label>
-			<Image Margin="10,10,10,10"  Height="128" Width="128" Source="{Binding Path=LocalPeer.ByteIcon}"></Image>
+			<Ellipse Width="128" Height="128">
+				<Ellipse.Fill>
+					<ImageBrush ImageSource="{Binding Path=LocalPeer.ByteIcon}"/>
+				</Ellipse.Fill>
+			</Ellipse>
+			<!--<Image Margin="10,10,10,10"  Height="128" Width="128" Source="{Binding Path=LocalPeer.ByteIcon}"></Image>-->
 			<Button Background="Transparent" BorderThickness="0" Name="ProfilePictureButton" HorizontalAlignment="Center" Click="Profile_Button_Click">
 				<Image  Width="30" Height="30" Source="C:\Users\franc\Desktop\camera.png" />
 				<Button.ToolTip>

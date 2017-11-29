@@ -6,8 +6,8 @@
         xmlns:local="clr-namespace:FileShare"
 		 ResizeMode="NoResize"
         mc:Ignorable="d"
-    WindowStartupLocation="CenterScreen"
-        Title="SettingsWindow" Height="600" Width="600">
+		WindowStartupLocation="CenterScreen"
+        Title="SettingsWindow" Height="520" Width="400">
     <Grid>
 		<Frame Name= "SettingsFrame"/>
 	</Grid>
