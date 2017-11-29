@@ -26,17 +26,16 @@ namespace FileShare {
             //GarbageCleanup gc = new GarbageCleanup();
             //gc.run();
 
-            WindowsIdentity wi = WindowsIdentity.GetCurrent();
-            Settings.Instance.LocalPeer.Name = Environment.UserName;//wi.Name;
+            //WindowsIdentity wi = WindowsIdentity.GetCurrent();
+            //Settings.Instance.LocalPeer.Name = Environment.UserName;//wi.Name;
 
-            Settings.Instance.PicturePath = @"C:\Users\" + Environment.UserName + @"\AppData\Local\Temp\" + Environment.UserName + @".bmp";
+            //Settings.Instance.PicturePath = @"C:\Users\" + Environment.UserName + @"\AppData\Local\Temp\" + Environment.UserName + @".bmp";
 
             // Start the thread responsible of the neighbor discovery process
-            new HelloThread().run();
-<<<<<<< HEAD
-=======
+            HelloThread hellothread=new HelloThread();
+            hellothread.OnProfilePicUpdate += Hellothread_OnProfilePicUpdate;
+            hellothread.run();
 
->>>>>>> gui
             // Start the thread responsible of receiving request of transferring files
             ServerClass receiver= new ServerClass();
             receiver.RequestReceived += ( ToAccept request) => {
@@ -96,9 +95,19 @@ namespace FileShare {
             bf = new BackgroundForm();
         }
 
+        private void Hellothread_OnProfilePicUpdate(string peerId, byte[] newPicture)
+        {
+            Application.Current.Dispatcher.Invoke((Action)delegate
+            {
+                //updates in GUI a user profile picture
+
+                PeersList.Instance.get(peerId).ByteIcon = newPicture;
+            });
+        }
+
         public ToAccept  ShowConfirmWindow(ToAccept request)
         {
-            //mostra la finestra e prende in uscita path e response
+            
             ReceiveWindow rw = new ReceiveWindow(request);
             rw.Show();
 

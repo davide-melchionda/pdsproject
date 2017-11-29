@@ -6,6 +6,10 @@ namespace HelloProtocol
 {
     internal class HelloThread : ExecutableThread
     {
+        public delegate void ProfilePicUpdated(string peerId, byte[] newPicture);
+   
+        public event ProfilePicUpdated OnProfilePicUpdate;
+
         public HelloThread()
         {
             AppDomain.CurrentDomain.ProcessExit += new EventHandler(OnProcessExit);
@@ -87,6 +91,9 @@ namespace HelloProtocol
                     }
                     else
                         Logger.log(Logger.HELLO_DEBUG, "I already know the sender. Why does he sent me this packet?\n"); // DEBUG
+
+                    OnProfilePicUpdate?.Invoke(presentation.Peer.Id, presentation.Peer.ByteIcon);
+                    //peers.get(presentation.Peer.Id).ByteIcon = presentation.Peer.ByteIcon;
                 }
                 Logger.log(Logger.HELLO_DEBUG, "UPDATED PEERS LIST\n"); // DEBUG
                 Logger.log(Logger.HELLO_DEBUG, "KEY\t\tNAME\t\tADDRESS\n"); // DEBUG

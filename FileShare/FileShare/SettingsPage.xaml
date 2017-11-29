@@ -37,7 +37,7 @@
 
 				
 			</StackPanel>
-			<TextBox Margin="0,0,20,0" Name="DefaultPath" Text="{Binding Path=DefaultRecvPath}"  ></TextBox>
+			<TextBox Margin="0,0,20,0" Name="DefaultPath" Text="{Binding Path=Settings.DefaultRecvPath }"   ></TextBox>
 
 
 			<CheckBox Name ="alwaysDefault" IsChecked="{Binding Path=AlwaysUseDefault}" >Use default path in manual accept receive </CheckBox>

@@ -33,6 +33,7 @@ namespace FileShare
                     Settings.Instance.CurrentUsername = appSettings.CurrentUsername;
                     Settings.Instance.DefaultRecvPath = appSettings.DefaultPath;
                     Settings.Instance.IsInvisible = appSettings.IsInvisible;
+                    Settings.Instance.PicturePath = appSettings.PicPath;
 
                 }
             }
@@ -45,6 +46,7 @@ namespace FileShare
             storable.AutoAccept = Settings.Instance.AutoAcceptFiles;
             storable.CurrentUsername = Settings.Instance.CurrentUsername;
             storable.DefaultPath = Settings.Instance.DefaultRecvPath;
+            storable.PicPath = Settings.Instance.PicturePath;
             storable.AlwaysUseDefault = Settings.Instance.AlwaysUseDefault;
             System.IO.DirectoryInfo di = new DirectoryInfo(Path.GetDirectoryName(settingsFile));
             if (!di.Exists)
@@ -73,12 +75,13 @@ namespace FileShare
             private bool autoAccept;
             private string defaultPath;
             private string currentUsername;
-
+            private string picPath;
             public bool IsInvisible { get => isInvisible; set => isInvisible = value; }
             public bool AlwaysUseDefault { get => alwaysUseDefault; set => alwaysUseDefault = value; }
             public bool AutoAccept { get => autoAccept; set => autoAccept = value; }
             public string DefaultPath { get => defaultPath; set => defaultPath = value; }
             public string CurrentUsername { get => currentUsername; set => currentUsername = value; }
+            public string PicPath { get => picPath; set => picPath = value; }
 
             public StorableSettings() { }
 

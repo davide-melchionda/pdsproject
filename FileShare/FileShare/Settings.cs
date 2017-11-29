@@ -376,10 +376,13 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
             return picturePath;
         }
         set {
-            //LocalPeer.Icon = ImageAdapter.GetThumbnailImage(new BitmapImage(new Uri(value)), IconSize);
-            LocalPeer.ByteIcon = ImageAdapter.ByteArrayFromImage(new BitmapImage(new Uri(value)), MaxThumbnailPictureMemorySize);
-            picturePath = value;
-            NotifyPropertyChanged();
+            if (value != null)
+            {
+                //LocalPeer.Icon = ImageAdapter.GetThumbnailImage(new BitmapImage(new Uri(value)), IconSize);
+                LocalPeer.ByteIcon = ImageAdapter.ByteArrayFromImage(new BitmapImage(new Uri(value)), MaxThumbnailPictureMemorySize);
+                picturePath = value;
+                NotifyPropertyChanged();
+            }
         }
     }
 
