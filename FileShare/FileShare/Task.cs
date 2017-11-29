@@ -46,6 +46,32 @@ namespace FileTransfer
         }
 
         /**
+      * The name of the sender of the file interested by this task
+      */
+        private string senderName;
+        /**
+         * senderName property
+         */
+        public string SenderName
+        {
+            get { return senderName; }
+            set { senderName = value; }
+        }
+
+        /**
+         * The name of the receiver of the file interested by this task
+         */
+        private string receiverName;
+        /**
+         * receiverName property
+         */
+        public string ReceiverName
+        {
+            get { return receiverName; }
+            set { receiverName = value; }
+        }
+
+        /**
          * Date of creation of the task
          */
         private DateTime requestTimestamp;
@@ -120,11 +146,13 @@ namespace FileTransfer
          * Constructor of the task. Takes only few arguments because the others are
          * retrieved from these ones or initialized calling other methods.
          */
-        public Task(string sender, string receiver, string filePath)
+        public Task(string sender, string senderName, string receiver, string receiverName,string filePath)
         {
             // Initialize sender and receiver
             this.sender = sender;
             this.receiver = receiver;
+            this.senderName = senderName;
+            this.receiverName = receiverName;
 
             // Initializes file informationa
             info = new FileInfo(filePath);

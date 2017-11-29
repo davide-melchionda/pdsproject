@@ -37,7 +37,6 @@ namespace FileShare
 
         private void Profile_Button_Click(object sender, RoutedEventArgs e) {
             OpenFileDialog dialog = new OpenFileDialog();
-            //dialog.SelectedPath = DefaultPath.Text;
             dialog.Filter = "File immagine|*.jpg;*.jpeg;*.png;*.ico;*.bmp" ;
             if (dialog.ShowDialog() == DialogResult.OK)
                 settings.PicturePath = dialog.FileName;

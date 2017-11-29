@@ -26,18 +26,31 @@ namespace FileShare {
             //GarbageCleanup gc = new GarbageCleanup();
             //gc.run();
 
-            WindowsIdentity wi = WindowsIdentity.GetCurrent();
-            Settings.Instance.LocalPeer.Name = Environment.UserName;//wi.Name;
+            //WindowsIdentity wi = WindowsIdentity.GetCurrent();
+            //Settings.Instance.LocalPeer.Name = Environment.UserName;//wi.Name;
 
-            Settings.Instance.PicturePath = @"C:\Users\" + Environment.UserName + @"\AppData\Local\Temp\" + Environment.UserName + @".bmp";
+            //Settings.Instance.PicturePath = @"C:\Users\" + Environment.UserName + @"\AppData\Local\Temp\" + Environment.UserName + @".bmp";
 
             // Start the thread responsible of the neighbor discovery process
-            new HelloThread().run();
+            HelloThread hellothread=new HelloThread();
+            hellothread.OnProfilePicUpdate += Hellothread_OnProfilePicUpdate;
+            hellothread.run();
 
             // Start the thread responsible of receiving request of transferring files
             ServerClass receiver= new ServerClass();
-            receiver.RequestReceived += RequestMessageBox.Show;
-            receiver.ConnectionError += () => {
+            receiver.RequestReceived += ( ToAccept request) => {
+
+                // On the gui thread
+                Application.Current.Dispatcher.Invoke((Action)delegate
+                {
+                    //mostra la finestra e prende in uscita path e response
+                    ReceiveWindow rw = new ReceiveWindow(request);
+                    rw.ShowDialog();
+
+                });
+                return request;
+            };
+                receiver.ConnectionError += () => {
                 bf.NotifyError(BackgroundForm.ErrorNotificationType.Receiving);
             };
             receiver.run();
@@ -67,8 +80,8 @@ namespace FileShare {
                         };
                         for (int i = 0; i < selected.Count; i++)
                             scheduler.scheduleJob(new Job(new FileTransfer.Task(Settings.Instance.LocalPeer.Id,
-                                                                                    PeersList.Instance.Peers.ElementAt(i).Id,
-                                                                                    filepath), filepath));
+                                                        Settings.Instance.LocalPeer.Name, PeersList.Instance.Peers.ElementAt(i).Id,
+                                                        PeersList.Instance.Peers.ElementAt(i).Name, filepath), filepath));
                     };                    
                     sw.Show();
                 });
@@ -80,6 +93,25 @@ namespace FileShare {
             /* Start the background form which will manage the tray icon 
              * and the notification window */
             bf = new BackgroundForm();
+        }
+
+        private void Hellothread_OnProfilePicUpdate(string peerId, byte[] newPicture)
+        {
+            Application.Current.Dispatcher.Invoke((Action)delegate
+            {
+                //updates in GUI a user profile picture
+
+                PeersList.Instance.get(peerId).ByteIcon = newPicture;
+            });
+        }
+
+        public ToAccept  ShowConfirmWindow(ToAccept request)
+        {
+            
+            ReceiveWindow rw = new ReceiveWindow(request);
+            rw.Show();
+
+            return request;
         }
 
         /// <summary>
