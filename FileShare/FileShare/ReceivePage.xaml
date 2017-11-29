@@ -4,11 +4,12 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:FileShare"
-      mc:Ignorable="d" 
-      d:DesignHeight="300" d:DesignWidth="300"
-      Title="ReceivePage">
+      mc:Ignorable="d"
+	  	  Background="#fdfffd"
 
-	<StackPanel Margin="10" CanVerticallyScroll="True">
+      Title="ReceivePage" Height="306.4" Width="303.2">
+
+	<StackPanel Margin="10,10,10,122" CanVerticallyScroll="True">
 		<StackPanel Orientation="Horizontal" CanVerticallyScroll="True">
 
 			<TextBlock Text="{Binding Path= Request.TasktoAccept.SenderName, StringFormat= {}{0} want to send you a }"  Foreground="Black" Margin="0,10,0,0"/>
@@ -18,27 +19,32 @@
 
 		<Label FontWeight="Bold" Content="The download will be done here:"/>
 
-		<StackPanel Orientation="Horizontal">
-			<TextBox Margin="0,0,10,0" Name="ChosedPath" Text="{Binding Path=Settings.DefaultRecvPath }" Width="246"  ></TextBox>
+		<StackPanel    Orientation="Horizontal">
+			<TextBox Padding="2" Margin="5" Name="ChosedPath" Text="{Binding Path=Settings.DefaultRecvPath }" Width="246"  ></TextBox>
 
-			<Button Name="ChoosePath" Content="..." 
-				Click="Path_Button_Click"/>
+			<Button Background="Transparent" BorderThickness="0" Name="ChoosePath" HorizontalAlignment="Center" Click="Path_Button_Click">
+				<Image  Width="30" Height="30" Source="{Binding Path=Settings.FolderIcon}" />
+
+			</Button>
 
 
 		</StackPanel>
 
-		<StackPanel Orientation="Horizontal">
+		<StackPanel Margin="0,20,0,0" Orientation="Horizontal">
+
 
 			<Button Content="Accept"
-                Margin="105,10,5,10"
-                Width="75"
+					HorizontalAlignment="Center"
+					Margin="0,0,5,10"
+					Padding="5"
 				IsDefault="True"
-                Click="Accept_Button_Click"/>
-
+                Click="Accept_Button_Click" Width="135"/>
 			<Button Content="Cancel"
-                Margin="0,10,0,10"
-                Width="75"
-                Click="Cancel_Button_Click"/>
+					Margin="5,0,0,10"
+					Padding="5"
+				IsDefault="True"
+                Click="Cancel_Button_Click" Width="135"/>
+
 
 		</StackPanel>
 		<CheckBox x:Name ="alwaysDefault" IsChecked="{Binding Path=Settings.AutoAcceptFiles}" Content="Don't show this again. " />

@@ -376,7 +376,7 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
             return picturePath;
         }
         set {
-            if (value != null)
+            if (File.Exists(value))
             {
                 //LocalPeer.Icon = ImageAdapter.GetThumbnailImage(new BitmapImage(new Uri(value)), IconSize);
                 LocalPeer.ByteIcon = ImageAdapter.ByteArrayFromImage(new BitmapImage(new Uri(value)), MaxThumbnailPictureMemorySize);
@@ -392,6 +392,28 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
     public Uri DefaultUserPicture {
         get {
             return new Uri(Directory.GetCurrentDirectory() + @"\user.ico"); /* DEFAULT */
+        }
+    }
+
+    /// <summary>
+    /// folder icon 
+    /// </summary>
+    public Uri FolderIcon
+    {
+        get
+        {
+            return new Uri(Directory.GetCurrentDirectory() + @"\folder.png"); /* DEFAULT */
+        }
+    }
+
+    /// <summary>
+    /// folder icon 
+    /// </summary>
+    public Uri PictureIcon
+    {
+        get
+        {
+            return new Uri(Directory.GetCurrentDirectory() + @"\camera.png"); /* DEFAULT */
         }
     }
 

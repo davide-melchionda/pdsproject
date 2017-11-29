@@ -18,7 +18,11 @@
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <Grid>
-                                            <Image Height="56" Width="56" Source="{Binding Icon}"></Image>
+											<Ellipse Width="56" Height="56">
+												<Ellipse.Fill>
+													<ImageBrush ImageSource="{Binding Icon}"/>
+												</Ellipse.Fill>
+											</Ellipse>
                                         </Grid>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
@@ -106,7 +110,7 @@
                             <GridViewColumn Header="Annulla" Width="100">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Button Click="DeactivateJob">X</Button>
+					                    <Button Click="DeactivateJob">X</Button>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>

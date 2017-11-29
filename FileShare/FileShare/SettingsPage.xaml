@@ -4,49 +4,63 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       mc:Ignorable="d"
-      d:DesignWidth="600"
-      Height="600"
+
+      d:DesignWidth="400"
+      Height="500"
       Title="SettingsPage">
 
     <Grid>
-		<StackPanel Margin="10" CanVerticallyScroll="True">
-            <Label FontWeight="Bold">Profile picture</Label>
-            <Image Height="128" Width="128" Source="{Binding Path=Me.Icon}"></Image>
+		<StackPanel Margin="0,10,0,0" CanVerticallyScroll="True">
+			<Label  HorizontalAlignment=" center" FontWeight="Bold">Profile picture</Label>
+			<Ellipse Width="128" Height="128">
+				<Ellipse.Fill>
+					<ImageBrush ImageSource="{Binding Path=Me.Icon}"/>
+				</Ellipse.Fill>
+			</Ellipse>
+            <!--<Image Height="128" Width="128" Source="{Binding Path=Me.Icon}"></Image>-->
             <!--<TextBox Margin="0,0,20,0" Name="PictureTB" Text="{Binding Path=Settings.PicturePath}"></TextBox>-->
-            <StackPanel Orientation="Horizontal">
-                <Button Name="ProfilePictureButton" Content="Change profile picture"
-				Margin="10,0,0,0"
-				Click="Profile_Button_Click"/>
+			<Button Background="Transparent" BorderThickness="0" Name="ProfilePictureButton" HorizontalAlignment="Center" Click="Profile_Button_Click">
+				<Image  Width="30" Height="30" Source="{Binding Path=Settings.PictureIcon}" />
+				<Button.ToolTip>
+					<ToolTip>
+						<TextBlock>Load</TextBlock>
+					</ToolTip>
+				</Button.ToolTip>
+			</Button>
 
-
-            </StackPanel>
-
-            <Label FontWeight="Bold">Current username</Label>
-            <TextBox Margin="0,0,20,0" Name="UsernameTB" Text="{Binding Path=Settings.CurrentUsername}"  ></TextBox>
-
+			<Label  HorizontalAlignment=" center" FontWeight="Bold">Current username</Label>
+			<TextBox  Padding="2" Margin="50,0,50,0" Name="UsernameTB" Text="{Binding Path=Settings.CurrentUsername}"  ></TextBox>
+			<StackPanel HorizontalAlignment="Center" Orientation="Vertical">
             <Label FontWeight="Bold">Application Options</Label>
 
-            <CheckBox Name="InvisibleStateCB" IsChecked="{Binding Path=Settings.IsInvisible}"> Enable invisible state
+			<CheckBox  Margin="1" Name="InvisibleStateCB" IsChecked="{Binding Path=Settings.IsInvisible}"> Enable invisible state
 			</CheckBox>
-            <CheckBox Name ="AutoReceiveCB"  IsChecked="{Binding Path=Settings.AutoAcceptFiles}" >Enable auto receiving</CheckBox>
-			<StackPanel Orientation="Horizontal">
-				<Label >Default receiving path</Label>
-				<Button Name="ChoosePath" Content="..." 
-				Margin="10,0,0,0"
-				Click="Path_Button_Click"/>
-
-				
+            <CheckBox  Margin="1" Name ="AutoReceiveCB"  IsChecked="{Binding Path=Settings.AutoAcceptFiles}" >Enable auto receiving</CheckBox>
 			</StackPanel>
-			<TextBox Margin="0,0,20,0" Name="DefaultPath" Text="{Binding Path=Settings.DefaultRecvPath }"   ></TextBox>
+			<StackPanel HorizontalAlignment=" center" Orientation="Horizontal">
+				<Label >Default receiving path</Label>
+				<!--<Button Name="ChoosePath" Content="..." 
+				Margin="10,0,0,0"
+				Click="Path_Button_Click"/>-->
+				<Button Background="Transparent" BorderThickness="0" Name="ChoosePath" HorizontalAlignment="Center" Click="Path_Button_Click">
+					<Image  Width="30" Height="30" Source="{Binding Path=Settings.FolderIcon}" />
+					<Button.ToolTip>
+						<ToolTip>
+							<TextBlock>Browse</TextBlock>
+						</ToolTip>
+					</Button.ToolTip>
+				</Button>
 
 
-			<CheckBox Name ="alwaysDefault" IsChecked="{Binding Path=AlwaysUseDefault}" >Use default path in manual accept receive </CheckBox>
+			</StackPanel>
+			<TextBox  Padding="2" Margin="50,0,50,10" Name="DefaultPath" Text="{Binding Path=Settings.DefaultRecvPath }"   ></TextBox>
 
-			<Button Content="Close"
-                HorizontalAlignment="right"
-                Margin="10,10,10,10"
-                VerticalAlignment="Top"
-                Width="75"
+
+			<CheckBox HorizontalAlignment="Center" Name ="alwaysDefault" IsChecked="{Binding Path=AlwaysUseDefault}" >Use default path in manual accept receive </CheckBox>
+
+			<Button Content="Done"
+					Margin="50,20,50,10"
+					Padding="5"
 				IsDefault="True"
                 Click="Close_Button_Click"/>
 		</StackPanel>
