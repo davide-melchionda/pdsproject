@@ -11,14 +11,23 @@
     <Grid>
 		<StackPanel>
 			<TextBlock Name="fileName"  />
-			<ListView x:Name="thelist" x:FieldModifier="public" ItemsSource="{Binding peers}" Margin="0,0,-0.8,-1.6">
+			<ListView  x:Name="thelist" x:FieldModifier="public" ItemsSource="{Binding peers}" Margin="0,0,0,10">
+				<ListView.Resources >
+					<Style TargetType="GridViewColumnHeader">
+						<Setter Property="Visibility" Value="Collapsed"></Setter>
+					</Style>
+				</ListView.Resources>
 				<ListView.View>
 					<GridView>
                         <GridViewColumn Width="100">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <Grid>
-                                        <Image Height="56" Width="56" Source="{Binding Icon}"></Image>
+										<Ellipse Width="56" Height="56">
+											<Ellipse.Fill>
+												<ImageBrush ImageSource="{Binding Icon}"/>
+											</Ellipse.Fill>
+										</Ellipse>
                                     </Grid>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
@@ -27,13 +36,12 @@
                     </GridView>
 				</ListView.View>
 			</ListView>
-			
 
-			<Button Content="Invia"
-                HorizontalAlignment="right"
-                Margin="10,10,10,10"
-                VerticalAlignment="Top"
-                Width="75"
+
+			<Button Content="Done"
+					Margin="50,0,50,10"
+					Padding="5"
+				IsDefault="True"
                 Click="Button_Click"/>
 		</StackPanel>
 	</Grid>

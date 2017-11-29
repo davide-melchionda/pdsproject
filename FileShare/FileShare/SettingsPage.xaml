@@ -20,7 +20,7 @@
             <!--<Image Height="128" Width="128" Source="{Binding Path=Me.Icon}"></Image>-->
             <!--<TextBox Margin="0,0,20,0" Name="PictureTB" Text="{Binding Path=Settings.PicturePath}"></TextBox>-->
 			<Button Background="Transparent" BorderThickness="0" Name="ProfilePictureButton" HorizontalAlignment="Center" Click="Profile_Button_Click">
-				<Image  Width="30" Height="30" Source="C:\Users\franc\Desktop\camera.png" />
+				<Image  Width="30" Height="30" Source="{Binding Path=Settings.PictureIcon}" />
 				<Button.ToolTip>
 					<ToolTip>
 						<TextBlock>Load</TextBlock>
@@ -43,8 +43,12 @@
 				Margin="10,0,0,0"
 				Click="Path_Button_Click"/>-->
 				<Button Background="Transparent" BorderThickness="0" Name="ChoosePath" HorizontalAlignment="Center" Click="Path_Button_Click">
-					<Image  Width="30" Height="30" Source="C:\Users\franc\Desktop\folder.png" />
-					
+					<Image  Width="30" Height="30" Source="{Binding Path=Settings.FolderIcon}" />
+					<Button.ToolTip>
+						<ToolTip>
+							<TextBlock>Browse</TextBlock>
+						</ToolTip>
+					</Button.ToolTip>
 				</Button>
 
 

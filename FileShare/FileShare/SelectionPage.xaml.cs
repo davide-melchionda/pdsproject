@@ -53,7 +53,6 @@ namespace FileShare
         /// <param name="e"></param>
         private void Button_Click(object sender, RoutedEventArgs e) {
             List<Peer> selected = new List<Peer>();
-
             // If at least one peer was selected
             if (thelist.SelectedItems.Count > 0) {
                 /* Triggers the evet */

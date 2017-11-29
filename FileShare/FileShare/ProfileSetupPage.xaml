@@ -21,7 +21,7 @@
 			</Ellipse>
 			<!--<Image Margin="10,10,10,10"  Height="128" Width="128" Source="{Binding Path=LocalPeer.ByteIcon}"></Image>-->
 			<Button Background="Transparent" BorderThickness="0" Name="ProfilePictureButton" HorizontalAlignment="Center" Click="Profile_Button_Click">
-				<Image  Width="30" Height="30" Source="C:\Users\franc\Desktop\camera.png" />
+				<Image  Width="30" Height="30" Source="{Binding Path=PictureIcon}" />
 				<Button.ToolTip>
 					<ToolTip>
 						<TextBlock>Load</TextBlock>
@@ -38,12 +38,11 @@
 					Margin="50,10,50,10"
 					Padding="5"
                 Background="LightSkyBlue"
-				IsDefault="True"
                 Click="Import_Button_Click">
 				<Button.ToolTip>
 					<ToolTip>
 						<StackPanel>
-							<TextBlock>May be not fully available</TextBlock>
+							<TextBlock>Could be partially unavailable</TextBlock>
 							<TextBlock>for all Windows versions.</TextBlock>
 
 						</StackPanel>

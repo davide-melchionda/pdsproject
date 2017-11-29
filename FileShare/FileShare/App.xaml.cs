@@ -4,6 +4,7 @@ using FileTransfer;
 using HelloProtocol;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Principal;
 using System.Windows;
@@ -20,9 +21,14 @@ namespace FileShare {
         /// </summary> 
         BackgroundForm bf;
    
+        //Deny the user the possibility to open two or more instances of the application
         void AppStartup(object sender, StartupEventArgs e) {
+            if (Process.GetProcessesByName("FileShare").Length > 1)
+            {
+                Environment.Exit(0);
+            }
 
-            SettingsPersistence.readSettings();
+                SettingsPersistence.readSettings();
             ProfileSetupWindow pw = new ProfileSetupWindow();
             pw.ShowDialog();
             //GarbageCleanup gc = new GarbageCleanup();

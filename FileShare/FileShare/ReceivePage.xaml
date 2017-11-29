@@ -23,7 +23,7 @@
 			<TextBox Padding="2" Margin="5" Name="ChosedPath" Text="{Binding Path=Settings.DefaultRecvPath }" Width="246"  ></TextBox>
 
 			<Button Background="Transparent" BorderThickness="0" Name="ChoosePath" HorizontalAlignment="Center" Click="Path_Button_Click">
-				<Image  Width="30" Height="30" Source="C:\Users\franc\Desktop\folder.png" />
+				<Image  Width="30" Height="30" Source="{Binding Path=Settings.FolderIcon}" />
 
 			</Button>
 
