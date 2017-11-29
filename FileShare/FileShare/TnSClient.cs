@@ -69,7 +69,15 @@ namespace NetworkTransmission {
                 /* Close the file iterator releasing resources and
                  * releases protocol resources */
                 iterator.close();
-                protocol.releaseClient();
+
+                // I don't know if I really have acquired a slot (maybe an exception occourde befor I could do it)
+                // The realease operation will throw an exception if the I have not acquired a slot
+                try {
+                    // Release the slot
+                    protocol.releaseClient();
+                } catch (System.Threading.SemaphoreFullException e) {
+                    // This means that SocketException occurred befor I could acquire the semaphore slot
+                }
             }
 
             return new TnSTransferResult(response.Procede);

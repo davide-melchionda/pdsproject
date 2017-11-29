@@ -97,8 +97,15 @@ namespace FileTransfer
                 // Close the iterator so to release resources
                 if (iterator != null)
                     iterator.close();
-                // Release the slot
-                ((TnSProtocol)protocol).releaseServer((socket.RemoteEndPoint as IPEndPoint).Address.ToString());
+                
+                // I don't know if I really have acquired a slot (maybe an exception occourde befor I could do it)
+                // The realease operation will throw an exception if the I have not acquired a slot
+                try {
+                    // Release the slot
+                    ((TnSProtocol)protocol).releaseServer((socket.RemoteEndPoint as IPEndPoint).Address.ToString());
+                } catch (SemaphoreFullException e) {
+                    // This means that SocketException occurred befor I could acquire the semaphore slot
+                }
 
             }
 
