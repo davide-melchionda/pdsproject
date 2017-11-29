@@ -1,0 +1,57 @@
+﻿<Page x:Class="FileShare.ProfileSetupPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:FileShare"
+	  Background="#fdfffd"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="400"
+      Title="ProfileSetupPage">
+
+	<Grid>
+		<StackPanel Orientation="Vertical" CanVerticallyScroll="True" Margin="0,0,0,-69">
+			<TextBlock HorizontalAlignment="Center" FontSize="16"  Margin="10,10,10,0" Text="You are ready to go!" ></TextBlock>
+			<TextBlock HorizontalAlignment="Center" Margin="15,10,15,10" Text="Just take a moment to setup your public informations." ></TextBlock>
+			<Label HorizontalAlignment="Center" FontWeight="Bold">Profile picture</Label>
+			<Image Margin="10,10,10,10"  Height="128" Width="128" Source="{Binding Path=LocalPeer.ByteIcon}"></Image>
+			<Button Background="Transparent" BorderThickness="0" Name="ProfilePictureButton" HorizontalAlignment="Center" Click="Profile_Button_Click">
+				<Image  Width="30" Height="30" Source="C:\Users\franc\Desktop\camera.png" />
+				<Button.ToolTip>
+					<ToolTip>
+						<TextBlock>Load</TextBlock>
+					</ToolTip>
+				</Button.ToolTip>
+			</Button>
+
+
+			<Label  HorizontalAlignment="Center" FontWeight="Bold">Username</Label>
+			<TextBox Padding="2" Margin="50,0,50,0" Name="UsernameTB" Text="{Binding Path=CurrentUsername}"  ></TextBox>
+			<Label  Foreground="IndianRed" HorizontalAlignment="Center" >Too lazy?</Label>
+
+			<Button Content="Import from Windows User"
+					Margin="50,10,50,10"
+					Padding="5"
+                Background="LightSkyBlue"
+				IsDefault="True"
+                Click="Import_Button_Click">
+				<Button.ToolTip>
+					<ToolTip>
+						<StackPanel>
+							<TextBlock>May be not fully available</TextBlock>
+							<TextBlock>for all Windows versions.</TextBlock>
+
+						</StackPanel>
+					</ToolTip>
+				</Button.ToolTip>
+			</Button>
+
+			<Button Content="Done"
+					Margin="50,0,50,10"
+					Padding="5"
+				IsDefault="True"
+                Click="Close_Button_Click"/>
+		</StackPanel>
+
+	</Grid>
+</Page>

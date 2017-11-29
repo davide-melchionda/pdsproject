@@ -376,7 +376,7 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
             return picturePath;
         }
         set {
-            if (value != null)
+            if (File.Exists(value))
             {
                 //LocalPeer.Icon = ImageAdapter.GetThumbnailImage(new BitmapImage(new Uri(value)), IconSize);
                 LocalPeer.ByteIcon = ImageAdapter.ByteArrayFromImage(new BitmapImage(new Uri(value)), MaxThumbnailPictureMemorySize);

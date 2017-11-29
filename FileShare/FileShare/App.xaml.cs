@@ -23,6 +23,8 @@ namespace FileShare {
         void AppStartup(object sender, StartupEventArgs e) {
 
             SettingsPersistence.readSettings();
+            ProfileSetupWindow pw = new ProfileSetupWindow();
+            pw.ShowDialog();
             //GarbageCleanup gc = new GarbageCleanup();
             //gc.run();
 
