@@ -115,7 +115,7 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
     /**
      * Packet buffer size (maximum number of characters in a packet
      */
-    private int bufSize = /* DEFAULT */ 10*1024*1024;    // 10 MB
+    private int bufSize = /* DEFAULT */ 65535;    // Max datagram size KB
     /**
      * bufSize property
      */
