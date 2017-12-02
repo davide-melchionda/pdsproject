@@ -40,12 +40,16 @@ namespace FileShare {
         /// </summary>
         /// <param name="icon"></param>
         /// <returns></returns>
-        public static byte[] ByteArrayFromImage(BitmapSource icon) {
-            // Then sets byteIcon
+        public static byte[] ByteArrayFromImage(Bitmap icon, int maxSize) {
             byte[] bytes = null;
-            if (icon != null) {
-                MemoryStream stream = GetMemoryStream(icon);
+            using (var stream = new MemoryStream()) {
+                Image b = GetThumbnailImage(icon, new Size(128, 128));
+                b.Save(stream, ImageFormat.Jpeg);
                 bytes = stream.ToArray();
+                while (bytes.Length > maxSize)
+                    bytes = Reduce(b, 80);
+                stream.Close();
+                b.Dispose();
             }
             return bytes;
         }
@@ -65,11 +69,15 @@ namespace FileShare {
                 encoder.Frames.Add(BitmapFrame.Create(icon));
                 using (var stream = new MemoryStream()) {
                     encoder.Save(stream);
-                    Image b = GetThumbnailImage(new System.Drawing.Bitmap(stream), new Size(128, 128));
+                    Image tmpBitmap = new System.Drawing.Bitmap(stream);
+                    Image b = GetThumbnailImage(tmpBitmap, new Size(128, 128));
+                    tmpBitmap.Dispose();
                     b.Save(stream, ImageFormat.Jpeg);
                     bytes = stream.ToArray();
                     while (bytes.Length > maxSize)
                         bytes = Reduce(b, 80);
+                    stream.Close();
+                    b.Dispose();
                 }
             }
             return bytes;
@@ -87,6 +95,8 @@ namespace FileShare {
         /// <summary>
         /// Given an Image and a Size, returns the same image adapted to the specified size
         /// mantaining the best possible quality.
+        /// If the has not a ration equals to the ration of the given size, the method returns
+        /// an image which has the smaller edge of the grather of the dimensions of the given size.
         /// </summary>
         /// <param name="OriginalImage"></param>
         /// <param name="ThumbSize"></param>
@@ -97,9 +107,9 @@ namespace FileShare {
             Image i = OriginalImage;
             Int32 w = i.Width;
             Int32 h = i.Height;
-            Int32 th = thWidth;
+            Int32 th = thHeight;
             Int32 tw = thWidth;
-            if (h > w) {
+            if (h < w) {
                 Double ratio = (Double)w / (Double)h;
                 th = thHeight < h ? thHeight : h;
                 tw = thWidth < w ? (Int32)(ratio * thWidth) : w;
@@ -108,13 +118,24 @@ namespace FileShare {
                 th = thHeight < h ? (Int32)(ratio * thHeight) : h;
                 tw = thWidth < w ? thWidth : w;
             }
+            
             Bitmap target = new Bitmap(tw, th);
             Graphics g = Graphics.FromImage(target);
             g.SmoothingMode = SmoothingMode.HighQuality;
             g.CompositingQuality = CompositingQuality.HighQuality;
             g.InterpolationMode = InterpolationMode.High;
+
+            int t = 0, l = 0;
+            if (i.Height > i.Width)
+                t = (i.Height - i.Width) / 2;
+            else
+                l = (i.Width - i.Height) / 2;
+
             Rectangle rect = new Rectangle(0, 0, tw, th);
-            g.DrawImage(i, rect, 0, 0, w, h, GraphicsUnit.Pixel);
+            g.DrawImage(i, rect, l, t, (w - l * 2), (h - t * 2), GraphicsUnit.Pixel);
+            //g.DrawImage(i, rect, 0, 0, w, h, GraphicsUnit.Pixel);
+            g.Dispose();
+
             return (Image)target;
         }
 

@@ -56,6 +56,7 @@ namespace FileShare {
                 return icon;
             }
             set {
+                
                 icon = value;
                 NotifyPropertyChanged();
             }
