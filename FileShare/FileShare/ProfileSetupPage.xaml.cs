@@ -37,7 +37,8 @@ namespace FileShare
         public ProfileSetupPage()
         {
             InitializeComponent();
-            DataContext = Settings.Instance;
+            Settings settings = Settings.Instance;
+            DataContext = new { Settings = settings, Me = new ListedPeer(settings.LocalPeer) };
         }
 
         private void Profile_Button_Click(object sender, RoutedEventArgs e)

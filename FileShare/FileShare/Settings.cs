@@ -379,7 +379,10 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
             if (File.Exists(value))
             {
                 //LocalPeer.Icon = ImageAdapter.GetThumbnailImage(new BitmapImage(new Uri(value)), IconSize);
-                LocalPeer.ByteIcon = ImageAdapter.ByteArrayFromImage(new BitmapImage(new Uri(value)), MaxThumbnailPictureMemorySize);
+                //LocalPeer.ByteIcon = ImageAdapter.ByteArrayFromImage(new BitmapImage(new Uri(value)), MaxThumbnailPictureMemorySize);
+                Bitmap tmpBitmap = new Bitmap(value);
+                LocalPeer.ByteIcon = ImageAdapter.ByteArrayFromImage(tmpBitmap, MaxThumbnailPictureMemorySize);
+                tmpBitmap.Dispose();
                 picturePath = value;
                 NotifyPropertyChanged();
             }
