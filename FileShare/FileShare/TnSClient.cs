@@ -92,7 +92,10 @@ namespace NetworkTransmission
 
                     }
                 }
-            }
+            } else
+                /* Close the file iterator releasing resources and
+                 * releases protocol resources */
+                iterator.close();
 
             return new TnSTransferResult(response.Procede);
 

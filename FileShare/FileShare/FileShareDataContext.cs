@@ -73,15 +73,7 @@ namespace FileShare {
             JobsList.Sending.JobRemoved += (Job removedJob) => {
                 foreach (ListedJob listItem in sendingJobs)
                     if (listItem.Job.Id == removedJob.Id) {
-                        if (removedJob.Percentage != 100) {
-                            listItem.Completed = true;
-                            listItem.Error = true;
-                            listItem.Message = "Errore";
-                        } else {
-                            listItem.Completed = true;
-                            listItem.Error = false;
-                            listItem.Message = "Completato";
-                        }
+                        ConfigurePreremovingState(listItem);
                         System.Threading.Thread.Sleep(5000);
                         App.Current.Dispatcher.Invoke((Action)delegate {
                             sendingJobs.Remove(listItem);
@@ -99,15 +91,7 @@ namespace FileShare {
             JobsList.Receiving.JobRemoved += (Job removedJob) => {
                 foreach (ListedJob listItem in receivingJobs)
                     if (listItem.Job.Id == removedJob.Id) {
-                        if (removedJob.Percentage != 100) {
-                            listItem.Completed = true;
-                            listItem.Error = true;
-                            listItem.Message = "Errore";
-                        } else {
-                            listItem.Completed = true;
-                            listItem.Error = false;
-                            listItem.Message = "Completato";
-                        }
+                        ConfigurePreremovingState(listItem);
                         System.Threading.Thread.Sleep(5000);
                         App.Current.Dispatcher.Invoke((Action)delegate {
                             receivingJobs.Remove(listItem);
@@ -130,22 +114,49 @@ namespace FileShare {
 
         }
 
+        private void ConfigurePreremovingState(ListedJob listItem) {
+            // If no message was set, it was not me to configure this 
+            // listItem to be removed. This means that I have to configure
+            // all the fields to a generic "Error" or "Completed" sate.
+            // I've no information to say more than this
+            if (listItem.Message == null) {
+                if (listItem.Job.Percentage != 100) {
+                    listItem.Completed = true;
+                    listItem.Error = true;
+                    listItem.Message = "Errore";
+                } else {
+                    listItem.Completed = true;
+                    listItem.Error = false;
+                    listItem.Message = "Completato";
+                }
+            }
+            // Otherwise I've configured this listItem to be removed
+            // somewhere else.
+        }
+
+        internal void DeactivateJob(ListedJob item) {
+            item.Stopped = true;
+            item.Job.Active = false;
+            item.Completed = true;
+            item.Error = false;
+            item.Message = "Cancellando l'operazione...";
+        }
+
         public async void manageProgressBar(ProgressBar prog) {
             ListedJob item = prog.DataContext as ListedJob;
             await System.Threading.Tasks.Task.Run(() => {
                 while (true) {
-                    if (item.Job.Active) {
-                        item.UpdateTimeLeft();
-                        App.Current.Dispatcher.Invoke((Action)delegate {
-                            prog.Value = item.Job.Percentage;
-                        });
-                    } else {
-                        item.Completed = true;
-                        item.Error = true;
-                        item.Message = "Errore";
-                    }
-                    if (item.Job.Percentage == 100)
+                    // Responsive app: first thing to do is to show to the user something
+                    // coherent with the status of the job.
+                    App.Current.Dispatcher.Invoke((Action)delegate {
+                        prog.Value = item.Job.Percentage;
+                    });
+                    item.UpdateTimeLeft();
+
+                    // If we have done
+                    if (item.Job.Percentage == 100 || !item.Job.Active)
                         break;
+
                     System.Threading.Thread.Sleep(300);
                 }
             });
