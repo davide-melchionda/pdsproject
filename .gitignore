@@ -48,3 +48,19 @@ FileChooser/FileChooser/obj/
 FileChooser/bin/
 
 FileChooser/obj/
+
+FileShare/FileShare/bin/
+
+FileShare/FileShare/obj/
+
+FileShare/packages/
+
+FileShare/\.vs/
+
+FileShare/FileShare/Properties/
+
+FileShare/FileShare/AssemblyInfo\.cs
+
+FileShare/bin/
+
+FileShare/obj/
