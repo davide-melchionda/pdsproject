@@ -20,15 +20,14 @@ namespace FileShare {
         /// logic behind the notify icon shwon in the system tray. */
         /// </summary> 
         BackgroundForm bf;
-   
+
         //Deny the user the possibility to open two or more instances of the application
         void AppStartup(object sender, StartupEventArgs e) {
-            if (Process.GetProcessesByName("FileShare").Length > 1)
-            {
+            if (Process.GetProcessesByName("FileShare").Length > 1) {
                 Environment.Exit(0);
             }
 
-                SettingsPersistence.readSettings();
+            SettingsPersistence.readSettings();
             ProfileSetupWindow pw = new ProfileSetupWindow();
             pw.ShowDialog();
             //GarbageCleanup gc = new GarbageCleanup();
@@ -40,17 +39,16 @@ namespace FileShare {
             //Settings.Instance.PicturePath = @"C:\Users\" + Environment.UserName + @"\AppData\Local\Temp\" + Environment.UserName + @".bmp";
 
             // Start the thread responsible of the neighbor discovery process
-            HelloThread hellothread=new HelloThread();
+            HelloThread hellothread = new HelloThread();
             hellothread.OnProfilePicUpdate += Hellothread_OnProfilePicUpdate;
             hellothread.run();
 
             // Start the thread responsible of receiving request of transferring files
-            ServerClass receiver= new ServerClass();
-            receiver.RequestReceived += ( ToAccept request) => {
+            ServerClass receiver = new ServerClass();
+            receiver.RequestReceived += (ToAccept request) => {
 
                 // On the gui thread
-                Application.Current.Dispatcher.Invoke((Action)delegate
-                {
+                Application.Current.Dispatcher.Invoke((Action)delegate {
                     //mostra la finestra e prende in uscita path e response
                     ReceiveWindow rw = new ReceiveWindow(request);
                     rw.ShowDialog();
@@ -58,26 +56,26 @@ namespace FileShare {
                 });
                 return request;
             };
-                receiver.ConnectionError += () => {
+            receiver.ConnectionError += () => {
                 bf.NotifyError(BackgroundForm.ErrorNotificationType.Receiving);
             };
             receiver.run();
 
             /* Create, configura and start the thread responsible of managing the communication on a pipe 
              * with the application which inform this process of the path of the file the user wants to send. */
-            PipeDaemon pipeListener = new PipeDaemon(); 
+            PipeDaemon pipeListener = new PipeDaemon();
             /* Register on the pipeListener a callback to execute when the user wants to send
              * a new file. */
-            pipeListener.popHappened += (string path) => {
-                
+            pipeListener.popHappened += (List<string> paths) => {
+
                 // On the gui thread
                 Application.Current.Dispatcher.Invoke((Action)delegate {
                     /* Create a new SelectionWindow and register a callback to execute when
                      * the user has selected the list of receivers. */
-                    SelectionWindow sw = new SelectionWindow(path);
-                    
+                    SelectionWindow sw = new SelectionWindow(paths);
+
                     //sw.page.OnselectHappened += (List<Peer> selected, string filepath) => {
-                    sw.Selected += (List<Peer> selected, string filepath) => {
+                    sw.Selected += (List<Peer> selected, List<string> filepaths) => {
                         // Close the window
                         sw.Close();
                         /* For each peer in the list schedule a new job on a job scheuler. */
@@ -86,14 +84,20 @@ namespace FileShare {
                         scheduler.ConnectionError += () => {
                             bf.NotifyError(BackgroundForm.ErrorNotificationType.Sending);
                         };
-                        for (int i = 0; i < selected.Count; i++)
-                            scheduler.scheduleJob(new Job(new FileTransfer.Task(Settings.Instance.LocalPeer.Id,
+                        for (int i = 0; i < selected.Count; i++) {
+                            //List<FileTransfer.Task> tasks = new List<FileTransfer.Task>();
+                            foreach (string filepath in filepaths)
+                                //tasks.Add(new FileTransfer.Task(Settings.Instance.LocalPeer.Id,
+                                //                        Settings.Instance.LocalPeer.Name, PeersList.Instance.Peers.ElementAt(i).Id,
+                                //                        PeersList.Instance.Peers.ElementAt(i).Name, filepath));
+                                scheduler.scheduleJob(new Job(new FileTransfer.Task(Settings.Instance.LocalPeer.Id,
                                                         Settings.Instance.LocalPeer.Name, PeersList.Instance.Peers.ElementAt(i).Id,
                                                         PeersList.Instance.Peers.ElementAt(i).Name, filepath), filepath));
-                    };                    
+                        }
+                    };
                     sw.Show();
                 });
-              
+
             };
             // Run the thread which will listen on the pipe
             pipeListener.run();
@@ -103,19 +107,16 @@ namespace FileShare {
             bf = new BackgroundForm();
         }
 
-        private void Hellothread_OnProfilePicUpdate(string peerId, byte[] newPicture)
-        {
-            Application.Current.Dispatcher.Invoke((Action)delegate
-            {
+        private void Hellothread_OnProfilePicUpdate(string peerId, byte[] newPicture) {
+            Application.Current.Dispatcher.Invoke((Action)delegate {
                 //updates in GUI a user profile picture
 
                 PeersList.Instance.get(peerId).ByteIcon = newPicture;
             });
         }
 
-        public ToAccept  ShowConfirmWindow(ToAccept request)
-        {
-            
+        public ToAccept ShowConfirmWindow(ToAccept request) {
+
             ReceiveWindow rw = new ReceiveWindow(request);
             rw.Show();
 
@@ -128,7 +129,7 @@ namespace FileShare {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         public void AppExit(object sender, EventArgs e) {
-            bf.Close();SettingsPersistence.writeSettings();
+            bf.Close(); SettingsPersistence.writeSettings();
             GarbageCleanup gc = new GarbageCleanup();
             gc.run();
             // Process completed successfully

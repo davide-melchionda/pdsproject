@@ -26,7 +26,7 @@ namespace FileShare
         /// </summary>
         /// <param name="peers"></param>
         /// <param name="path"></param>
-        public delegate void OnSelected(List<Peer> peers, string path);
+        public delegate void OnSelected(List<Peer> peers, List<string> path);
         /// <summary>
         /// The event triggered when peers are selected.
         /// </summary>
@@ -36,13 +36,13 @@ namespace FileShare
         /// Constructor
         /// </summary>
         /// <param name="filePath"></param>
-        public SelectionWindow(string filePath)
+        public SelectionWindow(List<string> filePaths)
         {
             InitializeComponent();
             // The page which will contain the view
-            SelectionPage page = new SelectionPage(filePath);
-            page.Selected += (List<Peer> peers, string path) => {
-                Selected?.Invoke(peers, path);
+            SelectionPage page = new SelectionPage(filePaths);
+            page.Selected += (List<Peer> peers, List<string> paths) => {
+                Selected?.Invoke(peers, paths);
             };
             Page.Navigate(page);
         }
