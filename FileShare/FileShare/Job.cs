@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 /// <summary>
@@ -9,10 +10,10 @@ namespace FileTransfer
 {
 
     public class Job : INotifyPropertyChanged {
-    
-        /**
-         * The Id of a job (coresponds to the id of the associated task)
-         */
+
+        /// <summary>
+        /// The Id of a job (coresponds to the id of the associated task)
+        /// </summary>
         public string Id {
             get { return task.Id; }
         }
@@ -30,16 +31,21 @@ namespace FileTransfer
             }
         }
 
-        /**
-         * Local path of the file object of the job
-         */
-        private string filePath;
+        /// <summary>
+        /// The path of the destination directory where received files will be putted.
+        /// </summary>
+        public string DestinationPath { get; set; }
+
+        /// <summary>
+        /// The path of the base directory of files to zip
+        /// </summary>
+        private List<string> filePaths;
         /**
          * filePath property
          */
-         public string FilePath {
+         public List<string> FilePaths {
             get {
-                return filePath;
+                return filePaths;
             }
         }
 
@@ -87,10 +93,20 @@ namespace FileTransfer
         /**
          * Public constructor
          */
+        public Job(Task task, List<string> filePaths) {
+            timestamp = DateTime.Now;
+            this.task = task;
+            this.filePaths = filePaths;
+            Active = true;
+        }
+        
+        /**
+         * Public constructor
+         */
         public Job(Task task, string filePath) {
             timestamp = DateTime.Now;
             this.task = task;
-            this.filePath = filePath;
+            DestinationPath = filePath;
             Active = true;
         }
     }

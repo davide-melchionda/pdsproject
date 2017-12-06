@@ -86,13 +86,13 @@ namespace FileShare {
                         };
                         for (int i = 0; i < selected.Count; i++) {
                             //List<FileTransfer.Task> tasks = new List<FileTransfer.Task>();
-                            foreach (string filepath in filepaths)
+                            //foreach (string filepath in filepaths)
                                 //tasks.Add(new FileTransfer.Task(Settings.Instance.LocalPeer.Id,
                                 //                        Settings.Instance.LocalPeer.Name, PeersList.Instance.Peers.ElementAt(i).Id,
                                 //                        PeersList.Instance.Peers.ElementAt(i).Name, filepath));
                                 scheduler.scheduleJob(new Job(new FileTransfer.Task(Settings.Instance.LocalPeer.Id,
                                                         Settings.Instance.LocalPeer.Name, PeersList.Instance.Peers.ElementAt(i).Id,
-                                                        PeersList.Instance.Peers.ElementAt(i).Name, filepath), filepath));
+                                                        PeersList.Instance.Peers.ElementAt(i).Name, filepaths), filepaths));
                         }
                     };
                     sw.Show();

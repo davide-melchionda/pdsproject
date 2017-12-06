@@ -6,14 +6,12 @@ using NetProtocol;
 using static StorageModule;
 using FileShareConsole;
 
-namespace NetworkTransmission
-{
+namespace NetworkTransmission {
     /**
      * The specific client that performs all the steps that compose our transmission protocol. 
      */
 
-    class TnSClient : ClientProtocolEndpoint
-    {
+    class TnSClient : ClientProtocolEndpoint {
 
         private FileIterator iterator;       // Iterator provides the abstraction towards the file location 
         private Job job;                   // Task that provides all the informations about transfer
@@ -22,16 +20,14 @@ namespace NetworkTransmission
 
         private byte[] transferBlock = new byte[8192];
 
-        public TnSClient(Socket socket, Protocol protocol, Job job) : base(socket, protocol)
-        {
+        public TnSClient(Socket socket, Protocol protocol, Job job) : base(socket, protocol) {
             this.job = job;
             JobZipStorageModule module = new JobZipStorageModule();
             iterator = module.prepareJob(job);
             network = new TransferNetworkModule();
         }
 
-        public override TransferResult transfer()
-        {
+        public override TransferResult transfer() {
 
             ResponsePacket response = null;
             TransmissionPacket tPacket = null;
@@ -48,17 +44,14 @@ namespace NetworkTransmission
 
             response = (ResponsePacket)tPacket;
 
-            Logger.log(Logger.TRANSFER_CLIENT_DEBUG, "Handshake competed. Starting transmission of the file " + job.Task.Info.Name + "\n");
+            //Logger.log(Logger.TRANSFER_CLIENT_DEBUG, "Handshake competed. Starting transmission of the file " + job.Task.Info.Name + "\n");
 
-            if (response.Procede)
-            {
-                try
-                {
+            if (response.Procede) {
+                try {
                     protocol.enterClient();
 
                     int i = 0;
-                    while (iterator.hasNext())
-                    {
+                    while (iterator.hasNext()) {
                         if (!job.Active)
                             throw new SocketException();
                         i = iterator.next(transferBlock);
@@ -67,27 +60,21 @@ namespace NetworkTransmission
                         socket.Send(transferBlock, 0, i, SocketFlags.None);
                     }
 
-                    Logger.log(Logger.TRANSFER_CLIENT_DEBUG, "Transfer completed for the file " + job.Task.Info.Name + "\n");
+                    //Logger.log(Logger.TRANSFER_CLIENT_DEBUG, "Transfer completed for the file " + job.Task.Info.Name + "\n");
 
                     Logger.log(Logger.TRANSFER_CLIENT_DEBUG, "Releasing lock\n");
 
-                }
-
-                finally
-                {
+                } finally {
                     /* Close the file iterator releasing resources and
                      * releases protocol resources */
                     iterator.close();
 
                     // I don't know if I really have acquired a slot (maybe an exception occourde befor I could do it)
                     // The realease operation will throw an exception if the I have not acquired a slot
-                    try
-                    {
+                    try {
                         // Release the slot
                         protocol.releaseClient();
-                    }
-                    catch (System.Threading.SemaphoreFullException e)
-                    {
+                    } catch (System.Threading.SemaphoreFullException e) {
                         // This means that SocketException occurred befor I could acquire the semaphore slot
 
                     }
@@ -104,11 +91,9 @@ namespace NetworkTransmission
     }
 
 
-    public class TnSTransferResult : TransferResult
-    {
+    public class TnSTransferResult : TransferResult {
         public bool result;
-        public TnSTransferResult(bool result)
-        {
+        public TnSTransferResult(bool result) {
             this.result = result;
         }
     }
