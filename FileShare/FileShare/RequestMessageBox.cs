@@ -11,7 +11,7 @@ namespace FileShare
 
     {
         public static bool Show(FileTransfer.Task task) {
-            return MessageBox.Show("Do you want to accept " + task.Info.Name + " of size: " + BytesToMegabytes(task.Info.Size) + " kb", task.Sender +
+            return MessageBox.Show("Do you want to accept " + task.Info[0].Name + " of size: " + BytesToMegabytes(task.Info[0].Size) + " kb", task.Sender +
                  " wants to send you a file", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes;
         }
 

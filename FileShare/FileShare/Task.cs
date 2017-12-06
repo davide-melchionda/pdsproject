@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 
@@ -9,13 +10,13 @@ namespace FileTransfer
     public class Task
     {
 
-        /**
-         * The id of a task is a set of unique informations
-         */
+        /// <summary>
+        /// Id of the task. It will be the combination of sender id, receiver id and timestamp of the task
+        /// </summary>
         public string Id
         {
-            get { return Info.Name + sender + receiver + requestTimestamp.ToString("yyyyMMddhhmmss") + requestTimestamp.Millisecond; }
-            
+            get { return "_" + senderName + receiverName + "_" + requestTimestamp.ToUniversalTime().Subtract(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds; }
+
 
         }
 
@@ -88,11 +89,11 @@ namespace FileTransfer
         /**
          * Set of information about the file
          */
-        private FileInfo info;
+        private List<FileInfo> info;
         /**
          * info property
          */
-        public FileInfo Info
+        public List<FileInfo> Info
         {
             get { return info; }
             set { info = value; }
@@ -146,7 +147,7 @@ namespace FileTransfer
          * Constructor of the task. Takes only few arguments because the others are
          * retrieved from these ones or initialized calling other methods.
          */
-        public Task(string sender, string senderName, string receiver, string receiverName,string filePath)
+        public Task(string sender, string senderName, string receiver, string receiverName, List<string> filePaths)
         {
             // Initialize sender and receiver
             this.sender = sender;
@@ -154,12 +155,13 @@ namespace FileTransfer
             this.senderName = senderName;
             this.receiverName = receiverName;
 
-            // Initializes file informationa
-            info = new FileInfo(filePath);
+            // Initializes files information
+            info = new List<FileInfo>();
+            foreach (string filePath in filePaths)
+                info.Add(new FileInfo(filePath));
 
             // Initializes timestamp
             requestTimestamp = DateTime.Now;
-
         }
 
         /**

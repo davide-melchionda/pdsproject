@@ -21,7 +21,7 @@ namespace FileShare
         /// </summary>
         /// <param name="peers"></param>
         /// <param name="path"></param>
-        public delegate void OnPeersSelected(List<Peer> peers, string path);
+        public delegate void OnPeersSelected(List<Peer> peers, List<string> paths);
         /// <summary>
         /// The event triggered when peers are selected.
         /// </summary>
@@ -30,17 +30,17 @@ namespace FileShare
         /// <summary>
         /// The path of the file for which the selection will be performed
         /// </summary>
-        private String filePath;
+        private List<string> filePaths;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="filePath">The path of the file</param>
-        public SelectionPage(String filePath/*SelectionWindow parent*/)
+        public SelectionPage(List<string> filePaths/*SelectionWindow parent*/)
         {
             InitializeComponent();
 
-            this.filePath = filePath;
+            this.filePaths = filePaths;
 
             // Needed in order to show the peers list
             DataContext = FileShareDataContext.Instance;
@@ -58,7 +58,7 @@ namespace FileShare
                 /* Triggers the evet */
                 foreach (ListedPeer p in thelist.SelectedItems.Cast<ListedPeer>().ToList())
                     selected.Add(p.Peer);
-                Selected?.Invoke(selected, filePath);
+                Selected?.Invoke(selected, filePaths);
             } else // Otherwise the user must repeat the selection
                 MessageBox.Show("Devi selezionare almeno un destinatario.");
         }

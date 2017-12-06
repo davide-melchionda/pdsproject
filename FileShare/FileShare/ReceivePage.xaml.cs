@@ -30,9 +30,9 @@ namespace FileShare
             InitializeComponent();
             this.Request = request;
             this.Settings = Settings.Instance;
-            if (request.TasktoAccept.Info.Type == FileInfo.FType.DIRECTORY)
-                TaskType = "directory";
-            else TaskType = "file";
+            //if (request.TasktoAccept.Info.Type == FileInfo.FType.DIRECTORY)
+            //    TaskType = "directory";
+            //else TaskType = "file";
             DataContext = this;
         }
         private void Accept_Button_Click(object sender, RoutedEventArgs e)
