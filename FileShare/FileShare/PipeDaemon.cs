@@ -10,6 +10,12 @@ namespace FileShareConsole
      */
     class PipeDaemon : ExecutableThread
     {
+        /// <summary>
+        /// The size in milliseconds of the window inside which we consider the incoming
+        /// requests as part of the same logical operation.
+        /// </summary>
+        private const int GROUP_REQUESTS_WINDOW_MILLIS = 400;
+
         public delegate void onPopCallbackType(List<string> fileName);
         public event onPopCallbackType popHappened;
 
@@ -28,7 +34,7 @@ namespace FileShareConsole
                 paths.Add(s);
                 if (paths.Count == 1) {
                     Task.Run(() => {
-                        System.Threading.Thread.Sleep(500);
+                        System.Threading.Thread.Sleep(GROUP_REQUESTS_WINDOW_MILLIS);
                         lock (lockForPathsList) {
                             popHappened?.Invoke(new List<string>(paths));
                             paths = new ConcurrentBag<string>();
