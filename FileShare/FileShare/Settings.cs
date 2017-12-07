@@ -390,37 +390,6 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
     }
 
     /// <summary>
-    /// Default picture for the generic user which has not setted a specific profile picture
-    /// </summary>
-    public Uri DefaultUserPicture {
-        get {
-            return new Uri(Directory.GetCurrentDirectory() + @"\user.ico"); /* DEFAULT */
-        }
-    }
-
-    /// <summary>
-    /// folder icon 
-    /// </summary>
-    public Uri FolderIcon
-    {
-        get
-        {
-            return new Uri(Directory.GetCurrentDirectory() + @"\folder.png"); /* DEFAULT */
-        }
-    }
-
-    /// <summary>
-    /// folder icon 
-    /// </summary>
-    public Uri PictureIcon
-    {
-        get
-        {
-            return new Uri(Directory.GetCurrentDirectory() + @"\camera.png"); /* DEFAULT */
-        }
-    }
-
-    /// <summary>
     /// The maximum size of a picture. This limit is necessary to allow the picture be sent 
     /// inside a UDP datagram.
     /// </summary>

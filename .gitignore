@@ -64,3 +64,15 @@ FileShare/FileShare/AssemblyInfo\.cs
 FileShare/bin/
 
 FileShare/obj/
+
+FileShare/FileChooser/\.vs/
+
+FileShare/FileChooser/FileChooser/\.vs/
+
+FileShare/FileChooser/FileChooser/Properties/
+
+FileShare/FileChooser/FileChooser/bin/
+
+FileShare/FileChooser/FileChooser/obj/
+
+FileShare/FileChooser/obj/
