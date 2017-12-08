@@ -3,48 +3,112 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz"
+      xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       xmlns:local="clr-namespace:FileShare"
-      mc:Ignorable="d" d:DesignWidth="300"
-      Title="Page1" Height="414">
+      mc:Ignorable="d" d:DesignWidth="530"
+      Title="Page1" Height="400">
 
-    <Grid>
-        <TabControl Name="mainTabControl" HorizontalAlignment="Left" Height="415" Margin="0,0,0,-95" VerticalAlignment="Top" Width="517">
+    <Grid Margin="0,0,1,0">
+        <dragablz:TabablzControl Name="mainTabControl" HorizontalAlignment="Left" Height="400" Margin="0,0,-1,0" VerticalAlignment="Top" Width="530">
+            <dragablz:TabablzControl.InterTabController>
+                <dragablz:InterTabController />
+            </dragablz:TabablzControl.InterTabController>
             <TabItem Header="TabItem">
                 <!--<Grid Background="#FFE5E5E5" Margin="-21,-34,-184,-195" HorizontalAlignment="Left" Width="494">-->
-                <ListView x:Name="thelist" x:FieldModifier="public" ItemsSource="{Binding peers}" SelectionChanged="ListView_SelectionChanged_1" Margin="0,0,-2,-2">
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn Width="100">
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Grid>
-											<Ellipse Width="56" Height="56">
-												<Ellipse.Fill>
-													<ImageBrush ImageSource="{Binding Icon}"/>
-												</Ellipse.Fill>
-											</Ellipse>
-                                        </Grid>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                            <GridViewColumn DisplayMemberBinding="{Binding Path=Peer.Id}" Header="Id" Width="100"></GridViewColumn>
-                            <GridViewColumn DisplayMemberBinding="{Binding Path=Peer.Name}" Header="Name" Width="100"></GridViewColumn>
-                            <GridViewColumn DisplayMemberBinding="{Binding Path=Peer.Ipaddress}" Header="Ipaddress" Width="100"></GridViewColumn>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
+                <StackPanel Orientation="Vertical">
+                    <ListView x:Name="thelist" x:FieldModifier="public" ItemsSource="{Binding peers}" SelectionChanged="ListView_SelectionChanged_1" Margin="0,0,-2,-2">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Width="100" Header="On-line">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Ellipse Width="48" Height="48">
+                                                    <Ellipse.Fill>
+                                                        <ImageBrush ImageSource="{Binding Icon}"/>
+                                                    </Ellipse.Fill>
+                                                </Ellipse>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <!--<GridViewColumn DisplayMemberBinding="{Binding Path=Peer.Id}" Width="100"></GridViewColumn>-->
+                                <GridViewColumn Width="100">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Border BorderBrush="{x:Null}" Height="48">
+                                                    <TextBlock TextWrapping="Wrap" Text="{Binding Path=Peer.Name}" VerticalAlignment="Center"/>
+                                                </Border>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <!--<GridViewColumn DisplayMemberBinding="{Binding Path=Peer.Ipaddress}" Width="100"></GridViewColumn>-->
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                    <!--<Label  HorizontalAlignment=" center" FontWeight="Bold">Profile picture</Label>-->
+                    <!--<Ellipse Name="NoPeers" Width="128" Height="128">
+                        <Ellipse.Fill>
+                            <ImageBrush ImageSource="{Binding Path=Resources.DefaultUserPicture}"/>
+                        </Ellipse.Fill>
+                        <Ellipse.Style>
+                            <Style TargetType="Ellipse">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=NoPeers, Path=DataContext.NoPeers}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible"></Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Ellipse.Style>
+                    </Ellipse>-->
+                    
+                    <!--<TextBlock Name="thtextblock1" Text="Nessun utente online in questa rete." Margin="30" Width="470" TextAlignment="Center">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=thtextblock1, Path=DataContext.peers.Count}" Value="0">
+                                        <Setter Property="Visibility" Value="Visible"></Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>-->
+                </StackPanel>
                 <!--</Grid>-->
             </TabItem>
             <TabItem Header="Sending">
                 <ListView ItemsSource="{Binding sendingJobs}" SelectionChanged="ListView_SelectionChanged_1" Margin="0,0,-2,-2">
                     <ListView.View>
                         <GridView>
-                            <GridViewColumn DisplayMemberBinding="{Binding Path=Job.Task.Info.Name}" Header="File" Width="100"></GridViewColumn>
-                            <GridViewColumn Header="Progress" Width="100">
+                            <GridViewColumn Width="210" Header="In uscita">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding Path=Job.Task.Info[0].Name}" TextTrimming="CharacterEllipsis" MaxWidth="210"/>
+                                            <TextBlock Name="and_others" Text="{Binding Path=FilesCountMinusOne, StringFormat= ' e altri {0}'}" TextTrimming="CharacterEllipsis" MaxWidth="210">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding ElementName=and_others, Path=DataContext.SingleFile}" Value="True">
+                                                                <Setter Property="Visibility" Value="Hidden"></Setter>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Width="120">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <Grid>
-                                            <ProgressBar Name="SendingProgBar" Loaded="ProgBarLoaded" Maximum="100" Height="10" Width="100">
+                                            <Controls:MetroProgressBar Name="SendingProgBar" Loaded="ProgBarLoaded" Maximum="100" Height="10" Width="100" Background="LightGray">
                                                 <ProgressBar.Style>
                                                     <Style TargetType="ProgressBar">
                                                         <Setter Property="Visibility" Value="Visible" />
@@ -61,7 +125,7 @@
                                                         </Style.Triggers>
                                                     </Style>
                                                 </ProgressBar.Style>
-                                            </ProgressBar>
+                                            </Controls:MetroProgressBar>
                                             <TextBlock Name="Information" Text="{Binding Path=Message}">
                                                 <TextBlock.Style>
                                                     <Style TargetType="TextBlock">
@@ -86,7 +150,7 @@
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
-                            <GridViewColumn Header="Al completamento" Width="50">
+                            <GridViewColumn Width="70">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock Name="SendingTimeLeft" Text="{Binding RemainingTime}">
@@ -107,10 +171,16 @@
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
-                            <GridViewColumn Header="Annulla" Width="100">
+                            <GridViewColumn Width="90">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-					                    <Button Click="DeactivateJob">X</Button>
+                                        <!--<Button Click="DeactivateJob">X</Button>-->
+                                        <Button Style="{StaticResource MaterialDesignRaisedAccentButton}"
+                                                ToolTip="Resource name: MaterialDesignRaisedAccentButton"
+                                                FontSize="11"
+                                                Click="DeactivateJob">
+                                            Annulla
+                                        </Button>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
@@ -122,8 +192,27 @@
                 <ListView ItemsSource="{Binding receivingJobs}" SelectionChanged="ListView_SelectionChanged_1" Margin="0,0,-2,-2">
                     <ListView.View>
                         <GridView>
-                            <GridViewColumn DisplayMemberBinding="{Binding Path=Job.Task.Info.Name}" Header="File" Width="100"></GridViewColumn>
-                            <GridViewColumn Header="Progress" Width="100">
+                            <GridViewColumn Width="210" Header="In arrivo">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding Path=Job.Task.Info[0].Name}" TextTrimming="CharacterEllipsis" MaxWidth="210"/>
+                                            <TextBlock Name="and_others" Text="{Binding Path=FilesCountMinusOne, StringFormat= ' e altri {0}'}" TextTrimming="CharacterEllipsis" MaxWidth="210">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding ElementName=and_others, Path=DataContext.SingleFile}" Value="True">
+                                                                <Setter Property="Visibility" Value="Hidden"></Setter>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Width="120">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <Grid>
@@ -160,7 +249,7 @@
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
-                            <GridViewColumn Header="Al completamento" Width="50">
+                            <GridViewColumn Width="70">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock Name="ReceivingTimeLeft" Text="{Binding RemainingTime}">
@@ -178,10 +267,16 @@
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
-                            <GridViewColumn Header="Annulla" Width="100">
+                            <GridViewColumn Width="90">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Button Click="DeactivateJob">X</Button>
+                                        <!--<Button Click="DeactivateJob">Annulla</Button>-->
+                                        <Button Style="{StaticResource MaterialDesignRaisedAccentButton}"
+                                                ToolTip="Resource name: MaterialDesignRaisedAccentButton"
+                                                FontSize="11"
+                                                Click="DeactivateJob">
+                                            Annulla
+                                        </Button>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
@@ -189,7 +284,7 @@
                     </ListView.View>
                 </ListView>
             </TabItem>
-        </TabControl>
+        </dragablz:TabablzControl>
     </Grid>
 
 </Page>

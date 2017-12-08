@@ -6,12 +6,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace FileShare {
-    class Resources {
+    public class Resources {
 
         /// <summary>
         /// Default picture for the generic user which has not setted a specific profile picture
         /// </summary>
-        public static Uri DefaultUserPicture {
+        public Uri DefaultUserPicture {
             get {
                 return new Uri(Path.Combine(Directory.GetCurrentDirectory(), "imgs", "user.ico")); /* DEFAULT */
             }
@@ -20,7 +20,7 @@ namespace FileShare {
         /// <summary>
         /// folder icon 
         /// </summary>
-        public static Uri FolderIcon {
+        public Uri FolderIcon {
             get {
                 return new Uri(Path.Combine(Directory.GetCurrentDirectory(), "imgs", "folder.png")); /* DEFAULT */
             }
@@ -29,9 +29,18 @@ namespace FileShare {
         /// <summary>
         /// folder icon 
         /// </summary>
-        public static Uri PictureIcon {
+        public Uri PictureIcon {
             get {
                 return new Uri(Path.Combine(Directory.GetCurrentDirectory(), "imgs", "camera.png")); /* DEFAULT */
+            }
+        }
+
+        /// <summary>
+        /// folder icon 
+        /// </summary>
+        public Uri NothingToDoIcon {
+            get {
+                return new Uri(Path.Combine(Directory.GetCurrentDirectory(), "imgs", "nothing-to-do.png")); /* DEFAULT */
             }
         }
 

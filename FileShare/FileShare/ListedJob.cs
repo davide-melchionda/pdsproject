@@ -33,6 +33,21 @@ namespace FileShare {
         private int sentFromStartTime;
 
         /// <summary>
+        /// To determine if show a label or not: returns 'true' if there is only
+        /// one file to transfer.
+        /// </summary>
+        public bool SingleFile {
+            get { return Job.Task.Info.Count == 1; }
+        }
+
+        /// <summary>
+        /// TO show on the interface: number of files minus one
+        /// </summary>
+        public int FilesCountMinusOne {
+            get { return Job.Task.Info.Count - 1; }
+        }
+        
+        /// <summary>
         /// Property representing the job wrapped by an instance of this class
         /// </summary>
         public Job Job {

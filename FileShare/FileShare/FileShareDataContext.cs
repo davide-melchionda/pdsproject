@@ -43,6 +43,17 @@ namespace FileShare {
         public ObservableCollection<ListedJob> sendingJobs { get; set; }
         public ObservableCollection<ListedJob> receivingJobs { get; set; }
         public ListedPeer Me { get; set; }
+        public Resources Resources = Settings.Instance.Resources;
+
+        public bool NoPeers {
+            get { return peers.Count == 0; }
+        }
+        public bool NothingToSend {
+            get { return sendingJobs.Count == 0; }
+        }
+        public bool NothingToReceive {
+            get { return receivingJobs.Count == 0; }
+        }
 
         protected FileShareDataContext() {
 
@@ -81,7 +92,7 @@ namespace FileShare {
                         break;
                     }
             };
-            
+
             JobsList.Receiving.JobAdded += (Job job) => {
                 App.Current.Dispatcher.Invoke((Action)delegate {
                     receivingJobs.Add(new ListedJob(job));

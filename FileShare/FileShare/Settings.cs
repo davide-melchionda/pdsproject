@@ -399,6 +399,8 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
         }
     }
 
+    public Resources Resources { get; set; }
+
     /**
      * SINGLETON CREATIONAL PATTERN
      * The protected constructor.
@@ -411,7 +413,7 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
 
         // For now: the local peer is randomly initialized
         localPeer = new Peer("Anonymouse user"+":"+new Random().Next(), "Anonymouse user", "unknown_ip");
-
+        Resources = new Resources();
     }
 
 }
