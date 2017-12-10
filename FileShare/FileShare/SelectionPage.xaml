@@ -5,13 +5,14 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:FileShare"
       mc:Ignorable="d" 
+	  
       d:DesignHeight="300" d:DesignWidth="300"
       Title="SelectionPage">
 
     <Grid>
 		<StackPanel>
 			<TextBlock Name="fileName"  />
-			<ListView  x:Name="thelist" x:FieldModifier="public" ItemsSource="{Binding peers}" Margin="0,0,0,10">
+			<ListView  x:Name="thelist" x:FieldModifier="public" SelectionMode="Multiple" ItemsSource="{Binding peers}" Margin="0,0,0,10">
 				<ListView.Resources >
 					<Style TargetType="GridViewColumnHeader">
 						<Setter Property="Visibility" Value="Collapsed"></Setter>
@@ -37,7 +38,12 @@
 				</ListView.View>
 			</ListView>
 
-
+			<Button Content="Select all"
+					Margin="50,0,50,10"
+					Padding="5"
+				IsDefault="True"
+                Click="Select_All_Button_Click"/>
+			
 			<Button Content="Done"
 					Margin="50,0,50,10"
 					Padding="5"

@@ -41,7 +41,7 @@ namespace FileShare
             InitializeComponent();
 
             this.filePaths = filePaths;
-
+            //thelist.SelectionMode = Multiple;
             // Needed in order to show the peers list
             DataContext = FileShareDataContext.Instance;
         }
@@ -61,6 +61,11 @@ namespace FileShare
                 Selected?.Invoke(selected, filePaths);
             } else // Otherwise the user must repeat the selection
                 MessageBox.Show("Devi selezionare almeno un destinatario.");
+        }
+
+        private void Select_All_Button_Click(object sender, RoutedEventArgs e)
+        {
+            thelist.SelectAll();
         }
     }
 }
