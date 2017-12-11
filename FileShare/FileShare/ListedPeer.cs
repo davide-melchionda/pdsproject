@@ -11,7 +11,7 @@ using System.Windows.Media.Imaging;
 
 namespace FileShare {
 
-    class ListedPeer : INotifyPropertyChanged {
+    public class ListedPeer : INotifyPropertyChanged {
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -52,7 +52,7 @@ namespace FileShare {
         public ImageSource Icon {
             get {
                 if (Peer.ByteIcon.Length == 0)
-                    return new BitmapImage(Resources.DefaultUserPicture);
+                    return new BitmapImage(Settings.Instance.Resources.DefaultUserPicture);
                 return icon;
             }
             set {

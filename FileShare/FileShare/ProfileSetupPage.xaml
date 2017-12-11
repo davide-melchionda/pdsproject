@@ -4,58 +4,97 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:FileShare"
-	  Background="#fdfffd"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="400"
-      Title="ProfileSetupPage">
+      d:DesignWidth="648"
+      Title="ProfileSetupPage"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+      TextElement.FontWeight="Regular"
+      TextElement.FontSize="13"
+      TextOptions.TextFormattingMode="Ideal" 
+      TextOptions.TextRenderingMode="Auto"       
+      Background="{StaticResource PrimaryHueMidBrush}"
+      FontFamily="{StaticResource MaterialDesignFont}">
 
-	<Grid>
-		<StackPanel Orientation="Vertical" CanVerticallyScroll="True" Margin="0,0,0,0">
-			<TextBlock HorizontalAlignment="Center" FontSize="16"  Margin="10,10,10,0" Text="You are ready to go!" ></TextBlock>
-			<TextBlock HorizontalAlignment="Center" Margin="15,10,15,10" Text="Just take a moment to setup your public informations." ></TextBlock>
-			<Label HorizontalAlignment="Center" FontWeight="Bold">Profile picture</Label>
-			<Ellipse Width="128" Height="128">
-				<Ellipse.Fill>
-					<ImageBrush ImageSource="{Binding Path=Me.Icon}"/>
-				</Ellipse.Fill>
-			</Ellipse>
-			<!--<Image Margin="10,10,10,10"  Height="128" Width="128" Source="{Binding Path=LocalPeer.ByteIcon}"></Image>-->
-			<Button Background="Transparent" BorderThickness="0" Name="ProfilePictureButton" HorizontalAlignment="Center" Click="Profile_Button_Click">
-				<Image  Width="30" Height="30" Source="{Binding Path=Settings.PictureIcon}" />
-				<Button.ToolTip>
-					<ToolTip>
-						<TextBlock>Load</TextBlock>
-					</ToolTip>
-				</Button.ToolTip>
-			</Button>
+    <Grid>
+        <Border BorderThickness="0" Padding="32,0,32,0">
+            <StackPanel Orientation="Vertical" CanVerticallyScroll="True" Margin="0,0,0,0">
+                <TextBlock HorizontalAlignment="Center" Style="{DynamicResource MaterialDesignHeadlineTextBlock}" Margin="10,10,10,0" Text="Pronti a condividere!" Foreground="{StaticResource PrimaryHueLightForegroundBrush}"></TextBlock>
+                <TextBlock HorizontalAlignment="Center" Style="{DynamicResource MaterialDesignHeadlineTextBlock}" FontSize="16" Foreground="{StaticResource PrimaryHueLightForegroundBrush}" Margin="15,10,15,10" Text="Dedica solo un momento alla configurazione del tuo profilo." ></TextBlock>
+                <materialDesign:Card BorderThickness="0.8" Padding="8,24,8,24" Margin="0,8,0,0">
+                    <StackPanel Orientation="Horizontal">
+                        <StackPanel Orientation="Vertical" Margin="0,0,8,0" Width="268">
+                            <!--<TextBlock>Immagine del profilo</TextBlock>-->
+                            <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                                <Ellipse Width="128" Height="128" RenderTransformOrigin="0.229,0.52">
+                                    <Ellipse.Fill>
+                                        <ImageBrush ImageSource="{Binding Path=Me.Icon}"/>
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                                <Button Background="White" BorderThickness="0" BorderBrush="Transparent" Height="32" Name="ProfilePictureButton" Click="Profile_Button_Click" Padding="0"
+                                            Style="{StaticResource MaterialDesignFlatButton}" Margin="8">
+                                    <Button.Content>
+                                        <StackPanel Orientation="Horizontal" Height="24">
+                                            <materialDesign:PackIcon Kind="Camera" Foreground="{StaticResource PrimaryHueLightBrush}" Height="24" Width="24" />
+                                            <TextBlock Text="Modifica" Height="20" Margin="8,4,0,0"/>
+                                        </StackPanel>
+                                    </Button.Content>
+                                </Button>
+                            </StackPanel>
+                            <!--<Image Margin="10,10,10,10"  Height="128" Width="128" Source="{Binding Path=LocalPeer.ByteIcon}"></Image>-->
+                            <!--<Button Background="Transparent" BorderThickness="0" Name="ProfilePictureButton" HorizontalAlignment="Center" Click="Profile_Button_Click">
+                                <Image  Width="30" Height="30" Source="{Binding Path=Settings.PictureIcon}" />
+                                <Button.ToolTip>
+                                    <ToolTip>
+                                        <TextBlock>Load</TextBlock>
+                                    </ToolTip>
+                                </Button.ToolTip>
+                            </Button>-->
+                            <!--<Label Content="Username"/>-->
+                            <StackPanel Orientation="Horizontal" Margin="16,24,16,0">
+                                <materialDesign:PackIcon Kind="Account" Margin="0,8,0,0" Foreground="{Binding ElementName=UsernameTB, Path=BorderBrush}" Height="24" Width="24" />
+                                <TextBox Margin="8,0,0,0" Width="204" Height="32" x:Name="UsernameTB" Text="{Binding Settings.CurrentUsername}" TextChanged="UsernameTB_TextChanged" materialDesign:HintAssist.Hint="Name"/>
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Orientation="Vertical" Margin="8,0,0,0" Width="284">
+                            <!--<Label  Foreground="IndianRed" HorizontalAlignment="Center" >Too lazy?</Label>-->
 
+                            <Button Content="Avanti"
+					        Margin="16,16,16,16"
+					        Padding="5"
+				            IsDefault="True"
+                            Height="40"
+                            Click="Close_Button_Click"/>
+                            <TextBlock Text="Oppure" TextAlignment="Center"></TextBlock>
+                            <Button Style="{StaticResource MaterialDesignRaisedAccentButton}"
+					    Margin="16,16,16,16"
+                        Click="Import_Button_Click"
+                        Background="#448AFF"
+                        Foreground="White"
+                        BorderThickness="0.5"
+                        Height="40"
+                        Padding="16,8,16,8">
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Width="24" Height="24" Source="{Binding Path=Settings.Resources.WinLogo}" />
+                                        <TextBlock Margin="24,0,0,0" Text="Accedi con Windows" />
+                                    </StackPanel>
+                                </Button.Content>
+                                <!--<Image Source="\img\user.ico"></Image>-->
+                                <Button.ToolTip>
+                                    <ToolTip>
+                                        <StackPanel>
+                                            <TextBlock>Potrebbe non essere disponibile</TextBlock>
+                                            <TextBlock>in tutte le versioni di Windows.</TextBlock>
+                                        </StackPanel>
+                                    </ToolTip>
+                                </Button.ToolTip>
+                            </Button>
+                        </StackPanel>
+                    </StackPanel>
+                </materialDesign:Card>
 
-			<Label  HorizontalAlignment="Center" FontWeight="Bold">Username</Label>
-			<TextBox Padding="2" Margin="50,0,50,0" Name="UsernameTB" Text="{Binding Path=Settings.CurrentUsername}"  ></TextBox>
-			<Label  Foreground="IndianRed" HorizontalAlignment="Center" >Too lazy?</Label>
-
-			<Button Content="Import from Windows User"
-					Margin="50,10,50,10"
-					Padding="5"
-                Background="LightSkyBlue"
-                Click="Import_Button_Click">
-				<Button.ToolTip>
-					<ToolTip>
-						<StackPanel>
-							<TextBlock>Could be partially unavailable</TextBlock>
-							<TextBlock>for all Windows versions.</TextBlock>
-
-						</StackPanel>
-					</ToolTip>
-				</Button.ToolTip>
-			</Button>
-
-			<Button Content="Done"
-					Margin="50,0,50,10"
-					Padding="5"
-				IsDefault="True"
-                Click="Close_Button_Click"/>
-		</StackPanel>
-
-	</Grid>
+            </StackPanel>
+        </Border>
+    </Grid>
 </Page>

@@ -89,7 +89,7 @@ namespace FileShare {
         private void SettingsToolStripMenuItem_Click(object sender, System.EventArgs e)
         {
 
-            SettingsWindow sw = new SettingsWindow();
+            SettingsWindow sw = SettingsWindow.Instance;
             sw.Show();
 
 

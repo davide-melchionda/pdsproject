@@ -1,4 +1,5 @@
 ﻿using FileTransfer;
+using MahApps.Metro.Controls;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,7 +18,7 @@ using System.Windows.Shapes;
 namespace FileShare
 {
 
-    public partial class ReceiveWindow : Window
+    public partial class ReceiveWindow : MetroWindow
 
     {
         private ToAccept receivingRequest;

@@ -3,193 +3,498 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz"
+      xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       xmlns:local="clr-namespace:FileShare"
-      mc:Ignorable="d" d:DesignWidth="300"
-      Title="Page1" Height="414">
+      mc:Ignorable="d" d:DesignWidth="530"
+      Title="Page1"
+      TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal" 
+        TextOptions.TextRenderingMode="Auto"        
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}">
 
-    <Grid>
-        <TabControl Name="mainTabControl" HorizontalAlignment="Left" Height="415" Margin="0,0,0,-95" VerticalAlignment="Top" Width="517">
-            <TabItem Header="TabItem">
+    <Grid Margin="0,0,1,0">
+        <dragablz:TabablzControl Name="mainTabControl" HorizontalAlignment="Left" Margin="0,0,-1,0" VerticalAlignment="Top" Width="530" BorderThickness="0">
+            <dragablz:TabablzControl.InterTabController>
+                <dragablz:InterTabController />
+            </dragablz:TabablzControl.InterTabController>
+            <TabItem Header="On-Line">
                 <!--<Grid Background="#FFE5E5E5" Margin="-21,-34,-184,-195" HorizontalAlignment="Left" Width="494">-->
-                <ListView x:Name="thelist" x:FieldModifier="public" ItemsSource="{Binding peers}" SelectionChanged="ListView_SelectionChanged_1" Margin="0,0,-2,-2">
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn Width="100">
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Grid>
-											<Ellipse Width="56" Height="56">
-												<Ellipse.Fill>
-													<ImageBrush ImageSource="{Binding Icon}"/>
-												</Ellipse.Fill>
-											</Ellipse>
-                                        </Grid>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                            <GridViewColumn DisplayMemberBinding="{Binding Path=Peer.Id}" Header="Id" Width="100"></GridViewColumn>
-                            <GridViewColumn DisplayMemberBinding="{Binding Path=Peer.Name}" Header="Name" Width="100"></GridViewColumn>
-                            <GridViewColumn DisplayMemberBinding="{Binding Path=Peer.Ipaddress}" Header="Ipaddress" Width="100"></GridViewColumn>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
-                <!--</Grid>-->
+                <StackPanel Orientation="Vertical">
+                    <ListView x:Name="thelist" x:FieldModifier="public" ItemsSource="{Binding peers}" SelectionChanged="ListView_SelectionChanged_1">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Width="100" Header="On-line">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Ellipse Width="48" Height="48">
+                                                    <Ellipse.Fill>
+                                                        <ImageBrush ImageSource="{Binding Icon}"/>
+                                                    </Ellipse.Fill>
+                                                </Ellipse>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Width="100">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Border BorderBrush="{x:Null}" Height="48">
+                                                    <TextBlock TextWrapping="Wrap" Text="{Binding Path=Peer.Name}" VerticalAlignment="Center"/>
+                                                </Border>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </StackPanel>
             </TabItem>
             <TabItem Header="Sending">
-                <ListView ItemsSource="{Binding sendingJobs}" SelectionChanged="ListView_SelectionChanged_1" Margin="0,0,-2,-2">
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn DisplayMemberBinding="{Binding Path=Job.Task.Info.Name}" Header="File" Width="100"></GridViewColumn>
-                            <GridViewColumn Header="Progress" Width="100">
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Grid>
-                                            <ProgressBar Name="SendingProgBar" Loaded="ProgBarLoaded" Maximum="100" Height="10" Width="100">
-                                                <ProgressBar.Style>
-                                                    <Style TargetType="ProgressBar">
-                                                        <Setter Property="Visibility" Value="Visible" />
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding ElementName=SendingProgBar, Path=DataContext.Completed}" Value="True">
-                                                                <Setter Property="Visibility" Value="Hidden" />
-                                                            </DataTrigger>
-                                                            <DataTrigger Binding="{Binding ElementName=SendingProgBar, Path=DataContext.Stopped}" Value="True">
-                                                                <Setter Property="Visibility" Value="Hidden" />
-                                                            </DataTrigger>
-                                                            <!--<DataTrigger Binding="{Binding ElementName=SendingProgBar, Path=DataContext.Completed}" Value="True">
-                                                                <Setter Property="Visibility" Value="Hidden" />
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <ListView ItemsSource="{Binding sendingJobs}" SelectionChanged="ListView_SelectionChanged_1">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Width="160" Header="In uscita">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding Path=Job.Task.Info[0].Name}" TextTrimming="CharacterEllipsis" MaxWidth="160" Margin="0,8,0,0"/>
+                                                <TextBlock Name="and_others" Text="{Binding Path=FilesCountMinusOne, StringFormat= ' e altri {0}'}" 
+                                                       TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" MaxWidth="210" Margin="0,8,0,0">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding ElementName=and_others, Path=DataContext.SingleFile}" Value="True">
+                                                                    <Setter Property="Visibility" Value="Hidden"></Setter>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Width="120">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Controls:MetroProgressBar Name="SendingProgBar" HorizontalAlignment="Center" 
+                                                                       Loaded="ProgBarLoaded" Maximum="100" 
+                                                                       Height="10" Width="100" 
+                                                                       Background="LightGray"
+                                                                       Margin="0,0,0,0">
+                                                    <ProgressBar.Style>
+                                                        <Style TargetType="ProgressBar">
+                                                            <Setter Property="Visibility" Value="Hidden" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding ElementName=SendingProgBar, Path=DataContext.Preparing}" Value="False">
+                                                                    <Setter Property="Visibility" Value="Visible" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding ElementName=SendingProgBar, Path=DataContext.Completed}" Value="True">
+                                                                    <Setter Property="Visibility" Value="Hidden" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding ElementName=SendingProgBar, Path=DataContext.Stopped}" Value="True">
+                                                                    <Setter Property="Visibility" Value="Hidden" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </ProgressBar.Style>
+                                                </Controls:MetroProgressBar>
+
+                                                <ProgressBar Value="35"
+                                                         Name="SendingPreparingProgBar"
+                                                         IsIndeterminate="True"
+                                                         VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,8,0,0">
+                                                    <ProgressBar.Style>
+                                                        <Style TargetType="ProgressBar" BasedOn="{StaticResource MaterialDesignCircularProgressBar}">
+                                                            <Setter Property="Visibility" Value="Visible" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding ElementName=SendingPreparingProgBar, Path=DataContext.Preparing}" Value="False">
+                                                                    <Setter Property="Visibility" Value="Hidden" />
+                                                                </DataTrigger>
+
+                                                                <!--<DataTrigger Binding="{Binding ElementName=SendingPreparingProgBar, Path=DataContext.Preparing}" Value="True">
+                                                                <Setter Property="Visibility" Value="True" />
                                                             </DataTrigger>-->
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </ProgressBar.Style>
-                                            </ProgressBar>
-                                            <TextBlock Name="Information" Text="{Binding Path=Message}">
+
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </ProgressBar.Style>
+                                                </ProgressBar>
+
+                                            </Grid>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Width="70">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Name="SendingTimeLeft" Text="{Binding RemainingTime}" Margin="0,8,0,0">
                                                 <TextBlock.Style>
                                                     <Style TargetType="TextBlock">
-                                                        <Setter Property="Visibility" Value="Hidden"/>
-                                                        <Setter Property="Foreground" Value="DarkGreen"></Setter>
-                                                        <Setter Property="FontWeight" Value="Bold"></Setter>
+                                                        <Setter Property="Visibility" Value="Visible" />
                                                         <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding ElementName=Information, Path=DataContext.Completed}" Value="True">
-                                                                <Setter Property="Visibility" Value="Visible"></Setter>
+                                                            <DataTrigger Binding="{Binding ElementName=SendingTimeLeft, Path=DataContext.Completed}" Value="True">
+                                                                <Setter Property="Visibility" Value="Hidden" />
                                                             </DataTrigger>
                                                             <DataTrigger Binding="{Binding ElementName=SendingProgBar, Path=DataContext.Stopped}" Value="True">
-                                                                <Setter Property="Visibility" Value="Visible" />
-                                                            </DataTrigger>
-                                                            <DataTrigger Binding="{Binding ElementName=Information, Path=DataContext.Error}" Value="True">
-                                                                <Setter Property="Foreground" Value="DarkRed"></Setter>
+                                                                <Setter Property="Visibility" Value="Hidden" />
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
                                                 </TextBlock.Style>
                                             </TextBlock>
-                                        </Grid>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                            <GridViewColumn Header="Al completamento" Width="50">
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Name="SendingTimeLeft" Text="{Binding RemainingTime}">
-                                            <TextBlock.Style>
-                                                <Style TargetType="TextBlock">
-                                                    <Setter Property="Visibility" Value="Visible" />
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding ElementName=SendingTimeLeft, Path=DataContext.Completed}" Value="True">
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Width="140">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Grid HorizontalAlignment="Center">
+                                                <!--<Button Click="DeactivateJob">X</Button>-->
+                                                <Button Name="SendingStopButton"
+                                                Foreground="{StaticResource PrimaryAccentBrush}"
+                                                ToolTip="Annulla"
+                                                FontSize="11"
+                                                Click="DeactivateJob">
+                                                    <Button.Content>
+                                                        <StackPanel Orientation="Horizontal" Height="24">
+                                                            <materialDesign:PackIcon Kind="DeleteForever" Foreground="{StaticResource PrimaryAccentBrush}" 
+                                                                                 Height="24" Width="24" />
+                                                            <TextBlock Text="Annulla" Height="24" Margin="4,6,0,0"/>
+                                                        </StackPanel>
+                                                    </Button.Content>
+                                                    <Button.Style>
+                                                        <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatAccentButton}">
                                                             <Setter Property="Visibility" Value="Hidden" />
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding ElementName=SendingProgBar, Path=DataContext.Stopped}" Value="True">
-                                                            <Setter Property="Visibility" Value="Hidden" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </TextBlock.Style>
-                                        </TextBlock>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                            <GridViewColumn Header="Annulla" Width="100">
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-					                    <Button Click="DeactivateJob">X</Button>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding ElementName=SendingStopButton, Path=DataContext.Preparing}" Value="False">
+                                                                    <Setter Property="Visibility" Value="Visible" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding ElementName=SendingStopButton, Path=DataContext.Completed}" Value="True">
+                                                                    <Setter Property="Visibility" Value="Hidden" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding ElementName=SendingStopButton, Path=DataContext.Stopped}" Value="True">
+                                                                    <Setter Property="Visibility" Value="Hidden" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Button.Style>
+                                                </Button>
+                                                <TextBlock Name="Information" Text="{Binding Path=Message}" Margin="0,8,0,0">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                            <Setter Property="Foreground" Value="{StaticResource PrimaryAccentBrush}"></Setter>
+                                                            <Setter Property="FontWeight" Value="Bold"></Setter>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding ElementName=Information, Path=DataContext.Preparing}" Value="False">
+                                                                    <Setter Property="Visibility" Value="Hidden" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding ElementName=Information, Path=DataContext.Completed}" Value="True">
+                                                                    <Setter Property="Visibility" Value="Visible"></Setter>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding ElementName=SendingProgBar, Path=DataContext.Stopped}" Value="True">
+                                                                    <Setter Property="Visibility" Value="Visible" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding ElementName=Information, Path=DataContext.Error}" Value="True">
+                                                                    <Setter Property="Foreground" Value="#B71C1C"></Setter>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </ScrollViewer>
             </TabItem>
             <TabItem Header="Receiving">
-                <ListView ItemsSource="{Binding receivingJobs}" SelectionChanged="ListView_SelectionChanged_1" Margin="0,0,-2,-2">
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn DisplayMemberBinding="{Binding Path=Job.Task.Info.Name}" Header="File" Width="100"></GridViewColumn>
-                            <GridViewColumn Header="Progress" Width="100">
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Grid>
-                                            <ProgressBar Name="ReceivingProgBar" Loaded="ProgBarLoaded" Maximum="100" Height="10" Width="100">
-                                                <ProgressBar.Style>
-                                                    <Style TargetType="ProgressBar">
-                                                        <Setter Property="Visibility" Value="Visible" />
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding ElementName=ReceivingProgBar, Path=DataContext.Completed}" Value="True">
-                                                                <Setter Property="Visibility" Value="Hidden" />
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </ProgressBar.Style>
-                                            </ProgressBar>
-                                            <TextBlock Name="Information" Text="{Binding Path=Message}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <ListView ItemsSource="{Binding receivingJobs}" SelectionChanged="ListView_SelectionChanged_1">
+                        <ListView.View>
+                            <GridView> 
+                                <GridViewColumn Width="160" Header="In uscita">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding Path=Job.Task.Info[0].Name}" TextTrimming="CharacterEllipsis" MaxWidth="160" Margin="0,8,0,0"/>
+                                                <TextBlock Name="and_others" Text="{Binding Path=FilesCountMinusOne, StringFormat= ' e altri {0}'}" 
+                                                       TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" MaxWidth="210" Margin="0,8,0,0">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding ElementName=and_others, Path=DataContext.SingleFile}" Value="True">
+                                                                    <Setter Property="Visibility" Value="Hidden"></Setter>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Width="120">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Controls:MetroProgressBar Name="ReceivingProgBar" HorizontalAlignment="Center" 
+                                                                       Loaded="ProgBarLoaded" Maximum="100" 
+                                                                       Height="10" Width="100" 
+                                                                       Background="LightGray"
+                                                                       Margin="0,0,0,0">
+                                                    <ProgressBar.Style>
+                                                        <Style TargetType="ProgressBar">
+                                                            <Setter Property="Visibility" Value="Hidden" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding ElementName=ReceivingProgBar, Path=DataContext.Preparing}" Value="False">
+                                                                    <Setter Property="Visibility" Value="Visible" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding ElementName=ReceivingProgBar, Path=DataContext.Completed}" Value="True">
+                                                                    <Setter Property="Visibility" Value="Hidden" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding ElementName=ReceivingProgBar, Path=DataContext.Stopped}" Value="True">
+                                                                    <Setter Property="Visibility" Value="Hidden" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </ProgressBar.Style>
+                                                </Controls:MetroProgressBar>
+
+                                                <ProgressBar Value="35"
+                                                         Name="ReceivingPreparingProgBar"
+                                                         IsIndeterminate="True"
+                                                         VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,8,0,0">
+                                                    <ProgressBar.Style>
+                                                        <Style TargetType="ProgressBar" BasedOn="{StaticResource MaterialDesignCircularProgressBar}">
+                                                            <Setter Property="Visibility" Value="Hidden" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding ElementName=ReceivingPreparingProgBar, Path=DataContext.Completing}" Value="True">
+                                                                    <Setter Property="Visibility" Value="Visible" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding ElementName=ReceivingPreparingProgBar, Path=DataContext.Completed}" Value="True">
+                                                                    <Setter Property="Visibility" Value="Hidden" />
+                                                                </DataTrigger>
+                                                                <!--<DataTrigger Binding="{Binding ElementName=ReceivingPreparingProgBar, Path=DataContext.Preparing}" Value="True">
+                                                                <Setter Property="Visibility" Value="True" />
+                                                            </DataTrigger>-->
+
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </ProgressBar.Style>
+                                                </ProgressBar>
+
+                                            </Grid>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Width="70">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Name="ReceivingTimeLeft" Text="{Binding RemainingTime}" Margin="0,8,0,0">
                                                 <TextBlock.Style>
                                                     <Style TargetType="TextBlock">
-                                                        <Setter Property="Visibility" Value="Hidden"/>
-                                                        <Setter Property="Foreground" Value="DarkGreen"></Setter>
-                                                        <Setter Property="FontWeight" Value="Bold"></Setter>
+                                                        <Setter Property="Visibility" Value="Visible" />
                                                         <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding ElementName=Information, Path=DataContext.Completed}" Value="True">
-                                                                <Setter Property="Visibility" Value="Visible"></Setter>
+                                                            <DataTrigger Binding="{Binding ElementName=ReceivingTimeLeft, Path=DataContext.Completing}" Value="True">
+                                                                <Setter Property="Visibility" Value="Hidden" />
                                                             </DataTrigger>
-                                                            <DataTrigger Binding="{Binding ElementName=Information, Path=DataContext.Error}" Value="True">
-                                                                <Setter Property="Foreground" Value="DarkRed"></Setter>
+                                                            <DataTrigger Binding="{Binding ElementName=ReceivingTimeLeft, Path=DataContext.Completed}" Value="True">
+                                                                <Setter Property="Visibility" Value="Hidden" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding ElementName=ReceivingProgBar, Path=DataContext.Stopped}" Value="True">
+                                                                <Setter Property="Visibility" Value="Hidden" />
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
                                                 </TextBlock.Style>
                                             </TextBlock>
-                                        </Grid>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                            <GridViewColumn Header="Al completamento" Width="50">
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Name="ReceivingTimeLeft" Text="{Binding RemainingTime}">
-                                            <TextBlock.Style>
-                                                <Style TargetType="TextBlock">
-                                                    <Setter Property="Visibility" Value="Visible" />
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding ElementName=ReceivingTimeLeft, Path=DataContext.Completed}" Value="True">
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Width="140">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Grid HorizontalAlignment="Center">
+                                                <!--<Button Click="DeactivateJob">X</Button>-->
+                                                <Button Name="ReceivingStopButton"
+                                                Foreground="{StaticResource PrimaryAccentBrush}"
+                                                ToolTip="Annulla"
+                                                FontSize="11"
+                                                Click="DeactivateJob">
+                                                    <Button.Content>
+                                                        <StackPanel Orientation="Horizontal" Height="24">
+                                                            <materialDesign:PackIcon Kind="DeleteForever" Foreground="{StaticResource PrimaryAccentBrush}" 
+                                                                                 Height="24" Width="24" />
+                                                            <TextBlock Text="Annulla" Height="24" Margin="4,6,0,0"/>
+                                                        </StackPanel>
+                                                    </Button.Content>
+                                                    <Button.Style>
+                                                        <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatAccentButton}">
                                                             <Setter Property="Visibility" Value="Hidden" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </TextBlock.Style>
-                                        </TextBlock>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                            <GridViewColumn Header="Annulla" Width="100">
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Button Click="DeactivateJob">X</Button>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding ElementName=ReceivingStopButton, Path=DataContext.Preparing}" Value="False">
+                                                                    <Setter Property="Visibility" Value="Visible" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding ElementName=ReceivingStopButton, Path=DataContext.Completing}" Value="True">
+                                                                    <Setter Property="Visibility" Value="Hidden" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding ElementName=ReceivingStopButton, Path=DataContext.Completed}" Value="True">
+                                                                    <Setter Property="Visibility" Value="Hidden" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding ElementName=ReceivingStopButton, Path=DataContext.Stopped}" Value="True">
+                                                                    <Setter Property="Visibility" Value="Hidden" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Button.Style>
+                                                </Button>
+                                                <TextBlock Name="Information" Text="{Binding Path=Message}" Margin="0,8,0,0">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                            <Setter Property="Foreground" Value="{StaticResource PrimaryAccentBrush}"></Setter>
+                                                            <Setter Property="FontWeight" Value="Bold"></Setter>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding ElementName=Information, Path=DataContext.Preparing}" Value="False">
+                                                                    <Setter Property="Visibility" Value="Hidden" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding ElementName=ReceivingStopButton, Path=DataContext.Completing}" Value="True">
+                                                                    <Setter Property="Visibility" Value="Visible" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding ElementName=Information, Path=DataContext.Completed}" Value="True">
+                                                                    <Setter Property="Visibility" Value="Visible"></Setter>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding ElementName=ReceivingProgBar, Path=DataContext.Stopped}" Value="True">
+                                                                    <Setter Property="Visibility" Value="Visible" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding ElementName=Information, Path=DataContext.Error}" Value="True">
+                                                                    <Setter Property="Foreground" Value="#B71C1C"></Setter>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <!--<GridViewColumn Width="180" Header="In arrivo">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding Path=Job.Task.Info[0].Name}" TextTrimming="CharacterEllipsis" MaxWidth="210"/>
+                                                <TextBlock Name="and_others" Text="{Binding Path=FilesCountMinusOne, StringFormat= ' e altri {0}'}" TextTrimming="CharacterEllipsis" MaxWidth="210">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding ElementName=and_others, Path=DataContext.SingleFile}" Value="True">
+                                                                    <Setter Property="Visibility" Value="Hidden"></Setter>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Width="120">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Controls:MetroProgressBar Name="ReceivingProgBar" Loaded="ProgBarLoaded" Maximum="100" Height="10" Width="100" Background="LightGray">
+                                                    <ProgressBar.Style>
+                                                        <Style TargetType="ProgressBar">
+                                                            <Setter Property="Visibility" Value="Visible" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding ElementName=ReceivingProgBar, Path=DataContext.Completed}" Value="True">
+                                                                    <Setter Property="Visibility" Value="Hidden" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </ProgressBar.Style>
+                                                </Controls:MetroProgressBar>
+                                                <TextBlock Name="Information" Text="{Binding Path=Message}">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Visibility" Value="Hidden"/>
+                                                            <Setter Property="Foreground" Value="{StaticResource PrimaryAccentBrush}"></Setter>
+                                                            <Setter Property="FontWeight" Value="Bold"></Setter>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding ElementName=Information, Path=DataContext.Completed}" Value="True">
+                                                                    <Setter Property="Visibility" Value="Visible"></Setter>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding ElementName=Information, Path=DataContext.Error}" Value="True">
+                                                                    <Setter Property="Foreground" Value="#B71C1C"></Setter>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Width="70">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Name="ReceivingTimeLeft" Text="{Binding RemainingTime}">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding ElementName=ReceivingTimeLeft, Path=DataContext.Completed}" Value="True">
+                                                                <Setter Property="Visibility" Value="Hidden" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Width="120">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            -->
+                                <!--<Button Click="DeactivateJob">Annulla</Button>-->
+                                <!--
+                                            <Button Style="{StaticResource MaterialDesignFlatAccentButton}"
+                                                ToolTip="Annulla"
+                                                FontSize="11"
+                                                Click="DeactivateJob">
+                                                <Button.Content>
+                                                    <StackPanel Orientation="Horizontal" Height="24">
+                                                        <materialDesign:PackIcon Kind="DeleteForever" Foreground="{StaticResource PrimaryAccentBrush}" Height="24" Width="24" />
+                                                        <TextBlock Text="Annulla" Height="24" Margin="4,6,0,0"/>
+                                                    </StackPanel>
+                                                </Button.Content>
+                                            </Button>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>-->
+
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </ScrollViewer>
             </TabItem>
-        </TabControl>
+        </dragablz:TabablzControl>
     </Grid>
 
 </Page>

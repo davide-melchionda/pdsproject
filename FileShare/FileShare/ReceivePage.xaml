@@ -4,14 +4,172 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:FileShare"
-
+      xmlns:sys="clr-namespace:System;assembly=mscorlib"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       mc:Ignorable="d"
-	  	  Background="#fdfffd"
+	  Background="{StaticResource MaterialDesignPaper}"
+      Title="ReceivePage" 
+      Width="550">
 
-      Title="ReceivePage" Height="800" Width="400">
-
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel Margin="10,10,10,122" CanVerticallyScroll="True">
+    <Grid Width="550">
+        <StackPanel Orientation="Vertical">
+            <TextBlock Style="{DynamicResource MaterialDesignHeadlineTextBlock}" Padding="8" Margin="8,0,0,0">Qualcuno vuole inviarti dei file</TextBlock>
+            <materialDesign:Card Padding="16" Margin="8">
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Width="136" Margin="0,24,8,0">
+                        <Ellipse Width="80" Height="80">
+                            <Ellipse.Fill>
+                                <ImageBrush ImageSource="{Binding Path=Sender.Icon}"/>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                        <TextBlock Text="{Binding Path=Sender.Peer.Name}" HorizontalAlignment="Center" Style="{DynamicResource MaterialDesignHeadlineTextBlock}" Padding="16" FontSize="18"></TextBlock>
+                    </StackPanel>
+                    <!--<StackPanel Orientation="Vertical" Width="258" Margin="8,0,8,0">-->
+                    <Grid MaxHeight="248">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="8,0,0,0">
+                            <ListView x:Name="filesList" x:FieldModifier="public" Width="310" ItemsSource="{Binding Infos}" Margin="0,0,0,16" Padding="0">
+                                <ListView.Resources >
+                                    <Style TargetType="GridViewColumnHeader">
+                                        <Setter Property="Visibility" Value="Hidden"></Setter>
+                                    </Style>
+                                </ListView.Resources>
+                                <!--<ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem" BasedOn="{StaticResource MaterialDesignListItem}">
+                            <Setter Property="Focusable" Value="False"></Setter>
+                        </Style>
+                    </ListView.ItemContainerStyle>-->
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn Width="48">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Grid>
+                                                        <!--<TextBlock Foreground="Black" Text="{Binding Path=Resources}" />-->
+                                                        <materialDesign:PackIcon Name="FolderIcon" Kind="Folder" Foreground="{StaticResource PrimaryHueLightBrush}" Height="24" Width="24" >
+                                                            <materialDesign:PackIcon.Style>
+                                                                <Style TargetType="materialDesign:PackIcon">
+                                                                    <Setter Property="Visibility" Value="Hidden"></Setter>
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding ElementName=FolderIcon, Path=DataContext.IsDirectory}" Value="True">
+                                                                            <Setter Property="Visibility" Value="Visible" />
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </materialDesign:PackIcon.Style>
+                                                        </materialDesign:PackIcon>
+                                                        <materialDesign:PackIcon Name="FileIcon" Kind="File" Foreground="{StaticResource PrimaryHueLightBrush}" Height="24" Width="24" >
+                                                            <materialDesign:PackIcon.Style>
+                                                                <Style TargetType="materialDesign:PackIcon">
+                                                                    <Setter Property="Visibility" Value="Hidden"></Setter>
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding ElementName=FileIcon, Path=DataContext.IsDirectory}" Value="False">
+                                                                            <Setter Property="Visibility" Value="Visible" />
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </materialDesign:PackIcon.Style>
+                                                        </materialDesign:PackIcon>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Width="236">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Grid>
+                                                        <TextBlock Foreground="Black" Text="{Binding Path=Info.Name}" Margin="16,0,16,0" Width="204" TextWrapping="Wrap"/>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+                        </ScrollViewer>
+                    </Grid>
+                    <!--<ListView  x:Name="thelist" x:FieldModifier="public" ItemsSource="{Binding Path=FileShareDC.peers}" Width="270" Margin="24,0,0,0">
+                        <ListView.Resources >
+                            <Style TargetType="GridViewColumnHeader">
+                                <Setter Property="Visibility" Value="Collapsed"></Setter>
+                            </Style>
+                        </ListView.Resources>
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Width="100">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Ellipse Width="56" Height="56">
+                                                    <Ellipse.Fill>
+                                                        <ImageBrush ImageSource="{Binding Icon}"/>
+                                                    </Ellipse.Fill>
+                                                </Ellipse>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn DisplayMemberBinding="{Binding Peer.Name}" Header="Name" Width="100"></GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>-->
+                </StackPanel>
+            </materialDesign:Card>
+            <StackPanel Orientation="Vertical" Margin="24,0,24,0" HorizontalAlignment="Center">
+                <!--<TextBox Padding="2" Margin="5" Name="ChosedPath" Text="{Binding Path=Settings.DefaultRecvPath }" Width="246"  ></TextBox>-->
+                <!--<TextBox Margin="0,0,0,0" Width="248" Height="32" x:Name="DefaultPath" Text="{Binding Settings.DefaultRecvPath}" materialDesign:HintAssist.Hint="Percorso predefinito"/>-->
+                <!--<Button Background="Transparent" BorderThickness="0" Name="ChoosePath" HorizontalAlignment="Center" Click="Path_Button_Click">
+                                <Image  Width="30" Height="30" Source="{Binding Path=Settings.FolderIcon}" />
+                            </Button>-->
+                <TextBlock Text="Dove vuoi salvare il file?" Style="{StaticResource MaterialDesignBody1TextBlock}"></TextBlock>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <!--<TextBox Name="DefaultPath" Text="{Binding Path=Settings.DefaultRecvPath }"   ></TextBox>-->
+                    <TextBox Name="ChosedPath"  Margin="0,0,0,0" Width="248" Height="32" Text="{Binding Settings.DefaultRecvPath}" materialDesign:HintAssist.Hint="Percorso predefinito"/>
+                    <!--<TextBox Padding="2" Margin="5" Name="ChosedPath" Text="{Binding Path=Settings.DefaultRecvPath }" ></TextBox>-->
+                    <Button Background="Transparent" BorderThickness="0" Name="ChoosePath" HorizontalAlignment="Center" Click="Path_Button_Click"
+                                 Style="{StaticResource MaterialDesignFlatButton}">
+                        <!--<Image  Width="30" Height="30" Source="{Binding Path=Settings.FolderIcon}" />-->
+                        <!--<materialDesign:PackIcon Kind="Folder" Margin="0,8,0,0" Foreground="{Binding ElementName=UsernameTB, Path=BorderBrush}" Height="24" Width="24" />-->
+                        <Button.Content>
+                            <StackPanel Orientation="Horizontal" Height="24">
+                                <materialDesign:PackIcon Kind="Folder" Foreground="{StaticResource PrimaryHueLightBrush}" Height="24" Width="24" />
+                                <TextBlock Text="..." Height="20" Margin="4,8,0,0"/>
+                            </StackPanel>
+                        </Button.Content>
+                        <Button.ToolTip>
+                            <ToolTip>
+                                <TextBlock>Modifica destinazione</TextBlock>
+                            </ToolTip>
+                        </Button.ToolTip>
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="24,16,24,16" HorizontalAlignment="Center">
+                <Button Content="Annulla"
+					    Margin="16"
+					    Padding="5"
+				        IsDefault="True"
+                        Click="Cancel_Button_Click" Width="132"
+                        Style="{StaticResource MaterialDesignFlatButton}"/>
+                <Button Content="Accetta"
+					    HorizontalAlignment="Center"
+					    Margin="16"
+					    Padding="5"
+				        IsDefault="True"
+                        Click="Accept_Button_Click" Width="132"
+                        Style="{StaticResource MaterialDesignRaisedButton}"/>
+            </StackPanel>
+        </StackPanel>
+        <!--<Button Style="{StaticResource MaterialDesignFloatingActionButton}"
+				IsDefault="True"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Margin="0,0,16,16"
+                Click="Button_Click"
+                Height="48" Width="48">
+                <materialDesign:PackIcon Kind="ShareVariant" Foreground="{StaticResource PrimaryHueMidForegroundBrush}" Height="24" Width="24" ></materialDesign:PackIcon>
+            </Button>-->
+    </Grid>
+    <!--<StackPanel Margin="10,10,10,122" CanVerticallyScroll="True">
             <StackPanel Orientation="Horizontal" CanVerticallyScroll="True">
 
                 <TextBlock Text="{Binding Path= Request.TasktoAccept.SenderName, StringFormat= {}{0} want to send you:}"  Foreground="Black" Margin="0,10,0,0"/>
@@ -26,7 +184,9 @@
                     </ListView.View>
                 </ListView>
 
-                <!--<TextBlock Text="{Binding Path=TaskType , StringFormat= {} {0}}"  Foreground="Black" Margin="0,10,0,0"/>-->
+                -->
+    <!--<TextBlock Text="{Binding Path=TaskType , StringFormat= {} {0}}"  Foreground="Black" Margin="0,10,0,0"/>-->
+    <!--
             </StackPanel>
             <StackPanel Orientation="Horizontal" CanVerticallyScroll="True">
                 <TextBlock Text="Tatl size: "/>
@@ -65,6 +225,5 @@
             </StackPanel>
             <CheckBox x:Name ="alwaysDefault" IsChecked="{Binding Path=Settings.AutoAcceptFiles}" Content="Don't show this again. " />
 
-        </StackPanel>
-    </ScrollViewer>
+        </StackPanel>-->
 </Page>

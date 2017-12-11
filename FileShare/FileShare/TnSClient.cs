@@ -18,13 +18,14 @@ namespace NetworkTransmission {
         private TransferNetworkModule network;
 
 
-        private byte[] transferBlock = new byte[8192];
+        private byte[] transferBlock;
 
         public TnSClient(Socket socket, Protocol protocol, Job job) : base(socket, protocol) {
             this.job = job;
             JobZipStorageModule module = new JobZipStorageModule();
             iterator = module.prepareJob(job);
             network = new TransferNetworkModule();
+            transferBlock = new byte[((JobZipStorageModule.JobFileIterator)iterator).READ_BLOCK_SIZE];
         }
 
         public override TransferResult transfer() {

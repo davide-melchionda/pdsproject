@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MahApps.Metro.Controls;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,14 +18,21 @@ namespace FileShare
     /// <summary>
     /// Logica di interazione per ProfileSetupWindow.xaml
     /// </summary>
-    public partial class ProfileSetupWindow : Window
+    public partial class ProfileSetupWindow : MetroWindow
     {
         public ProfileSetupWindow()
         {
             InitializeComponent();
-            ProfileSetupPage page = new ProfileSetupPage();
-            page.OnClosed += Page_OnClosed;
-            this.SetupFrame.Navigate(page);
+            ProfileSetupIntroPage firstPage = new ProfileSetupIntroPage();
+            //this.SetupFrame.Navigate(firstPage);
+            this.Content = firstPage;
+            firstPage.OnGoOn += () => {
+                ProfileSetupPage page = new ProfileSetupPage();
+                page.ShowsNavigationUI = false;
+                //this.SetupFrame.Navigate(page);
+                this.Content = page;
+                page.OnClosed += Page_OnClosed;
+            };
         }
 
         private void Page_OnClosed()
