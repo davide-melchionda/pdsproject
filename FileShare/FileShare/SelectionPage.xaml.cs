@@ -68,6 +68,11 @@ namespace FileShare
             } else // Otherwise the user must repeat the selection
                 MessageBox.Show("Devi selezionare almeno un destinatario.");
         }
+
+        private void Select_All_Button_Click(object sender, RoutedEventArgs e)
+        {
+            thelist.SelectAll();
+        }
     }
     
 }
