@@ -39,59 +39,57 @@ namespace FileShareConsole {
         /// access to the temporary file to trasnfer.
         ///</summary>
         public FileIterator prepareJob(Job j) {
-            
+
             DateTime lastModify = j.Task.RequestTimestamp;  // The timestamp
-            
+
             // Constructs the zip file name
             //string date = lastModify.ToString("yyyyMMddhhmmss") + lastModify.Millisecond;
             Directory.CreateDirectory(Path.Combine(zipTempFolder, j.Id));
             string zipName = Path.Combine(zipTempFolder, j.Id, j.Id + ".tmp");// + @"\" + Path.GetFileNameWithoutExtension(filePath) + date + ".zip";
 
-            // If the file was modified after the lastModify date, throws an exception
-            //if (File.GetLastWriteTime(filePath) > lastModify)
-            //{
-            //    throw new FileVersioningException("The file was modified after the indicated time");
-            //}
-
             // Check zipped file existence
             if (!File.Exists(zipName)) {
 
-                // If the file was not zipped yet
-                //if (!openedFiles.ContainsKey(filePath))
-                //{
-
-                ZipArchive newFile = ZipFile.Open(zipName, ZipArchiveMode.Create);
-
-                foreach (string filePath in j.FilePaths) {
-                    /* Retrieves the file attributes to check if the file is a directory or not
-                        because the way to zip is different in the two cases. */
-                    FileAttributes attr = 0;
-                    attr = File.GetAttributes(filePath);
-
-                    // If the file is a directory
-                    //if ((attr & FileAttributes.Directory) == FileAttributes.Directory) {
+                if (j.FilePaths.Count == 1 && j.Task.Info[0].Type == FileTransfer.FileInfo.FType.DIRECTORY) {
+                    ZipFile.CreateFromDirectory(j.FilePaths.Last(), zipName, CompressionLevel.NoCompression, false);
+                    ////If the file is a directory
+                    //FileAttributes attr = 0;
+                    //attr = File.GetAttributes(j.FilePaths.Last());
+                    //if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
+                    //{
                     //    // zip directory (including base directory)
-                    //    ZipFile.CreateFromDirectory(filePath, zipName, CompressionLevel.NoCompression, false);
-                    //} else {  // otherwise
+                    //    ZipFile.CreateFromDirectory(j.FilePaths.Last(), zipName, CompressionLevel.NoCompression, false);
+                    //}
+                    //else
+                    //{  // otherwise
                     //    // Note: if it's a file, ZipArchive has to work on a new file in order to zip
                     //    ZipArchive newFile = ZipFile.Open(zipName, ZipArchiveMode.Create);
                     //    //string p = Path.GetDirectoryName(filePath);
-                    //    newFile.CreateEntryFromFile(filePath, Path.GetFileName(filePath), CompressionLevel.NoCompression);
+                    //    newFile.CreateEntryFromFile(j.FilePaths.Last(), Path.GetFileName(j.FilePaths.Last()), CompressionLevel.NoCompression);
                     //    newFile.Dispose();
                     //}
-                    if ((attr & FileAttributes.Directory) == FileAttributes.Directory) {
-                        string tmpArchivePath = Path.Combine(Path.GetDirectoryName(zipName), Path.GetFileName(filePath) + ".zip");
-                        ZipFile.CreateFromDirectory(filePath, tmpArchivePath, CompressionLevel.NoCompression, false);
-                        newFile.CreateEntryFromFile(tmpArchivePath, Path.GetFileName(filePath), CompressionLevel.NoCompression);
-                        File.Delete(tmpArchivePath);
-                    } else {
-                        newFile.CreateEntryFromFile(filePath, Path.GetFileName(filePath), CompressionLevel.NoCompression);
+                } else {
+                    ZipArchive newFile = ZipFile.Open(zipName, ZipArchiveMode.Create);
+
+                    foreach (string filePath in j.FilePaths) {
+                        /* Retrieves the file attributes to check if the file is a directory or not
+                            because the way to zip is different in the two cases. */
+                        FileAttributes attr = 0;
+                        attr = File.GetAttributes(filePath);
+
+                        if ((attr & FileAttributes.Directory) == FileAttributes.Directory) {
+                            string tmpArchivePath = Path.Combine(Path.GetDirectoryName(zipName), Path.GetFileName(filePath) + ".zip");
+                            ZipFile.CreateFromDirectory(filePath, tmpArchivePath, CompressionLevel.NoCompression, false);
+                            newFile.CreateEntryFromFile(tmpArchivePath, Path.GetFileName(filePath), CompressionLevel.NoCompression);
+                            File.Delete(tmpArchivePath);
+                        } else {
+                            newFile.CreateEntryFromFile(filePath, Path.GetFileName(filePath), CompressionLevel.NoCompression);
+                        }
                     }
+                    //}
+
+                    newFile.Dispose();
                 }
-                //}
-
-                newFile.Dispose();
-
                 // Intializes the remaining info in the task (SentName and Size)
                 j.Task.SentName = Path.GetFileName(zipName);    // name of the zipped file
                 j.Task.Size = new System.IO.FileInfo(zipName).Length;     // size of the zipped file
@@ -139,27 +137,35 @@ namespace FileShareConsole {
                 // Job not completed: nothing to extract
                 if (job.SentByte != job.Task.Size)
                     return;
+                if (job.Task.Info.Count == 1 && job.Task.Info[0].Type == FileTransfer.FileInfo.FType.DIRECTORY) {
+                    ZipFile.ExtractToDirectory(path, GetUniqueFilePath(receivePath + "\\" + job.Task.Info.Last().Name));
+                    //if (job.Task.Info.Last().Type == FileTransfer.FileInfo.FType.DIRECTORY)
+                    //{
+                    //    ZipFile.ExtractToDirectory(path, GetUniqueFilePath(receivePath + "\\" + job.Task.Info.Last().Name));
+                    //}
+                    //else using (ZipArchive archive = ZipFile.OpenRead(path))
+                    //{
+                    //        string tempPath;
+                    //        foreach (ZipArchiveEntry entry in archive.Entries)
+                    //        {
+                    //            tempPath = GetUniqueFilePath(Path.Combine(job.DestinationPath, entry.Name));
+                    //            entry.ExtractToFile(tempPath);
+                    //        }
 
-                //if (job.Task.Info.Type == FileTransfer.FileInfo.FType.DIRECTORY) {
-                //    ZipFile.ExtractToDirectory(path, GetUniqueFilePath(receivePath + "\\" + job.Task.Info.Name));
-                //} else using (ZipArchive archive = ZipFile.OpenRead(path)) {
-                //        string tempPath;
-                //        foreach (ZipArchiveEntry entry in archive.Entries) {
-                //            tempPath = GetUniqueFilePath(Path.Combine(job.DestinationPath, entry.Name));
-                //            entry.ExtractToFile(tempPath);
-                //        }
-                //    }
-                using (ZipArchive archive = ZipFile.OpenRead(path)) {
-                    foreach (FileTransfer.FileInfo fileInfo in job.Task.Info) {
-                        foreach (ZipArchiveEntry entry in archive.Entries) {
-                            if (fileInfo.Name == entry.Name) {
-                                if (fileInfo.Type == FileTransfer.FileInfo.FType.DIRECTORY) {
-                                    string uniqueFileName = GetUniqueFilePath(Path.Combine(Path.GetDirectoryName(path), entry.Name));
-                                    entry.ExtractToFile(uniqueFileName + ".zip");
-                                    ZipFile.ExtractToDirectory(uniqueFileName + ".zip", GetUniqueFilePath(Path.Combine(receivePath, fileInfo.Name)));
-                                    File.Delete(uniqueFileName + ".zip");
-                                } else {
-                                    entry.ExtractToFile(GetUniqueFilePath(Path.Combine(job.DestinationPath, entry.Name)));
+                    //}
+                } else {
+                    using (ZipArchive archive = ZipFile.OpenRead(path)) {
+                        foreach (FileTransfer.FileInfo fileInfo in job.Task.Info) {
+                            foreach (ZipArchiveEntry entry in archive.Entries) {
+                                if (fileInfo.Name == entry.Name) {
+                                    if (fileInfo.Type == FileTransfer.FileInfo.FType.DIRECTORY) {
+                                        string uniqueFileName = GetUniqueFilePath(Path.Combine(Path.GetDirectoryName(path), entry.Name));
+                                        entry.ExtractToFile(uniqueFileName + ".zip");
+                                        ZipFile.ExtractToDirectory(uniqueFileName + ".zip", GetUniqueFilePath(Path.Combine(receivePath, fileInfo.Name)));
+                                        File.Delete(uniqueFileName + ".zip");
+                                    } else {
+                                        entry.ExtractToFile(GetUniqueFilePath(Path.Combine(job.DestinationPath, entry.Name)));
+                                    }
                                 }
                             }
                         }
@@ -287,6 +293,12 @@ namespace FileShareConsole {
                 }
                 set {
                     job = value;
+                }
+            }
+
+            public int READ_BLOCK_SIZE {
+                get {
+                    return 1 * 1024 *1024 /*DEFAULT 100MB*/;
                 }
             }
 

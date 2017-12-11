@@ -68,7 +68,7 @@
                                             <StackPanel Orientation="Horizontal">
                                                 <TextBlock Text="{Binding Path=Job.Task.Info[0].Name}" TextTrimming="CharacterEllipsis" MaxWidth="160" Margin="0,8,0,0"/>
                                                 <TextBlock Name="and_others" Text="{Binding Path=FilesCountMinusOne, StringFormat= ' e altri {0}'}" 
-                                                       TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" MaxWidth="210">
+                                                       TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" MaxWidth="210" Margin="0,8,0,0">
                                                     <TextBlock.Style>
                                                         <Style TargetType="TextBlock">
                                                             <Style.Triggers>
@@ -226,14 +226,14 @@
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <ListView ItemsSource="{Binding receivingJobs}" SelectionChanged="ListView_SelectionChanged_1">
                         <ListView.View>
-                            <GridView>
+                            <GridView> 
                                 <GridViewColumn Width="160" Header="In uscita">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal">
                                                 <TextBlock Text="{Binding Path=Job.Task.Info[0].Name}" TextTrimming="CharacterEllipsis" MaxWidth="160" Margin="0,8,0,0"/>
                                                 <TextBlock Name="and_others" Text="{Binding Path=FilesCountMinusOne, StringFormat= ' e altri {0}'}" 
-                                                       TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" MaxWidth="210">
+                                                       TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" MaxWidth="210" Margin="0,8,0,0">
                                                     <TextBlock.Style>
                                                         <Style TargetType="TextBlock">
                                                             <Style.Triggers>

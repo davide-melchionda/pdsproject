@@ -34,7 +34,7 @@ namespace FileTransfer
         public event OnJobInitialized JobInitialized;
 
         private TransferNetworkModule network;
-        private byte[] chunk = new byte[8192];
+        private byte[] chunk;
         private static ManualResetEvent mre = new ManualResetEvent(false);
 
         public TnSServer(Socket handler, Protocol protocol) : base(handler, protocol)
@@ -74,6 +74,7 @@ namespace FileTransfer
                         /* Create a Job for the incoming task. */
                         JobZipStorageModule module = new JobZipStorageModule();
                         iterator = module.createJob(request.Task, receivePath);
+                        chunk = new byte[((JobFileIterator)iterator).READ_BLOCK_SIZE];
                         // Execute operations when job has been created
                         JobInitialized?.Invoke(((JobFileIterator)iterator).Job);
 
