@@ -41,6 +41,5 @@ namespace FileShare
             if (dialog.ShowDialog() == DialogResult.OK)
                 settings.PicturePath = dialog.FileName;
         }
-
     }
 }

@@ -1,14 +1,21 @@
-﻿<Window x:Class="FileShare.SettingsWindow"
+﻿<Controls:MetroWindow x:Class="FileShare.SettingsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FileShare"
-		 ResizeMode="NoResize"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+		ResizeMode="NoResize"
         mc:Ignorable="d"
-		WindowStartupLocation="CenterScreen"
-        Title="SettingsWindow" Height="520" Width="400">
+        Title="Impostazioni" Height="584" Width="400"
+        WindowTitleBrush="{StaticResource PrimaryHueDarkBrush}"
+        TitleForeground="{StaticResource PrimaryHueDarkForegroundBrush}"
+        NonActiveWindowTitleBrush="White"
+        WindowCloseButtonStyle="{DynamicResource CleanCloseWindowButtonStyle}"
+        BorderThickness="0" 
+        GlowBrush="Black"
+                      WindowStartupLocation="CenterScreen">
     <Grid>
 		<Frame Name= "SettingsFrame"/>
 	</Grid>
-</Window>
+</Controls:MetroWindow>

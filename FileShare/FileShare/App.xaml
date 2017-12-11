@@ -21,12 +21,38 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.DeepPurple.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
-                
+
                 <!-- Include the Dragablz Material Design style -->
                 <ResourceDictionary Source="pack://application:,,,/Dragablz;component/Themes/materialdesign.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <!-- primary hues  -->
+            <SolidColorBrush x:Key="PrimaryHueLightBrush" Color="#26A69A"/>
+            <SolidColorBrush x:Key="PrimaryHueLightForegroundBrush" Color="White"/>
+            <SolidColorBrush x:Key="PrimaryHueMidBrush" Color="#009688"/>
+            <SolidColorBrush x:Key="PrimaryHueMidForegroundBrush" Color="White"/>
+            <SolidColorBrush x:Key="PrimaryHueDarkBrush" Color="#00796B"/>
+            <SolidColorBrush x:Key="PrimaryHueDarkForegroundBrush" Color="White"/>
+            <!--  accent -->
+            <!--  accent -->
+            <SolidColorBrush x:Key="PrimaryAccentBrush" Color="#00838F"/>
+            <SolidColorBrush x:Key="PrimaryAccentForegroundBrush" Color="White"/>
+            <SolidColorBrush x:Key="SecondaryAccentBrush" Color="#CDDC39"/>
+            <SolidColorBrush x:Key="SecondaryAccentForegroundBrush" Color="#455A64"/>
             <!-- tell Dragablz tab control to use the Material Design theme -->
             <Style TargetType="{x:Type dragablz:TabablzControl}" BasedOn="{StaticResource MaterialDesignTabablzControlStyle}" />
+            <Style x:Key="CleanCloseWindowButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource MetroWindowButtonStyle}">
+                <Setter Property="Foreground" Value="White"></Setter>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="#EB2F2F" />
+                        <Setter Property="Foreground" Value="White" />
+                    </Trigger>
+                    <Trigger Property="IsPressed" Value="True">
+                        <Setter Property="Background" Value="DarkRed"/>
+                        <!--<Setter Property="Foreground" Value="#EB2F2F"/>-->
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

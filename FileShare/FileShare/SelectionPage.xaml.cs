@@ -1,6 +1,7 @@
 ﻿using FileTransfer;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 using System.Windows;
@@ -36,14 +37,19 @@ namespace FileShare
         /// Constructor
         /// </summary>
         /// <param name="filePath">The path of the file</param>
-        public SelectionPage(List<string> filePaths/*SelectionWindow parent*/)
-        {
+        public SelectionPage(List<string> filePaths/*SelectionWindow parent*/) {
             InitializeComponent();
 
             this.filePaths = filePaths;
 
+            List<DisplayedFileInfo> files = new List<DisplayedFileInfo>();
+            foreach (string s in filePaths) {
+                //fileNames.Add(System.IO.Path.GetFileName(s));
+                files.Add(new DisplayedFileInfo(s));
+            }
+
             // Needed in order to show the peers list
-            DataContext = FileShareDataContext.Instance;
+            DataContext = new { Files = files, FileShareDC = FileShareDataContext.Instance };
         }
 
         /// <summary>
@@ -63,4 +69,5 @@ namespace FileShare
                 MessageBox.Show("Devi selezionare almeno un destinatario.");
         }
     }
+    
 }

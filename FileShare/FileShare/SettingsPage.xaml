@@ -4,64 +4,99 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       mc:Ignorable="d"
-
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"    
       d:DesignWidth="400"
-      Height="500"
-      Title="SettingsPage">
+      Width="400"
+      Height="544"
+      Title="SettingsPage"
+      TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+      TextElement.FontWeight="Regular"
+      TextElement.FontSize="13"
+      TextOptions.TextFormattingMode="Ideal" 
+      TextOptions.TextRenderingMode="Auto"       
+      Background="{StaticResource MaterialDesignPaper}"
+      FontFamily="{StaticResource MaterialDesignFont}">
 
     <Grid>
-		<StackPanel Margin="0,10,0,0" CanVerticallyScroll="True">
-			<Label  HorizontalAlignment=" center" FontWeight="Bold">Profile picture</Label>
-			<Ellipse Width="128" Height="128">
-				<Ellipse.Fill>
-					<ImageBrush ImageSource="{Binding Path=Me.Icon}"/>
-				</Ellipse.Fill>
-			</Ellipse>
-            
-			<Button Background="Transparent" BorderThickness="0" Name="ProfilePictureButton" HorizontalAlignment="Center" Click="Profile_Button_Click">
+        <StackPanel Margin="0,10,0,0" CanVerticallyScroll="True">
+            <!--<Label  HorizontalAlignment=" center" FontWeight="Bold">Profile picture</Label>-->
+            <TextBlock Text="Profilo" Style="{StaticResource MaterialDesignHeadlineTextBlock}" Margin="24,0,24,0"></TextBlock>
+            <Ellipse Width="128" Height="128">
+                <Ellipse.Fill>
+                    <ImageBrush ImageSource="{Binding Path=Me.Icon}"/>
+                </Ellipse.Fill>
+            </Ellipse>
+            <Button Background="Transparent" BorderThickness="0" BorderBrush="Transparent" Height="32" Name="ProfilePictureButton" Click="Profile_Button_Click" Padding="0"
+                                            Style="{StaticResource MaterialDesignFlatButton}" Margin="8">
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal" Height="24">
+                        <materialDesign:PackIcon Kind="Camera" Foreground="{StaticResource PrimaryHueLightBrush}" Height="24" Width="24" />
+                        <TextBlock Text="Modifica" Height="20" Margin="8,4,0,0"/>
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+            <!--<Button Background="Transparent" BorderThickness="0" Name="ProfilePictureButton" HorizontalAlignment="Center" Click="Profile_Button_Click">
 				<Image  Width="30" Height="30" Source="{Binding Path=Settings.PictureIcon}" />
 				<Button.ToolTip>
 					<ToolTip>
 						<TextBlock>Load</TextBlock>
 					</ToolTip>
 				</Button.ToolTip>
-			</Button>
+			</Button>-->
 
-			<Label  HorizontalAlignment=" center" FontWeight="Bold">Current username</Label>
-			<TextBox  Padding="2" Margin="50,0,50,0" Name="UsernameTB" Text="{Binding Path=Settings.CurrentUsername}"  ></TextBox>
-			<StackPanel HorizontalAlignment="Center" Orientation="Vertical">
-            <Label FontWeight="Bold">Application Options</Label>
+            <!--<Label  HorizontalAlignment=" center" FontWeight="Bold">Current username</Label>-->
+            <!--<TextBox  Padding="2" Margin="50,0,50,0" Name="UsernameTB" Text="{Binding Path=Settings.CurrentUsername}"  ></TextBox>-->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment=" center" Margin="16,0,16,0">
+                <materialDesign:PackIcon Kind="Account" Margin="0,8,0,0" Foreground="{Binding ElementName=UsernameTB, Path=BorderBrush}" Height="24" Width="24" />
+                <TextBox Margin="8,0,0,0" Width="224" Height="32" x:Name="UsernameTB" Text="{Binding Settings.CurrentUsername}" materialDesign:HintAssist.Hint="Name"/>
+            </StackPanel>
 
-			<CheckBox  Margin="1" Name="InvisibleStateCB" IsChecked="{Binding Path=Settings.IsInvisible}"> Enable invisible state
-			</CheckBox>
-            <CheckBox  Margin="1" Name ="AutoReceiveCB"  IsChecked="{Binding Path=Settings.AutoAcceptFiles}" >Enable auto receiving</CheckBox>
-			</StackPanel>
-			<StackPanel HorizontalAlignment=" center" Orientation="Horizontal">
-				<Label >Default receiving path</Label>
-				<!--<Button Name="ChoosePath" Content="..." 
+            <Separator Margin="24,16,24,16"></Separator>
+
+            <StackPanel Orientation="Vertical">
+                <!--<Label FontWeight="Bold">Application Options</Label>-->
+                <TextBlock Text="Opzioni dell'applicazione" Style="{StaticResource MaterialDesignHeadlineTextBlock}" Margin="24,0,24,0"></TextBlock>
+
+                <StackPanel Orientation="Vertical" Margin="24,16,24,0">
+                    <CheckBox  Margin="1" Name="InvisibleStateCB" IsChecked="{Binding Path=Settings.IsInvisible}">Modalità invisibile
+                    </CheckBox>
+                    <CheckBox  Margin="1" Name ="AutoReceiveCB"  IsChecked="{Binding Path=Settings.AutoAcceptFiles}" >Ricevi ogni file automaticamente</CheckBox>
+                </StackPanel>
+                <StackPanel Orientation="Vertical" Margin="24,24,24,0">
+                    <!--<Label >Default receiving path</Label>-->
+                    <!--<Button Name="ChoosePath" Content="..." 
 				Margin="10,0,0,0"
 				Click="Path_Button_Click"/>-->
-				<Button Background="Transparent" BorderThickness="0" Name="ChoosePath" HorizontalAlignment="Center" Click="Path_Button_Click">
-					<Image  Width="30" Height="30" Source="{Binding Path=Settings.FolderIcon}" />
-					<Button.ToolTip>
-						<ToolTip>
-							<TextBlock>Browse</TextBlock>
-						</ToolTip>
-					</Button.ToolTip>
-				</Button>
+                    <TextBlock Text="Destinazione predefinita per i file" Style="{StaticResource MaterialDesignBody2TextBlock}"></TextBlock>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <!--<TextBox Name="DefaultPath" Text="{Binding Path=Settings.DefaultRecvPath }"   ></TextBox>-->
+                        <TextBox Margin="0,0,0,0" Width="248" Height="32" x:Name="DefaultPath" Text="{Binding Settings.DefaultRecvPath}" materialDesign:HintAssist.Hint="Percorso predefinito"/>
+                        <Button Background="Transparent" BorderThickness="0" Name="ChoosePath" HorizontalAlignment="Center" Click="Path_Button_Click"
+                                 Style="{StaticResource MaterialDesignFlatButton}">
+                            <!--<Image  Width="30" Height="30" Source="{Binding Path=Settings.FolderIcon}" />-->
+                            <!--<materialDesign:PackIcon Kind="Folder" Margin="0,8,0,0" Foreground="{Binding ElementName=UsernameTB, Path=BorderBrush}" Height="24" Width="24" />-->
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal" Height="24">
+                                    <materialDesign:PackIcon Kind="Folder" Foreground="{StaticResource PrimaryHueLightBrush}" Height="24" Width="24" />
+                                    <TextBlock Text="..." Height="20" Margin="4,8,0,0"/>
+                                </StackPanel>
+                            </Button.Content>
+                            <Button.ToolTip>
+                                <ToolTip>
+                                    <TextBlock>Modifica destinazione</TextBlock>
+                                </ToolTip>
+                            </Button.ToolTip>
+                        </Button>
+                    </StackPanel>
+                    <CheckBox Name ="alwaysDefault" IsChecked="{Binding Path=AlwaysUseDefault}" Margin="0,8,0,0">Suggerisci questo percorso per la ricezione</CheckBox>
+                </StackPanel>
 
-
-			</StackPanel>
-			<TextBox  Padding="2" Margin="50,0,50,10" Name="DefaultPath" Text="{Binding Path=Settings.DefaultRecvPath }"   ></TextBox>
-
-
-			<CheckBox HorizontalAlignment="Center" Name ="alwaysDefault" IsChecked="{Binding Path=AlwaysUseDefault}" >Use default path in manual accept receive </CheckBox>
-
-			<Button Content="Done"
+                <Button Content="Done"
 					Margin="50,20,50,10"
 					Padding="5"
 				IsDefault="True"
                 Click="Close_Button_Click"/>
-		</StackPanel>
-	</Grid>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
 </Page>

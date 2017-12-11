@@ -34,6 +34,7 @@ namespace FileShare
 
         public delegate void Close();
         public event Close OnClosed;
+
         public ProfileSetupPage()
         {
             InitializeComponent();
@@ -76,6 +77,10 @@ namespace FileShare
         private static string GetUserTile(string username)
         {
             return GetUserTilePath(username);
+        }
+
+        private void UsernameTB_TextChanged(object sender, TextChangedEventArgs e) {
+
         }
     }
 }

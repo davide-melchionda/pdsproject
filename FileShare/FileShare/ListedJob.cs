@@ -18,7 +18,7 @@ namespace FileShare {
         /// Implementation of INotifyPropertyChange: property changed event.
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
-        
+
         /// <summary>
         /// Represents almost the number of seconds occourred from when the transfer started.
         /// It was preferred to memorize seconds as int instead of a DateTime object due to the
@@ -46,7 +46,7 @@ namespace FileShare {
         public int FilesCountMinusOne {
             get { return Job.Task.Info.Count - 1; }
         }
-        
+
         /// <summary>
         /// Property representing the job wrapped by an instance of this class
         /// </summary>
@@ -63,6 +63,47 @@ namespace FileShare {
             Job = j;
             transferStartTime = 0.0;
             Stopped = false;
+            Preparing = j.SentByte == 0;
+            j.PropertyChanged += update;
+            Message = "In preparazione...";
+        }
+
+        private void update(object sender, PropertyChangedEventArgs args) {
+            if (args.PropertyName.Equals("Percentage")) {
+                if (Job.SentByte != 0) {
+                    Preparing = false;
+                    Message = null;
+                } else if (Job.SentByte == Job.Task.Size) {
+                    Completing = true;
+                    Message = "In completamento";
+                }
+                //Job.PropertyChanged -= updatePreparing;
+            }
+        }
+
+        /// <summary>
+        /// If the job is in pre-sending phase (preparing the sent)
+        /// </summary>
+        private bool preparing;
+        public bool Preparing {
+            get {
+                return preparing;
+            }
+            set {
+                preparing = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Preparing"));
+            }
+        }
+
+        private bool completing;
+        public bool Completing {
+            get {
+                return completing;
+            }
+            set {
+                completing = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Completing"));
+            }
         }
 
         /// <summary>
@@ -182,7 +223,7 @@ namespace FileShare {
             double remainingTime = (startSeconds / (Job.SentByte - sentFromStartTime)) * (Job.Task.Size - Job.SentByte);
             if (TimeLeft != (int)Math.Round(remainingTime))
                 TimeLeft = (int)Math.Round(remainingTime);
-            
+
         }
     }
 }

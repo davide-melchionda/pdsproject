@@ -11,7 +11,7 @@ using System.Windows.Media.Imaging;
 
 namespace FileShare {
 
-    class ListedPeer : INotifyPropertyChanged {
+    public class ListedPeer : INotifyPropertyChanged {
 
         public event PropertyChangedEventHandler PropertyChanged;
 

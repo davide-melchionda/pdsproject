@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MahApps.Metro.Controls;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,7 +20,7 @@ namespace FileShare
     /// receive the file or directory. This file or directory is specified through a parametere 
     /// (the file path) passed in the constructor of the window.
     ///</summary>
-    public partial class SelectionWindow : Window
+    public partial class SelectionWindow : MetroWindow
     {
         /// <summary>
         /// Delegate which will be the type of the evet triggered when peers will be selected.

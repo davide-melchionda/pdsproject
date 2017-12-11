@@ -130,12 +130,14 @@ namespace FileShare {
             // listItem to be removed. This means that I have to configure
             // all the fields to a generic "Error" or "Completed" sate.
             // I've no information to say more than this
-            if (listItem.Message == null) {
+            if (listItem.Message == null || listItem.Message == "In completamento") {
                 if (listItem.Job.Percentage != 100) {
+                    listItem.Completing = false;
                     listItem.Completed = true;
                     listItem.Error = true;
                     listItem.Message = "Errore";
                 } else {
+                    listItem.Completing = false;
                     listItem.Completed = true;
                     listItem.Error = false;
                     listItem.Message = "Completato";
@@ -150,11 +152,14 @@ namespace FileShare {
             item.Job.Active = false;
             item.Completed = true;
             item.Error = false;
-            item.Message = "Cancellando l'operazione...";
+            item.Message = "In cancellazione...";
         }
 
         public async void manageProgressBar(ProgressBar prog) {
             ListedJob item = prog.DataContext as ListedJob;
+            App.Current.Dispatcher.Invoke((Action)delegate {
+                prog.Value = item.Job.Percentage;
+            });
             await System.Threading.Tasks.Task.Run(() => {
                 while (true) {
                     // Responsive app: first thing to do is to show to the user something

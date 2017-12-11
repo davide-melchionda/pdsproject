@@ -15,36 +15,41 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace FileShare
-{
+namespace FileShare {
 
-    public partial class ReceivePage : Page
-    {
+    public partial class ReceivePage : Page {
+
         public delegate void Close();
         public event Close OnClosed;
         private ToAccept request;
         private Settings settings;
         private string taskType;
-        public ReceivePage(ToAccept request)
-        {
+
+        public ReceivePage(ToAccept request) {
             InitializeComponent();
             this.Request = request;
             this.Settings = Settings.Instance;
             //if (request.TasktoAccept.Info.Type == FileInfo.FType.DIRECTORY)
             //    TaskType = "directory";
             //else TaskType = "file";
+
+            if ((Sender = new ListedPeer(HelloProtocol.PeersList.Instance.get(request.TasktoAccept.Sender))) == null)
+                Sender = new ListedPeer(new Peer(request.TasktoAccept.Sender, request.TasktoAccept.SenderName, "none"));
+
+            Infos = new List<DisplayedFileInfo>();
+            foreach (FileInfo info in request.TasktoAccept.Info)
+                Infos.Add(new DisplayedFileInfo(info));
+
             DataContext = this;
         }
-        private void Accept_Button_Click(object sender, RoutedEventArgs e)
-        {
+        private void Accept_Button_Click(object sender, RoutedEventArgs e) {
             request.Response = true;
             request.Path = ChosedPath.Text;
             OnClosed();
 
         }
 
-        private void Cancel_Button_Click(object sender, RoutedEventArgs e)
-        {
+        private void Cancel_Button_Click(object sender, RoutedEventArgs e) {
             request.Response = false;
             request.Path = null;
             OnClosed();
@@ -53,16 +58,15 @@ namespace FileShare
 
 
 
-        private void Path_Button_Click(object sender, RoutedEventArgs e)
-        {
+        private void Path_Button_Click(object sender, RoutedEventArgs e) {
             FolderBrowserDialog dialog = new FolderBrowserDialog();
             dialog.SelectedPath = ChosedPath.Text;
             dialog.ShowDialog();
             ChosedPath.Text = dialog.SelectedPath;
         }
 
-
-
+        public ListedPeer Sender { get; set; }
+        public List<DisplayedFileInfo> Infos { get; set; }
         public Settings Settings { get => settings; set => settings = value; }
         public ToAccept Request { get => request; set => request = value; }
         public string TaskType { get => taskType; set => taskType = value; }
