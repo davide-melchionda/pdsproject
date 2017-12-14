@@ -33,8 +33,6 @@ namespace NetworkTransmission {
             ResponsePacket response = null;
             TransmissionPacket tPacket = null;
 
-
-
             byte[] msg = network.generateRequestStream(job.Task);       // Encode the data string into a byte array.
 
             int bytesSent = network.SendPacket(socket, msg);        // Send the data through the socket.

@@ -98,7 +98,7 @@ namespace FileShare {
                     receivingJobs.Add(new ListedJob(job));
                 });
             };
-            
+
             JobsList.Receiving.JobRemoved += (Job removedJob) => {
                 foreach (ListedJob listItem in receivingJobs)
                     if (listItem.Job.Id == removedJob.Id) {
@@ -110,7 +110,7 @@ namespace FileShare {
                         break;
                     }
             };
-            
+
             peers = new ObservableCollection<ListedPeer>();
             foreach (Peer p in PeersList.Instance.Peers)
                 peers.Add(new ListedPeer(p));
