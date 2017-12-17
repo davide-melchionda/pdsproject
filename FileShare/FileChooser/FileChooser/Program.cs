@@ -1,4 +1,4 @@
-﻿using System.IO.Pipes;
+using System.IO.Pipes;
 using System.IO;
 using FileShareConsole;
 using System.Diagnostics;
@@ -17,14 +17,14 @@ namespace FileChooser
                 
                 Process firstProc = new Process();
 
-                //al momento uso il mio percorso statico, la versione finale userà il percorso definito nell'installer
+                //al momento uso il mio percorso statico, la versione finale user� il percorso definito nell'installer
                 //qui devi definire il tuo percorso
                 firstProc.StartInfo.FileName = @"C:\Users\franc\Documents\GitKraken\pdsproject\FileShare\bin\Debug\FileShare.exe";
                 firstProc.Start();
 
 
             }
-            //Thread.Sleep(5000);
+            Thread.Sleep(1000);
             PipeModule.Push(args[0]);
         }
     }
