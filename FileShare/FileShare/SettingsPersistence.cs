@@ -28,10 +28,10 @@ namespace FileShare
                     StringBuilder sb = new StringBuilder();
                     sb.Append(sR.ReadToEnd());
                     StorableSettings appSettings = (StorableSettings)JsonConvert.DeserializeObject(sb.ToString(), typeof(StorableSettings), settings);
-                    Settings.Instance.AlwaysUseDefault = appSettings.AlwaysUseDefault;
                     Settings.Instance.AutoAcceptFiles = appSettings.AutoAccept;
                     Settings.Instance.CurrentUsername = appSettings.CurrentUsername;
                     Settings.Instance.DefaultRecvPath = appSettings.DefaultPath;
+                    Settings.Instance.ShowSetup = appSettings.ShowSetup;
                     Settings.Instance.IsInvisible = appSettings.IsInvisible;
                     Settings.Instance.PicturePath = appSettings.PicPath;
 
@@ -47,7 +47,7 @@ namespace FileShare
             storable.CurrentUsername = Settings.Instance.CurrentUsername;
             storable.DefaultPath = Settings.Instance.DefaultRecvPath;
             storable.PicPath = Settings.Instance.PicturePath;
-            storable.AlwaysUseDefault = Settings.Instance.AlwaysUseDefault;
+            storable.ShowSetup = Settings.Instance.ShowSetup;
             System.IO.DirectoryInfo di = new DirectoryInfo(Path.GetDirectoryName(settingsFile));
             if (!di.Exists)
             {
@@ -71,17 +71,18 @@ namespace FileShare
         class StorableSettings
         {
             private bool isInvisible;
-            private bool alwaysUseDefault;
+            private bool showSetup;
             private bool autoAccept;
             private string defaultPath;
             private string currentUsername;
             private string picPath;
+        
             public bool IsInvisible { get => isInvisible; set => isInvisible = value; }
-            public bool AlwaysUseDefault { get => alwaysUseDefault; set => alwaysUseDefault = value; }
             public bool AutoAccept { get => autoAccept; set => autoAccept = value; }
             public string DefaultPath { get => defaultPath; set => defaultPath = value; }
             public string CurrentUsername { get => currentUsername; set => currentUsername = value; }
             public string PicPath { get => picPath; set => picPath = value; }
+            public bool ShowSetup { get => showSetup; set => showSetup = value; }
 
             public StorableSettings() { }
 

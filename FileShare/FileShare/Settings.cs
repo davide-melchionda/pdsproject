@@ -263,6 +263,29 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
 
         }
     }
+    private bool showSetup = /* DEFAULT */ false;
+
+    /**
+   * If the state is invisible or not. In invisible state the application doesn't show itself to the network
+   */
+    public bool ShowSetup
+    {
+        get
+        {
+            return showSetup;
+        }
+        set
+        {
+            // TODO
+            // Try to write on file the new setting configurations
+            // Throw an exception if something goes wrong
+
+            // ... after the file update
+            showSetup = value;
+            NotifyPropertyChanged();
+
+        }
+    }
 
     /**
  * The default path on the file system in which save settings file.
@@ -303,28 +326,7 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
         }
     }
 
-    /**
- * Always use or not the path on the file system in which save received files.
- */
-    //private string defaultRecvPath = @"C:\Users\franc\Desktop\recv\";
-    private bool alwaysUseDefault = true;
-    //private string defaultRecvPath = @"C:\Users\vm-dm-win\Desktop\recv\";
-    /**
-     * defaultRecvPath property
-     */
-    public bool AlwaysUseDefault
-    {
-        get
-        {
-            return alwaysUseDefault;
-        }
-        set
-        {
-            alwaysUseDefault = value;
-            NotifyPropertyChanged();
-
-        }
-    }
+  
     /**
     * Current Username
     */

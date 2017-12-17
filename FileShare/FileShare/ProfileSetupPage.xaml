@@ -90,10 +90,11 @@
                                     </ToolTip>
                                 </Button.ToolTip>
                             </Button>
-                        </StackPanel>
+							<CheckBox  HorizontalAlignment="Right" Margin="0,50,16,0" VerticalAlignment="Bottom" IsChecked="{Binding Path=Settings.ShowSetup}" Content="Don't show this again" />
+
+						</StackPanel>
                     </StackPanel>
                 </materialDesign:Card>
-
             </StackPanel>
         </Border>
     </Grid>

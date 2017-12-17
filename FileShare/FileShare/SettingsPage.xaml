@@ -88,7 +88,6 @@
                             </Button.ToolTip>
                         </Button>
                     </StackPanel>
-                    <CheckBox Name ="alwaysDefault" IsChecked="{Binding Path=AlwaysUseDefault}" Margin="0,8,0,0">Suggerisci questo percorso per la ricezione</CheckBox>
                 </StackPanel>
 
                 <Button Content="Done"
