@@ -18,7 +18,9 @@
 		Background="{StaticResource PrimaryHueMidBrush}">
 	<Grid>
 		<Image Source="C:\Users\franc\Desktop\share.png"></Image>
-		<Frame Name= "CloseFrame" Margin="0,-22,-0.4,0.4"/>
+		<!--<Image Source="{Binding Path=Resources.ClosePicture}"></Image>-->
+
+		<Frame Name= "CloseFrame" Margin="0,0,-0.4,0.4"/>
 
 	</Grid>
 </Controls:MetroWindow>

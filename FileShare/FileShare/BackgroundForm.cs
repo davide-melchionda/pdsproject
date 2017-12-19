@@ -106,12 +106,12 @@ namespace FileShare {
             base.OnClosed(e);
             System.Windows.Application a = System.Windows.Application.Current;
 
-            if (FileShareDataContext.Instance.receivingJobs.Count != 0 || FileShareDataContext.Instance.sendingJobs.Count != 0) //chiedi all'utente se è sicuro di annullare i trasferimenti in corso
+            //if (FileShareDataContext.Instance.receivingJobs.Count != 0 || FileShareDataContext.Instance.sendingJobs.Count != 0) //chiedi all'utente se è sicuro di annullare i trasferimenti in corso
             {
                 CloseWindow cw = new CloseWindow();
                 cw.ShowDialog();
             }
-            else { a.Shutdown(); }
+             { a.Shutdown(); }
             
         }
 

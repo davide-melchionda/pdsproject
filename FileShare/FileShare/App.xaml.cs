@@ -70,6 +70,11 @@ namespace FileShare
             {
                 bf.NotifyError(BackgroundForm.ErrorNotificationType.Receiving);
             };
+            receiver.PathError += () =>
+            {
+                bf.NotifyError(BackgroundForm.ErrorNotificationType.Path);
+            };
+
             receiver.run();
 
             /* Create, configura and start the thread responsible of managing the communication on a pipe 
