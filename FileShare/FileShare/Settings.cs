@@ -38,8 +38,10 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
      * SINGLETON CREATIONAL PATTERN
      * The property which represents the unique instance of the class.
      */
-    public static Settings Instance {
-        get {
+    public static Settings Instance
+    {
+        get
+        {
             if (instance == null)
                 instance = new Settings();
             return instance;
@@ -54,11 +56,14 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
     /**
      * localPeer property
      */
-    public Peer LocalPeer {
-        get {
+    public Peer LocalPeer
+    {
+        get
+        {
             return localPeer;
         }
-        set {
+        set
+        {
             // TODO
             // Try to write on file the new setting configurations
             // Throw an exception if something goes wrong
@@ -77,11 +82,14 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
     /**
      * mcastHelloPort property
      */
-    public int MCAST_HELLO_PORT {
-        get {
+    public int MCAST_HELLO_PORT
+    {
+        get
+        {
             return mcastHelloPort;
         }
-        set {
+        set
+        {
             // TODO
             // Try to write on file the new setting configurations
             // Throw an exception if something goes wrong
@@ -98,11 +106,14 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
     /**
      * mcastHelloIPAddress property
      */
-    public IPAddress MCAST_HELLO_IP_ADDRESS {
-        get {
+    public IPAddress MCAST_HELLO_IP_ADDRESS
+    {
+        get
+        {
             return mcastHelloIPAddress;
         }
-        set {
+        set
+        {
             // TODO
             // Try to write on file the new setting configurations
             // Throw an exception if something goes wrong
@@ -119,11 +130,14 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
     /**
      * bufSize property
      */
-    public int BUFSIZE {
-        get {
+    public int BUFSIZE
+    {
+        get
+        {
             return bufSize;
         }
-        set {
+        set
+        {
             // TODO
             // Try to write on file the new setting configurations
             // Throw an exception if something goes wrong
@@ -142,8 +156,10 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
     /**
      * maxageMillis property
      */
-     public int MAXAGE_MILLIS {
-        get {
+    public int MAXAGE_MILLIS
+    {
+        get
+        {
             return maxageMillis;
         }
     }
@@ -155,8 +171,10 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
     /**
      * helloCleanupSleepTime property
      */
-    public int HELLO_CLEANUP_SLEEP_TIME {
-        get {
+    public int HELLO_CLEANUP_SLEEP_TIME
+    {
+        get
+        {
             return helloCleanupSleepTime;
         }
     }
@@ -169,11 +187,14 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
     /**
      * helloInterval property
      */
-     public int HELLO_INTERVAL {
-        get {
+    public int HELLO_INTERVAL
+    {
+        get
+        {
             return helloInterval;
         }
-        set {
+        set
+        {
             helloInterval = value;
         }
     }
@@ -185,15 +206,18 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
     /**
      * servAcceptingPort property
      */
-    public int SERV_ACCEPTING_PORT {
-        get {
+    public int SERV_ACCEPTING_PORT
+    {
+        get
+        {
             return servAcceptingPort;
         }
     }
 
-    public void updatePeerAddress(string newAddress) {
+    public void updatePeerAddress(string newAddress)
+    {
         localPeer.Ipaddress = newAddress;
-        localPeer.Id = localPeer.Name + ":" + localPeer.Ipaddress+":" + DateTime.Now;
+        localPeer.Id = localPeer.Name + ":" + localPeer.Ipaddress + ":" + DateTime.Now;
     }
 
     private int tcpReceivingPort = /* DEFAULT */ 9000;
@@ -290,7 +314,7 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
     /**
  * The default path on the file system in which save settings file.
  */
-    private string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)+"\\Fileshare";
+    private string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\Fileshare";
     /**
      * defaultRecvPath property
      */
@@ -311,22 +335,28 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
      * The default path on the file system in which save received files.
      */
     //private string defaultRecvPath = @"C:\Users\franc\Desktop\recv\";
-    private string defaultRecvPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) ;
+    private string defaultRecvPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
     //private string defaultRecvPath = @"C:\Users\vm-dm-win\Desktop\recv\";
     /**
      * defaultRecvPath property
      */
-    public string DefaultRecvPath {
-        get {
+    public string DefaultRecvPath
+    {
+        get
+        {
             return defaultRecvPath;
         }
-        set {
-            defaultRecvPath = value ; ;
-            NotifyPropertyChanged();
+        set
+        {
+            if (!String.IsNullOrEmpty(value))
+            {
+                defaultRecvPath = value; ;
+                NotifyPropertyChanged();
+            }
         }
     }
 
-  
+
     /**
     * Current Username
     */
@@ -343,9 +373,11 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
         }
         set
         {
-            this.LocalPeer.Name = value;
-            NotifyPropertyChanged();
-
+            if (!String.IsNullOrEmpty(value))
+            {
+                this.LocalPeer.Name = value;
+                NotifyPropertyChanged();
+            }
         }
     }
 
@@ -356,11 +388,14 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
     /// <summary>
     /// Property binded to iconSize private instance field
     /// </summary>
-    public Size IconSize {
-        get {
+    public Size IconSize
+    {
+        get
+        {
             return iconSize;
         }
-        set {
+        set
+        {
             iconSize = value;
         }
     }
@@ -373,20 +408,32 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
     /// <summary>
     /// Property linked to picturePath field
     /// </summary>
-    public string PicturePath {
-        get {
+    public string PicturePath
+    {
+        get
+        {
             return picturePath;
         }
-        set {
+        set
+        {
             if (File.Exists(value))
             {
                 //LocalPeer.Icon = ImageAdapter.GetThumbnailImage(new BitmapImage(new Uri(value)), IconSize);
-                //LocalPeer.ByteIcon = ImageAdapter.ByteArrayFromImage(new BitmapImage(new Uri(value)), MaxThumbnailPictureMemorySize);
-                Bitmap tmpBitmap = new Bitmap(value);
-                LocalPeer.ByteIcon = ImageAdapter.ByteArrayFromImage(tmpBitmap, MaxThumbnailPictureMemorySize);
-                tmpBitmap.Dispose();
-                picturePath = value;
-                NotifyPropertyChanged();
+                //LocalPeer.ByteIcon = ImageAdapter.ByteArrayFromImage(new BitmapImage(new Uri(value)), MaxThumbnailPictureMemorySize);7
+                Bitmap tmpBitmap;
+                try
+                {
+                    tmpBitmap = new Bitmap(value);
+                    LocalPeer.ByteIcon = ImageAdapter.ByteArrayFromImage(tmpBitmap, MaxThumbnailPictureMemorySize);
+                    tmpBitmap.Dispose();
+                    picturePath = value;
+                    NotifyPropertyChanged();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+
             }
         }
     }
@@ -395,26 +442,36 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
     /// The maximum size of a picture. This limit is necessary to allow the picture be sent 
     /// inside a UDP datagram.
     /// </summary>
-    public int MaxThumbnailPictureMemorySize {
-        get {
-            return 40*1024;   /* DEFAULT */
+    public int MaxThumbnailPictureMemorySize
+    {
+        get
+        {
+            return 40 * 1024;   /* DEFAULT */
         }
     }
 
     public Resources Resources { get; set; }
+    public int UsernameMaxLength
+    {   
+            get
+        {
+                return 20;   /* DEFAULT */
+            }
+        }
 
     /**
      * SINGLETON CREATIONAL PATTERN
      * The protected constructor.
      * Retrieves the settings from a file.
      */
-    protected Settings() {
+    protected Settings()
+    {
 
         // TODO
         // Retrieve configuration from a file
 
         // For now: the local peer is randomly initialized
-        localPeer = new Peer("Anonymouse user"+":"+new Random().Next(), "Anonymouse user", "unknown_ip");
+        localPeer = new Peer("Anonymouse user" + ":" + new Random().Next(), "Anonymouse user", "unknown_ip");
         Resources = new Resources();
     }
 
