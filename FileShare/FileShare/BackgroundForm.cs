@@ -15,7 +15,7 @@ namespace FileShare {
         private Window notificationWindow;
 
         public enum ErrorNotificationType {
-            Receiving, Sending
+            Receiving, Sending, File, Path
         };
 
         public BackgroundForm() {
@@ -78,6 +78,12 @@ namespace FileShare {
                     break;
                 case ErrorNotificationType.Sending:
                     notifyIcon1.ShowBalloonTip(5000, "Errore durante l'invio", "Alcuni trasferimenti in uscita non sono andati a buon fine a causa di problemi di connessione", ToolTipIcon.Error);
+                    break;
+                case ErrorNotificationType.File:
+                    notifyIcon1.ShowBalloonTip(5000, "Errore durante l'invio", "Il file è aperto da un altro processo", ToolTipIcon.Error);
+                    break;
+                case ErrorNotificationType.Path:
+                    notifyIcon1.ShowBalloonTip(5000, "Errore durante la ricezione", "Il percorso specificato non è valido", ToolTipIcon.Error);
                     break;
             }
         }

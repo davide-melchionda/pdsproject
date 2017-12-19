@@ -99,6 +99,10 @@ namespace FileShare
                         {
                             bf.NotifyError(BackgroundForm.ErrorNotificationType.Sending);
                         };
+                        scheduler.FileError += () =>
+                        {
+                            bf.NotifyError(BackgroundForm.ErrorNotificationType.File);
+                        };
                         for (int i = 0; i < selected.Count; i++)
                         {
                             //List<FileTransfer.Task> tasks = new List<FileTransfer.Task>();
