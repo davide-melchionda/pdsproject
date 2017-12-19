@@ -1,11 +1,24 @@
-﻿<Window x:Class="FileShare.CloseWindow"
+﻿<Controls:MetroWindow x:Class="FileShare.CloseWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:FileShare"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         mc:Ignorable="d"
-        Title="CloseWindow" Height="130" Width="300">
-    <Grid Margin="0,0,-0.4,107.4">
-        
-    </Grid>
-</Window>
+		ResizeMode="NoResize"
+		WindowStartupLocation="CenterScreen"
+		Height="260" Width="600"
+        WindowTitleBrush="{StaticResource PrimaryHueMidBrush}"
+        TitleForeground="White"
+        NonActiveWindowTitleBrush="{StaticResource PrimaryHueMidBrush}"
+        WindowCloseButtonStyle="{DynamicResource CleanCloseWindowButtonStyle}"
+        BorderThickness="0" 
+        GlowBrush="Black"
+		Background="{StaticResource PrimaryHueMidBrush}">
+	<Grid>
+		<Image Source="C:\Users\franc\Desktop\share.png"></Image>
+		<Frame Name= "CloseFrame" Margin="0,-22,-0.4,0.4"/>
+
+	</Grid>
+</Controls:MetroWindow>

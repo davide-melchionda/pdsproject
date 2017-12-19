@@ -20,9 +20,25 @@ namespace FileShare
     /// </summary>
     public partial class ClosePage : Page
     {
+        public delegate void Close();
+        public event Close OnClosed;
+
         public ClosePage()
         {
             InitializeComponent();
         }
+      
+        private void Close_Button_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Application a = System.Windows.Application.Current;
+            a.Shutdown();
+
+        }
+        private void Cancel_Button_Click(object sender, RoutedEventArgs e)
+        {
+            OnClosed();
+
+        }
     }
+   
 }

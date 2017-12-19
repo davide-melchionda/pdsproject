@@ -1,13 +1,54 @@
 ﻿<Page x:Class="FileShare.ClosePage"
-      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:FileShare"
       mc:Ignorable="d" 
-      d:DesignHeight="130" d:DesignWidth="300"
-      Title="ClosePage">
+      d:DesignHeight="260" d:DesignWidth="600"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+      TextElement.FontWeight="Regular"
+      TextElement.FontSize="13"
+      TextOptions.TextFormattingMode="Ideal" 
+      TextOptions.TextRenderingMode="Auto"       
+      FontFamily="{StaticResource MaterialDesignFont}">
 
-    <Grid>
-        
-    </Grid>
+	<Grid >
+		<StackPanel Orientation="Vertical" >
+
+			<TextBlock Foreground="{StaticResource PrimaryHueMidForegroundBrush}" Style="{StaticResource MaterialDesignHeadlineTextBlock}" FontSize="16"  Margin="20,0,0,0" TextWrapping="WrapWithOverflow" ><Run Text="Hai ancora dei trasferimenti in corso!"/></TextBlock>
+
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="20">
+
+				<StackPanel Orientation="Vertical"  >
+					<StackPanel Orientation="Vertical" >
+						<!--<Label  Foreground="IndianRed" HorizontalAlignment="Center" >Too lazy?</Label>-->
+
+						<Button Content="Annulla"
+					        Margin="16,16,16,16"
+					        Padding="5"
+				            IsDefault="True"
+                            Height="40"
+                            Click="Cancel_Button_Click"/>
+						<Button Style="{StaticResource MaterialDesignRaisedAccentButton}"
+					    Margin="16,16,16,16"
+                        Click="Close_Button_Click"
+                        Background="Coral"
+                        Foreground="White"
+                        BorderThickness="0.5"
+                        Height="40"
+                        Padding="16,8,16,8">
+							
+							<StackPanel Orientation="Horizontal">
+								<TextBlock Text="Arresta comunque" />
+							</StackPanel>
+						</Button>
+
+					</StackPanel>
+
+				</StackPanel>
+			</StackPanel>
+		</StackPanel>
+	</Grid>
 </Page>

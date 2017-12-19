@@ -17,11 +17,20 @@ namespace FileShare
     /// <summary>
     /// Logica di interazione per CloseWindow.xaml
     /// </summary>
-    public partial class CloseWindow : Window
+    public partial class CloseWindow : MahApps.Metro.Controls.MetroWindow
     {
         public CloseWindow()
         {
             InitializeComponent();
+            ClosePage closePage = new ClosePage();
+            closePage.OnClosed += ClosePage_OnClosed; ;
+            CloseFrame.Navigate(closePage);
+        }
+
+        private void ClosePage_OnClosed()
+        {
+            this.Close();
+
         }
     }
 }

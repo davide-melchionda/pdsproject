@@ -138,7 +138,6 @@ namespace FileShare
 
             ReceiveWindow rw = new ReceiveWindow(request);
             rw.Show();
-
             return request;
         }
 
@@ -149,12 +148,7 @@ namespace FileShare
         /// <param name="e"></param>
         public void AppExit(object sender, EventArgs e)
         {
-            //if(FileShareDataContext.Instance.receivingJobs.Count!=0 || FileShareDataContext.Instance.sendingJobs.Count != 0) //chiedi all'utente se è sicuro di annullare i trasferimenti in corso
-            {
-                CloseWindow close = new CloseWindow();
-                close.ShowDialog();
-
-            }
+      
             bf.Close(); SettingsPersistence.writeSettings();
             GarbageCleanup gc = new GarbageCleanup();
             gc.run();
