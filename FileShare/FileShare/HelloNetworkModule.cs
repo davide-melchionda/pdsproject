@@ -4,6 +4,7 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace HelloProtocol {
 
@@ -62,16 +63,7 @@ namespace HelloProtocol {
             // The next part of the protocol will automatically set the correct id.
             Random r = new Random();
             int randId = r.Next();
-
-            // DEBUG ################################################################################################## DEBUG
-            // Retrieve the local peer or creates a new one.
-            // The id of the peer is no more reliable. We must change it in any case.
-            //if (Settings.Instance.LocalPeer == null)
-            //    Settings.Instance.LocalPeer = new Peer("no_user" + ":" + randId, "no_user", "none");
-            //else
-            //    Settings.Instance.LocalPeer.Id = Settings.Instance.LocalPeer.Name + ":" + randId;
-            // DEBUG ################################################################################################## DEBUG
-
+            
             try {
                 // Initialize the outgoing (multicast) socket
                 mcastSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
@@ -131,15 +123,16 @@ namespace HelloProtocol {
                 throw new Exception("Error parsing the received string into an HelloPacket: unknown type.");    // DEBUG
 
             // Call the delegate passing the received packet
-            // HelloPacketReception?.Invoke(packet); // WHAT IS THIS? // DEBUG
-            if (HelloPacketReception != null)
-                HelloPacketReception(packet, ((IPEndPoint)remoteEP).Address.ToString());
+            // Processing on a dedicated thread so to not be blocking
+            Task.Run(() => {
+                HelloPacketReception?.Invoke(packet, ((IPEndPoint)remoteEP).Address.ToString());
+            });
         }
 
         /**
          * Allows to send a unicast hello packet to a specific IPaddress
          */
-        public void sendUnicast(HelloPacket packet, string address) {
+        public bool sendUnicast(HelloPacket packet, string address) {
 
             // The buffer in which the packet will be put
             byte[] buf = new Byte[Settings.Instance.BUFSIZE];
@@ -151,17 +144,23 @@ namespace HelloProtocol {
 
             // Creates the receiver endpoint (the port will be the usual MCAST_HELLO_PORT)
             EndPoint remoteEP = new IPEndPoint(IPAddress.Parse(address), Settings.Instance.MCAST_HELLO_PORT);
-            // Send the packet on the network
-            sendSocket.SendTo(buf, remoteEP);
+            
+            try {
+                // Send the packet on the network
+                sendSocket.SendTo(buf, remoteEP);
+            } catch (SocketException e) {
+                return false;
+            }
 
+            return true;
         }
 
 
         /**
-         * Allows to send a unicast hello packet to the common multicast 
+         * Allows to send a single hello packet to the common multicast 
          * address used by the hello protocol
          */
-        public void send(HelloPacket packet) {
+        public bool send(HelloPacket packet) {
 
             // The buffer in which the packet will be put
             byte[] buf = new Byte[Settings.Instance.BUFSIZE];
@@ -173,8 +172,15 @@ namespace HelloProtocol {
 
             // Creates the receiver endpoint (the port will be the usual MCAST_HELLO_PORT)
             EndPoint remoteEP = new IPEndPoint(Settings.Instance.MCAST_HELLO_IP_ADDRESS, Settings.Instance.MCAST_HELLO_PORT);
-            // Send the packet on the network
-            sendSocket.SendTo(buf, remoteEP);
+
+            try {
+                // Send the packet on the network
+                sendSocket.SendTo(buf, remoteEP);
+            } catch (SocketException e) {
+                return false;
+            }
+
+            return true;
 
         }
 

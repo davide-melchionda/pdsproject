@@ -135,7 +135,7 @@ namespace FileShare {
                     listItem.Completing = false;
                     listItem.Completed = true;
                     listItem.Error = true;
-                    listItem.Message = "Errore";
+                    listItem.Message = "Trasferimento non completato.";
                 } else {
                     listItem.Completing = false;
                     listItem.Completed = true;
