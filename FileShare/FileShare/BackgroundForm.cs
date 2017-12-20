@@ -13,7 +13,8 @@ namespace FileShare {
     public partial class BackgroundForm : Form {
 
         private Window notificationWindow;
-
+        int lastDeactivateTick;
+        bool lastDeactivateValid;
         public enum ErrorNotificationType {
             Receiving, Sending, File, Path
         };
@@ -39,6 +40,7 @@ namespace FileShare {
             
             // If the click was performed with the left button
             if (e.Button != MouseButtons.Right && notificationWindow == null) {
+                if (lastDeactivateValid && Environment.TickCount - lastDeactivateTick < 200) return;
 
                 // Create a new window
                 notificationWindow = new NotificationWindow();
@@ -47,6 +49,8 @@ namespace FileShare {
                 //  window occours)
                 notificationWindow.Deactivated += (Object window, EventArgs args) => {
                     // Close the window and set the variable to null
+                    lastDeactivateTick = Environment.TickCount;
+                    lastDeactivateValid = true;
                     notificationWindow.Close();
                     notificationWindow = null;
                 };
@@ -106,7 +110,7 @@ namespace FileShare {
             base.OnClosed(e);
             System.Windows.Application a = System.Windows.Application.Current;
 
-            //if (FileShareDataContext.Instance.receivingJobs.Count != 0 || FileShareDataContext.Instance.sendingJobs.Count != 0) //chiedi all'utente se è sicuro di annullare i trasferimenti in corso
+            if (FileShareDataContext.Instance.receivingJobs.Count != 0 || FileShareDataContext.Instance.sendingJobs.Count != 0) //chiedi all'utente se è sicuro di annullare i trasferimenti in corso
             {
                 CloseWindow cw = new CloseWindow();
                 cw.ShowDialog();
