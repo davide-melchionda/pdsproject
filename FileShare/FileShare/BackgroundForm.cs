@@ -37,7 +37,7 @@ namespace FileShare {
          * is to close when a click outside itself occours.
          */
         private void notifyIcon1_MouseClick(object sender, MouseEventArgs e) {
-            
+
             // If the click was performed with the left button
             if (e.Button != MouseButtons.Right && notificationWindow == null) {
                 if (lastDeactivateValid && Environment.TickCount - lastDeactivateTick < 200) return;
@@ -96,8 +96,7 @@ namespace FileShare {
         * When the option 'Exit' is selected in the context menu, the application is
         * shut down.
         */
-        private void SettingsToolStripMenuItem_Click(object sender, System.EventArgs e)
-        {
+        private void SettingsToolStripMenuItem_Click(object sender, System.EventArgs e) {
 
             SettingsWindow sw = SettingsWindow.Instance;
             sw.Show();
@@ -105,8 +104,7 @@ namespace FileShare {
 
         }
 
-        private void ExitToolStripMenuItem_Click(object sender, System.EventArgs e)
-        {
+        private void ExitToolStripMenuItem_Click(object sender, System.EventArgs e) {
             base.OnClosed(e);
             System.Windows.Application a = System.Windows.Application.Current;
 
@@ -114,16 +112,17 @@ namespace FileShare {
             {
                 CloseWindow cw = new CloseWindow();
                 cw.ShowDialog();
+            } else {
+                a.Shutdown();
             }
-             { a.Shutdown(); }
-            
+
         }
 
         private void ShowToolStripMenuItem_Click(object sender, System.EventArgs e) {
             //notifyWindow.Show();
             // Create a new window
             notificationWindow = new NotificationWindow();
-                   
+
             // Register a callback on the Deactivated event (when a click outside the
             //  window occours)
             notificationWindow.Deactivated += (Object window, EventArgs args) => {
@@ -131,7 +130,7 @@ namespace FileShare {
                 notificationWindow.Close();
                 notificationWindow = null;
             };
-                    
+
             /* Compute the position of the window beore showing it */
             var desktopWorkingArea = System.Windows.SystemParameters.WorkArea;
             var x = System.Windows.Forms.Cursor.Position.X;

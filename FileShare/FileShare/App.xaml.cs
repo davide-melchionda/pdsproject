@@ -67,7 +67,7 @@ namespace FileShare
             };
             
             receiver.ConnectionError += (Job j) => {
-                if (j.Status == Job.JobStatus.ConnectionError)
+                if (j == null || j.Status == Job.JobStatus.ConnectionError)
                     bf.NotifyError(BackgroundForm.ErrorNotificationType.Receiving);
             };
             receiver.PathError += () =>

@@ -8,12 +8,18 @@ using System.Threading.Tasks;
 namespace FileShare {
     public class Resources {
 
+        public string CurrentDirectory {
+            get {
+                return Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase);
+            }
+        }
+
         /// <summary>
         /// Default picture for the generic user which has not setted a specific profile picture
         /// </summary>
         public Uri DefaultUserPicture {
             get {
-                return new Uri(Path.Combine(Directory.GetCurrentDirectory(), "imgs", "user.ico")); /* DEFAULT */
+                return new Uri(Path.Combine(CurrentDirectory, "imgs", "user.ico")); /* DEFAULT */
             }
         }
         
@@ -22,7 +28,7 @@ namespace FileShare {
         /// </summary>
         public Uri WinLogo {
             get {
-                return new Uri(Path.Combine(Directory.GetCurrentDirectory(), "imgs", "winlogo.png")); /* DEFAULT */
+                return new Uri(Path.Combine(CurrentDirectory, "imgs", "winlogo.png")); /* DEFAULT */
             }
         }
 
@@ -31,7 +37,7 @@ namespace FileShare {
         /// </summary>
         public Uri FolderIcon {
             get {
-                return new Uri(Path.Combine(Directory.GetCurrentDirectory(), "imgs", "folder.png")); /* DEFAULT */
+                return new Uri(Path.Combine(CurrentDirectory, "imgs", "folder.png")); /* DEFAULT */
             }
         }
 
@@ -40,7 +46,7 @@ namespace FileShare {
         /// </summary>
         public Uri PictureIcon {
             get {
-                return new Uri(Path.Combine(Directory.GetCurrentDirectory(), "imgs", "camera.png")); /* DEFAULT */
+                return new Uri(Path.Combine(CurrentDirectory, "imgs", "camera.png")); /* DEFAULT */
             }
         }
 
@@ -49,7 +55,7 @@ namespace FileShare {
         /// </summary>
         public Uri NothingToDoIcon {
             get {
-                return new Uri(Path.Combine(Directory.GetCurrentDirectory(), "imgs", "nothing-to-do.png")); /* DEFAULT */
+                return new Uri(Path.Combine(CurrentDirectory, "imgs", "nothing-to-do.png")); /* DEFAULT */
             }
         }
 
@@ -58,7 +64,7 @@ namespace FileShare {
         /// </summary>
         public Uri FileSharingPicture {
             get {
-                return new Uri(Path.Combine(Directory.GetCurrentDirectory(), "imgs", "file-sharing.png")); /* DEFAULT */
+                return new Uri(Path.Combine(CurrentDirectory, "imgs", "file-sharing.png")); /* DEFAULT */
             }
         }
         /// <summary>
@@ -68,7 +74,7 @@ namespace FileShare {
         {
             get
             {
-                return new Uri(Path.Combine(Directory.GetCurrentDirectory(), "imgs", "close-picture.png")); /* DEFAULT */
+                return new Uri(Path.Combine(CurrentDirectory, "imgs", "close-picture.png")); /* DEFAULT */
             }
         }
 
