@@ -19,9 +19,9 @@
 
     <Grid Margin="0,0,1,0">
         <dragablz:TabablzControl Name="mainTabControl" HorizontalAlignment="Left" Margin="0,0,-1,0" VerticalAlignment="Top" Width="530" BorderThickness="0">
-            <dragablz:TabablzControl.InterTabController>
+            <!--<dragablz:TabablzControl.InterTabController>
                 <dragablz:InterTabController />
-            </dragablz:TabablzControl.InterTabController>
+            </dragablz:TabablzControl.InterTabController>-->
             <TabItem Header="On-Line">
                 <!--<Grid Background="#FFE5E5E5" Margin="-21,-34,-184,-195" HorizontalAlignment="Left" Width="494">-->
                 <StackPanel Orientation="Vertical">

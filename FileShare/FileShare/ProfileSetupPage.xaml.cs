@@ -58,7 +58,7 @@ namespace FileShare
         {
             //if (String.Compare(getOSInfo,)
             //WindowsIdentity wi = WindowsIdentity.GetCurrent();
-            Settings.Instance.CurrentUsername = Environment.UserName;//wi.Name;
+            Settings.Instance.CurrentUsername = Environment.UserName.Substring(0,Settings.Instance.UsernameMaxLength);//wi.Name;
 
             //DirectoryInfo dir = new DirectoryInfo(Environment.GetEnvironmentVariable("AppData")+ @"\Microsoft\Windows\AccountPictures\");
             Settings.Instance.PicturePath = GetUserTile(Environment.UserName);

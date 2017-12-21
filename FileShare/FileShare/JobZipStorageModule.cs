@@ -149,6 +149,9 @@ namespace FileShareConsole {
             // Push the job in the receiving jobs list
             //JobsList.Receiving.push(job);
 
+                DirectoryInfo di = Directory.CreateDirectory(receivePath);
+            
+         
             // Creates the new file. Note: the file is zipped
             File.Create(path).Close();
 
