@@ -13,9 +13,10 @@ namespace FileShare {
     public partial class BackgroundForm : Form {
 
         private Window notificationWindow;
-
+        int lastDeactivateTick;
+        bool lastDeactivateValid;
         public enum ErrorNotificationType {
-            Receiving, Sending
+            Receiving, Sending, File, Path
         };
 
         public BackgroundForm() {
@@ -39,6 +40,7 @@ namespace FileShare {
             
             // If the click was performed with the left button
             if (e.Button != MouseButtons.Right && notificationWindow == null) {
+                if (lastDeactivateValid && Environment.TickCount - lastDeactivateTick < 200) return;
 
                 // Create a new window
                 notificationWindow = new NotificationWindow();
@@ -47,6 +49,8 @@ namespace FileShare {
                 //  window occours)
                 notificationWindow.Deactivated += (Object window, EventArgs args) => {
                     // Close the window and set the variable to null
+                    lastDeactivateTick = Environment.TickCount;
+                    lastDeactivateValid = true;
                     notificationWindow.Close();
                     notificationWindow = null;
                 };
@@ -79,6 +83,12 @@ namespace FileShare {
                 case ErrorNotificationType.Sending:
                     notifyIcon1.ShowBalloonTip(5000, "Errore durante l'invio", "Alcuni trasferimenti in uscita non sono andati a buon fine.", ToolTipIcon.Error);
                     break;
+                case ErrorNotificationType.File:
+                    notifyIcon1.ShowBalloonTip(5000, "Errore durante l'invio", "Il file è aperto da un altro processo", ToolTipIcon.Error);
+                    break;
+                case ErrorNotificationType.Path:
+                    notifyIcon1.ShowBalloonTip(5000, "Errore durante la ricezione", "Il percorso specificato non è valido", ToolTipIcon.Error);
+                    break;
             }
         }
 
@@ -99,7 +109,14 @@ namespace FileShare {
         {
             base.OnClosed(e);
             System.Windows.Application a = System.Windows.Application.Current;
-            a.Shutdown();
+
+            if (FileShareDataContext.Instance.receivingJobs.Count != 0 || FileShareDataContext.Instance.sendingJobs.Count != 0) //chiedi all'utente se è sicuro di annullare i trasferimenti in corso
+            {
+                CloseWindow cw = new CloseWindow();
+                cw.ShowDialog();
+            }
+             { a.Shutdown(); }
+            
         }
 
         private void ShowToolStripMenuItem_Click(object sender, System.EventArgs e) {

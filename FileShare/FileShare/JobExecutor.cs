@@ -1,4 +1,4 @@
-﻿using NetProtocol;
+using NetProtocol;
 using System.Net;
 using System.Net.Sockets;
 using static NetProtocol.ProtocolEndpoint;
@@ -34,6 +34,11 @@ namespace FileTransfer {
          */
         public event OnConnectionError ConnectionError;
 
+        public delegate void OnFileError();
+        /**
+         * Event on which register the callback to manage the connection error
+         */
+        public event OnFileError FileError;
         /**
          * Constructor
          */
@@ -53,7 +58,8 @@ namespace FileTransfer {
             Peer receiver = HelloProtocol.PeersList.Instance.get(job.Task.Receiver);
             IPAddress receiverAddr = IPAddress.Parse(receiver.Ipaddress);
             IPEndPoint remoteEP = new IPEndPoint(receiverAddr, Settings.Instance.SERV_ACCEPTING_PORT);
-            try {
+            try
+            {
                 // Connect to the receiver socket
                 socket.Connect(remoteEP);
 
@@ -68,12 +74,28 @@ namespace FileTransfer {
                 // Calls the delegate
                 OnTrasmissionEnd();
 
-            } catch (SocketException e) {
+            }
+            catch (SocketException e)
+            {
                 // Remove the job from the list
                 JobsList.Sending.remove(job.Id);
                 // Trigger the event of conncetion error
+//<<<<<<< job-status-and-notifications
                 ConnectionError?.Invoke(job);
-            } finally {
+//            } finally {
+//=======
+//                ConnectionError?.Invoke();
+            }
+            catch (System.IO.IOException e)
+            {
+                // Remove the job from the list
+                JobsList.Sending.remove(job.Id);
+                // Trigger the event of conncetion error
+                FileError?.Invoke();
+            }
+            finally
+            {
+//>>>>>>> master
                 // Close the socket
                 socket.Close();
             }

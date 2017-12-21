@@ -48,7 +48,7 @@
             <!--<TextBox  Padding="2" Margin="50,0,50,0" Name="UsernameTB" Text="{Binding Path=Settings.CurrentUsername}"  ></TextBox>-->
             <StackPanel Orientation="Horizontal" HorizontalAlignment=" center" Margin="16,0,16,0">
                 <materialDesign:PackIcon Kind="Account" Margin="0,8,0,0" Foreground="{Binding ElementName=UsernameTB, Path=BorderBrush}" Height="24" Width="24" />
-                <TextBox Margin="8,0,0,0" Width="224" Height="32" x:Name="UsernameTB" Text="{Binding Settings.CurrentUsername}" materialDesign:HintAssist.Hint="Name"/>
+				<TextBox  MaxLength="{Binding Settings.UsernameMaxLength}"  Margin="8,0,0,0" Width="224" Height="32" x:Name="UsernameTB" Text="{Binding Settings.CurrentUsername}" materialDesign:HintAssist.Hint="Name"/>
             </StackPanel>
 
             <Separator Margin="24,16,24,16"></Separator>
@@ -88,7 +88,6 @@
                             </Button.ToolTip>
                         </Button>
                     </StackPanel>
-                    <CheckBox Name ="alwaysDefault" IsChecked="{Binding Path=AlwaysUseDefault}" Margin="0,8,0,0">Suggerisci questo percorso per la ricezione</CheckBox>
                 </StackPanel>
 
                 <Button Content="Done"

@@ -18,6 +18,11 @@ namespace FileTransfer {
          */
         public event OnConnectionError ConnectionError;
 
+        public delegate void OnFileError();
+        /**
+         * Event on connection error
+         */
+        public event OnFileError FileError;
         /**
          * Constructor
          */
@@ -48,6 +53,11 @@ namespace FileTransfer {
                 ConnectionError?.Invoke(j);
             };
 
+
+            // When a file error occours
+            sender.FileError += () => {
+                FileError?.Invoke();
+            };
             // Run the sender 
             sender.run();
             

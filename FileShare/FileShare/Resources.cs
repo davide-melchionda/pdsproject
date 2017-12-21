@@ -61,6 +61,17 @@ namespace FileShare {
                 return new Uri(Path.Combine(Directory.GetCurrentDirectory(), "imgs", "file-sharing.png")); /* DEFAULT */
             }
         }
+        /// <summary>
+        /// Closing Image
+        /// </summary>
+        public Uri ClosePicture
+        {
+            get
+            {
+                return new Uri(Path.Combine(Directory.GetCurrentDirectory(), "imgs", "close-picture.png")); /* DEFAULT */
+            }
+        }
+
 
     }
 }

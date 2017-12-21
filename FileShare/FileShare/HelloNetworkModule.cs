@@ -106,7 +106,7 @@ namespace HelloProtocol {
             mcastSocket.ReceiveFrom(buf, ref remoteEP);
 
             // Transfoms the byte sequence in a string
-            string jsonRecvPacket = Encoding.ASCII.GetString(buf, 0, buf.Length);
+            string jsonRecvPacket = Encoding.UTF8.GetString(buf, 0, buf.Length);
 
             // Deserialize the packet
             JObject o = JObject.Parse(jsonRecvPacket);
@@ -140,7 +140,7 @@ namespace HelloProtocol {
             // Serialize the packet to Json and puts the result string into
             // the byte buffer
             string jPacket = JsonConvert.SerializeObject(packet);
-             buf = Encoding.ASCII.GetBytes(jPacket);
+             buf = Encoding.UTF8.GetBytes(jPacket);
 
             // Creates the receiver endpoint (the port will be the usual MCAST_HELLO_PORT)
             EndPoint remoteEP = new IPEndPoint(IPAddress.Parse(address), Settings.Instance.MCAST_HELLO_PORT);
@@ -168,7 +168,7 @@ namespace HelloProtocol {
             // Serialize the packet to Json and puts the result string into
             // the byte buffer
             string jPacket = JsonConvert.SerializeObject(packet);
-            buf = Encoding.ASCII.GetBytes(jPacket);
+            buf = Encoding.UTF8.GetBytes(jPacket);
 
             // Creates the receiver endpoint (the port will be the usual MCAST_HELLO_PORT)
             EndPoint remoteEP = new IPEndPoint(Settings.Instance.MCAST_HELLO_IP_ADDRESS, Settings.Instance.MCAST_HELLO_PORT);

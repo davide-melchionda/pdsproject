@@ -53,7 +53,7 @@
                             <!--<Label Content="Username"/>-->
                             <StackPanel Orientation="Horizontal" Margin="16,24,16,0">
                                 <materialDesign:PackIcon Kind="Account" Margin="0,8,0,0" Foreground="{Binding ElementName=UsernameTB, Path=BorderBrush}" Height="24" Width="24" />
-                                <TextBox Margin="8,0,0,0" Width="204" Height="32" x:Name="UsernameTB" Text="{Binding Settings.CurrentUsername}" TextChanged="UsernameTB_TextChanged" materialDesign:HintAssist.Hint="Name"/>
+								<TextBox  MaxLength="{Binding Settings.UsernameMaxLength}" Margin="8,0,0,0" Width="204" Height="32" x:Name="UsernameTB" Text="{Binding Settings.CurrentUsername}" TextChanged="UsernameTB_TextChanged" materialDesign:HintAssist.Hint="Name"/>
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Orientation="Vertical" Margin="8,0,0,0" Width="284">
@@ -90,10 +90,11 @@
                                     </ToolTip>
                                 </Button.ToolTip>
                             </Button>
-                        </StackPanel>
+							<CheckBox  HorizontalAlignment="Right" Margin="0,50,16,0" VerticalAlignment="Bottom" IsChecked="{Binding Path=Settings.ShowSetup}" Content="Don't show this again" />
+
+						</StackPanel>
                     </StackPanel>
                 </materialDesign:Card>
-
             </StackPanel>
         </Border>
     </Grid>

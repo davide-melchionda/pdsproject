@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
@@ -23,6 +23,14 @@ namespace FileTransfer {
          */
         public event OnConnectionError ConnectionError;
 
+        /**
+    * Delegate: format of the callback to call when error on Path occours
+    */
+        public delegate void OnPathError();
+        /**
+         * Event on which register the callback to manage the Path error
+         */
+        public event OnPathError PathError;
         public ReceptionExecutor(Socket socket) {
             this.socket = socket;
         }
@@ -45,10 +53,19 @@ namespace FileTransfer {
                 server.transfer();
 
             } catch (SocketException e) {
-                
+
                 // Trigger the event of conncetion error
+//<<<<<<< job-status-and-notifications
                 ConnectionError?.Invoke(job);
 
+//=======
+//                ConnectionError?.Invoke();
+            }
+            catch (Exception e)
+            {
+                // Trigger the event of Path error
+                PathError?.Invoke();
+//>>>>>>> master
             } finally {
                 // Remove the job (if any) from the list
                 if (job != null)
