@@ -9,7 +9,7 @@ using System.ComponentModel;
 namespace FileTransfer
 {
 
-    public class Job : INotifyPropertyChanged {
+    public abstract class Job : INotifyPropertyChanged {
 
         /// <summary>
         /// The Id of a job (coresponds to the id of the associated task)
@@ -28,24 +28,6 @@ namespace FileTransfer
          public Task Task {
             get {
                 return task;
-            }
-        }
-
-        /// <summary>
-        /// The path of the destination directory where received files will be putted.
-        /// </summary>
-        public string DestinationPath { get; set; }
-
-        /// <summary>
-        /// The path of the base directory of files to zip
-        /// </summary>
-        private List<string> filePaths;
-        /**
-         * filePath property
-         */
-         public List<string> FilePaths {
-            get {
-                return filePaths;
             }
         }
 
@@ -86,28 +68,62 @@ namespace FileTransfer
             }
         }
 
-        public bool Active {
-            get; set;
+        //public bool Active {
+        //    get; set;
+        //}
+        private JobStatus status;
+        public JobStatus Status {
+            get {
+                return status;
+            }
+            set {
+                status = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Status"));
+            }
         }
 
-        /**
-         * Public constructor
-         */
-        public Job(Task task, List<string> filePaths) {
-            timestamp = DateTime.Now;
-            this.task = task;
-            this.filePaths = filePaths;
-            Active = true;
-        }
+        ///**
+        // * Public constructor
+        // */
+        //public Job(Task task, List<string> filePaths) {
+        //    timestamp = DateTime.Now;
+        //    this.task = task;
+        //    this.filePaths = filePaths;
+        //    Status = Job.JobStatus.Active;
+        //}
         
-        /**
-         * Public constructor
-         */
-        public Job(Task task, string filePath) {
+        ///**
+        // * Public constructor
+        // */
+        //public Job(Task task, string filePath) {
+        //    timestamp = DateTime.Now;
+        //    this.task = task;
+        //    DestinationPath = filePath;
+        //    Status = Job.JobStatus.Active;
+        //}
+
+        ///<summary>
+        ///Constructor for a generic Job
+        ///</summary>
+        public Job(Task task) {
             timestamp = DateTime.Now;
             this.task = task;
-            DestinationPath = filePath;
-            Active = true;
+            Status = Job.JobStatus.Active;
+        }
+
+        /// <summary>
+        /// Indicates the status of the current job.
+        /// </summary>
+        public enum JobStatus {
+            Preparing,                     // the job is in preparing state (eg. zipping before sending)
+            Completing,                     // the job is in completing state (eg. unzipping after receiving)
+            Active,                         // we are executing the job
+            Completed,                      // the job is completed
+            StoppedByLocal,                 // the job was stopped before completion by the local peer
+            StoppedByRemote,                // the job was stopped before completion by the remote peer
+            ConnectionError,                // the job was stopped due to a network error
+            NotAcceptedByRemote,            // the file(s) in this job was(were) refused by the remote receiving peer
+            WaitingForRemoteAcceptance      // we are waiting the remote peer decision about accepting or refusing the file
         }
     }
 }

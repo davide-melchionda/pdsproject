@@ -56,8 +56,9 @@ namespace FileShare {
                 });
                 return request;
             };
-            receiver.ConnectionError += () => {
-                bf.NotifyError(BackgroundForm.ErrorNotificationType.Receiving);
+            receiver.ConnectionError += (Job j) => {
+                if (j.Status == Job.JobStatus.ConnectionError)
+                    bf.NotifyError(BackgroundForm.ErrorNotificationType.Receiving);
             };
             receiver.run();
 
@@ -81,8 +82,9 @@ namespace FileShare {
                         /* For each peer in the list schedule a new job on a job scheuler. */
                         JobScheduler scheduler = new JobScheduler();
                         // Register a callback to execute in case of connection errors
-                        scheduler.ConnectionError += () => {
-                            bf.NotifyError(BackgroundForm.ErrorNotificationType.Sending);
+                        scheduler.ConnectionError += (Job j) => {
+                            if (j.Status == Job.JobStatus.ConnectionError)
+                                bf.NotifyError(BackgroundForm.ErrorNotificationType.Sending);
                         };
                         for (int i = 0; i < selected.Count; i++) {
                             //List<FileTransfer.Task> tasks = new List<FileTransfer.Task>();
@@ -90,7 +92,7 @@ namespace FileShare {
                                 //tasks.Add(new FileTransfer.Task(Settings.Instance.LocalPeer.Id,
                                 //                        Settings.Instance.LocalPeer.Name, PeersList.Instance.Peers.ElementAt(i).Id,
                                 //                        PeersList.Instance.Peers.ElementAt(i).Name, filepath));
-                                scheduler.scheduleJob(new Job(new FileTransfer.Task(Settings.Instance.LocalPeer.Id,
+                                scheduler.scheduleJob(new SendingJob(new FileTransfer.Task(Settings.Instance.LocalPeer.Id,
                                                         Settings.Instance.LocalPeer.Name, PeersList.Instance.Peers.ElementAt(i).Id,
                                                         PeersList.Instance.Peers.ElementAt(i).Name, filepaths), filepaths));
                         }

@@ -17,7 +17,7 @@ namespace FileTransfer {
         /**
          * Delegate: format of the callback to call when error on connection occours
          */
-        public delegate void OnConnectionError();
+        public delegate void OnConnectionError(Job j);
         /**
          * Event on which register the callback to manage the connection error
          */
@@ -47,7 +47,7 @@ namespace FileTransfer {
             } catch (SocketException e) {
                 
                 // Trigger the event of conncetion error
-                ConnectionError?.Invoke();
+                ConnectionError?.Invoke(job);
 
             } finally {
                 // Remove the job (if any) from the list

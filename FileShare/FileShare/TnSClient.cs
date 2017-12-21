@@ -20,9 +20,10 @@ namespace NetworkTransmission {
 
         private byte[] transferBlock;
 
-        public TnSClient(Socket socket, Protocol protocol, Job job) : base(socket, protocol) {
+        public TnSClient(Socket socket, Protocol protocol, SendingJob job) : base(socket, protocol) {
             this.job = job;
             JobZipStorageModule module = new JobZipStorageModule();
+            job.Status = Job.JobStatus.Preparing; 
             iterator = module.prepareJob(job);
             network = new TransferNetworkModule();
             transferBlock = new byte[((JobZipStorageModule.JobFileIterator)iterator).READ_BLOCK_SIZE];
@@ -37,11 +38,15 @@ namespace NetworkTransmission {
 
             int bytesSent = network.SendPacket(socket, msg);        // Send the data through the socket.
 
+            job.Status = Job.JobStatus.WaitingForRemoteAcceptance;
+
             tPacket = (TransmissionPacket)network.receivePacket(this.socket);       // Receive the response from the remote.
             if (tPacket.Type.ToString() != "response")
                 throw new SocketException();//TODO This must raise an exception cause we don't expect a server to send packets different from Responses at this point 
 
             response = (ResponsePacket)tPacket;
+
+            job.Status = Job.JobStatus.Active;
 
             //Logger.log(Logger.TRANSFER_CLIENT_DEBUG, "Handshake competed. Starting transmission of the file " + job.Task.Info.Name + "\n");
 
@@ -51,7 +56,7 @@ namespace NetworkTransmission {
 
                     int i = 0;
                     while (iterator.hasNext()) {
-                        if (!job.Active)
+                        if (job.Status != Job.JobStatus.Active)
                             throw new SocketException();
                         i = iterator.next(transferBlock);
 
@@ -63,10 +68,15 @@ namespace NetworkTransmission {
 
                     Logger.log(Logger.TRANSFER_CLIENT_DEBUG, "Releasing lock\n");
 
+                    job.Status = Job.JobStatus.Completed;
+
                 } finally {
                     /* Close the file iterator releasing resources and
                      * releases protocol resources */
                     iterator.close();
+
+                    if (job.Status == Job.JobStatus.Active) // If job status is still active it was not me to raise this error
+                        job.Status = Job.JobStatus.ConnectionError;
 
                     // I don't know if I really have acquired a slot (maybe an exception occourde befor I could do it)
                     // The realease operation will throw an exception if the I have not acquired a slot
@@ -75,16 +85,16 @@ namespace NetworkTransmission {
                         protocol.releaseClient();
                     } catch (System.Threading.SemaphoreFullException e) {
                         // This means that SocketException occurred befor I could acquire the semaphore slot
-
                     }
                 }
-            } else
+            } else {
                 /* Close the file iterator releasing resources and
                  * releases protocol resources */
                 iterator.close();
+                job.Status = Job.JobStatus.NotAcceptedByRemote;
+            }
 
             return new TnSTransferResult(response.Procede);
-
         }
 
     }

@@ -14,7 +14,7 @@ namespace FileTransfer {
         /**
          * Delegate: format of the callback to call when error on connection occours
          */
-        public delegate void OnConnectionError();
+        public delegate void OnConnectionError(Job j);
         /**
          * Event on which register the callback to manage the connection error
          */
@@ -38,8 +38,8 @@ namespace FileTransfer {
                             return RequestReceived(request);
                         return request;
                     };
-                    receiver.ConnectionError += () => {
-                        ConnectionError?.Invoke();
+                    receiver.ConnectionError += (Job j) => {
+                        ConnectionError?.Invoke(j);
                     };
                     receiver.run();
                 }

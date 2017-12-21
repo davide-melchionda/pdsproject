@@ -63,23 +63,23 @@ namespace FileShare {
             Job = j;
             transferStartTime = 0.0;
             Stopped = false;
-            Preparing = j.SentByte == 0;
-            j.PropertyChanged += update;
-            Message = "In preparazione...";
+            //Preparing = j.SentByte == 0;
+            //j.PropertyChanged += update;
+            //Message = "In preparazione...";
         }
 
-        private void update(object sender, PropertyChangedEventArgs args) {
-            if (args.PropertyName.Equals("Percentage")) {
-                if (Job.SentByte != 0) {
-                    Preparing = false;
-                    Message = null;
-                } else if (Job.SentByte == Job.Task.Size) {
-                    Completing = true;
-                    Message = "In completamento";
-                }
-                //Job.PropertyChanged -= updatePreparing;
-            }
-        }
+        //private void update(object sender, PropertyChangedEventArgs args) {
+        //    if (args.PropertyName.Equals("Percentage")) {
+        //        if (Job.SentByte != 0) {
+        //            Preparing = false;
+        //            Message = null;
+        //        } else if (Job.SentByte == Job.Task.Size) {
+        //            Completing = true;
+        //            Message = "In completamento";
+        //        }
+        //        //Job.PropertyChanged -= updatePreparing;
+        //    }
+        //}
 
         /// <summary>
         /// If the job is in pre-sending phase (preparing the sent)

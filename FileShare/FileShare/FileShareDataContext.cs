@@ -76,15 +76,20 @@ namespace FileShare {
             };
 
             JobsList.Sending.JobAdded += (Job job) => {
+                ListedJob listedItem = new ListedJob(job);
                 App.Current.Dispatcher.Invoke((Action)delegate {
-                    sendingJobs.Add(new ListedJob(job));
+                    sendingJobs.Add(listedItem);
                 });
+                ConfigureState(listedItem); // Adapt view to the currest state of the job
+                job.PropertyChanged += (object sender, PropertyChangedEventArgs args) => {
+                    ConfigureState(listedItem);
+                };
             };
 
             JobsList.Sending.JobRemoved += (Job removedJob) => {
                 foreach (ListedJob listItem in sendingJobs)
                     if (listItem.Job.Id == removedJob.Id) {
-                        ConfigurePreremovingState(listItem);
+                        ConfigureState(listItem);
                         System.Threading.Thread.Sleep(5000);
                         App.Current.Dispatcher.Invoke((Action)delegate {
                             sendingJobs.Remove(listItem);
@@ -94,15 +99,20 @@ namespace FileShare {
             };
 
             JobsList.Receiving.JobAdded += (Job job) => {
+                ListedJob listedItem = new ListedJob(job);
                 App.Current.Dispatcher.Invoke((Action)delegate {
-                    receivingJobs.Add(new ListedJob(job));
+                    receivingJobs.Add(listedItem);
                 });
+                ConfigureState(listedItem); // Adapt view to the currest state of the job
+                job.PropertyChanged += (object sender, PropertyChangedEventArgs args) => {
+                    ConfigureState(listedItem);
+                };
             };
 
             JobsList.Receiving.JobRemoved += (Job removedJob) => {
                 foreach (ListedJob listItem in receivingJobs)
                     if (listItem.Job.Id == removedJob.Id) {
-                        ConfigurePreremovingState(listItem);
+                        ConfigureState(listItem);
                         System.Threading.Thread.Sleep(5000);
                         App.Current.Dispatcher.Invoke((Action)delegate {
                             receivingJobs.Remove(listItem);
@@ -125,23 +135,81 @@ namespace FileShare {
 
         }
 
-        private void ConfigurePreremovingState(ListedJob listItem) {
+        private void ConfigureState(ListedJob listItem) {
             // If no message was set, it was not me to configure this 
             // listItem to be removed. This means that I have to configure
             // all the fields to a generic "Error" or "Completed" sate.
             // I've no information to say more than this
-            if (listItem.Message == null || listItem.Message == "In completamento") {
-                if (listItem.Job.Percentage != 100) {
-                    listItem.Completing = false;
-                    listItem.Completed = true;
-                    listItem.Error = true;
-                    listItem.Message = "Trasferimento non completato.";
-                } else {
-                    listItem.Completing = false;
-                    listItem.Completed = true;
-                    listItem.Error = false;
-                    listItem.Message = "Completato";
+            if (/*listItem.Message == null || listItem.Message == "In completamento"*/true) {
+                //if (listItem.Job.Percentage != 100) {
+                switch (listItem.Job.Status) {
+                    case Job.JobStatus.Active:
+                        listItem.Preparing = false;
+                        listItem.Completing = false;
+                        listItem.Completed = false;
+                        listItem.Error = false;
+                        listItem.Message = null;
+                        break;
+                    case Job.JobStatus.WaitingForRemoteAcceptance:
+                        listItem.Preparing = true;
+                        listItem.Completing = false;
+                        listItem.Completed = false;
+                        listItem.Message = listItem.Job.Task.ReceiverName + " sta decidendo se accettare il trasferimento";
+                        break;
+                    case Job.JobStatus.ConnectionError:
+                        listItem.Preparing = false;
+                        listItem.Completing = false;
+                        listItem.Completed = true;
+                        listItem.Error = true;
+                        listItem.Message = "Trasferimento interrotto."; /*Impossibile contattare ";*/
+                        //if (listItem.Job is SendingJob)
+                        //    listItem.Message += "il destinatario";
+                        //else
+                        //    listItem.Message += "il mittente";
+                        break;
+                    case Job.JobStatus.NotAcceptedByRemote:
+                        listItem.Preparing = false;
+                        listItem.Completing = false;
+                        listItem.Completed = true;
+                        listItem.Error = false;
+                        listItem.Message = listItem.Job.Task.ReceiverName + " ha rifiutato il trasferimento";
+                        break;
+                    case Job.JobStatus.StoppedByRemote:
+                        listItem.Preparing = false;
+                        listItem.Completing = false;
+                        listItem.Completed = true;
+                        listItem.Error = true;
+                        listItem.Message = "Trasferimento interrotto dalla controparte";
+                        break;
+                    case Job.JobStatus.Completed:
+                        listItem.Preparing = false;
+                        listItem.Completing = false;
+                        listItem.Completed = true;
+                        listItem.Error = false;
+                        listItem.Message = "Completato";
+                        break;
+                    case Job.JobStatus.Preparing:
+                        listItem.Preparing = true;
+                        listItem.Completing = false;
+                        listItem.Completed = false;
+                        listItem.Message = "In preparazione...";
+                        break;
+                    case Job.JobStatus.Completing:
+                        listItem.Preparing = false;
+                        listItem.Completing = true;
+                        listItem.Completed = true;
+                        listItem.Message = "In completamento...";
+                        break;
+                    default:
+                        listItem.Message = "In cancellazione...";
+                        break;
                 }
+                //} else {
+                //    listItem.Completing = false;
+                //    listItem.Completed = true;
+                //    listItem.Error = false;
+                //    listItem.Message = "Completato";
+                //}
             }
             // Otherwise I've configured this listItem to be removed
             // somewhere else.
@@ -149,7 +217,7 @@ namespace FileShare {
 
         internal void DeactivateJob(ListedJob item) {
             item.Stopped = true;
-            item.Job.Active = false;
+            item.Job.Status = Job.JobStatus.StoppedByLocal; // It was me to stop this job
             item.Completed = true;
             item.Error = false;
             item.Message = "In cancellazione...";
@@ -170,7 +238,10 @@ namespace FileShare {
                     item.UpdateTimeLeft();
 
                     // If we have done
-                    if (item.Job.Percentage == 100 || !item.Job.Active)
+                    if (item.Job.Percentage == 100 ||
+                        (item.Job.Status != Job.JobStatus.Active &&
+                        item.Job.Status != Job.JobStatus.WaitingForRemoteAcceptance &&
+                        item.Job.Status != Job.JobStatus.Preparing))
                         break;
 
                     System.Threading.Thread.Sleep(300);

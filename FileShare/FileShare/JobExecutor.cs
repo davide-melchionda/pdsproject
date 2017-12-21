@@ -13,7 +13,7 @@ namespace FileTransfer {
         /**
          * The job which represents the transmission operation
          */
-        private Job job;
+        private SendingJob job;
 
         /**
          * Delegate: defines the format of a callback to call when the transmission 
@@ -28,7 +28,7 @@ namespace FileTransfer {
         /**
          * Delegate: format of the callback to call when error on connection occours
          */
-        public delegate void OnConnectionError();
+        public delegate void OnConnectionError(Job j);
         /**
          * Event on which register the callback to manage the connection error
          */
@@ -37,7 +37,7 @@ namespace FileTransfer {
         /**
          * Constructor
          */
-        public JobExecutor(Job job) {
+        public JobExecutor(SendingJob job) {
             this.job = job;
         }
 
@@ -72,7 +72,7 @@ namespace FileTransfer {
                 // Remove the job from the list
                 JobsList.Sending.remove(job.Id);
                 // Trigger the event of conncetion error
-                ConnectionError?.Invoke();
+                ConnectionError?.Invoke(job);
             } finally {
                 // Close the socket
                 socket.Close();
