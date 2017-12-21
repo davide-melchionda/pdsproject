@@ -78,10 +78,10 @@ namespace FileShare {
         internal void NotifyError(ErrorNotificationType type) {
             switch (type) {
                 case ErrorNotificationType.Receiving:
-                    notifyIcon1.ShowBalloonTip(5000, "Errore durante la ricezione", "Alcuni trasferimenti non sono andati a buon fine a causa di problemi di connessione", ToolTipIcon.Error);
+                    notifyIcon1.ShowBalloonTip(5000, "Errore durante la ricezione", "Alcuni trasferimenti in ricezione non sono andati a buon fine.", ToolTipIcon.Error);
                     break;
                 case ErrorNotificationType.Sending:
-                    notifyIcon1.ShowBalloonTip(5000, "Errore durante l'invio", "Alcuni trasferimenti in uscita non sono andati a buon fine a causa di problemi di connessione", ToolTipIcon.Error);
+                    notifyIcon1.ShowBalloonTip(5000, "Errore durante l'invio", "Alcuni trasferimenti in uscita non sono andati a buon fine.", ToolTipIcon.Error);
                     break;
                 case ErrorNotificationType.File:
                     notifyIcon1.ShowBalloonTip(5000, "Errore durante l'invio", "Il file è aperto da un altro processo", ToolTipIcon.Error);

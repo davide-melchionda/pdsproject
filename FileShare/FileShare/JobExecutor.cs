@@ -1,4 +1,4 @@
-﻿using NetProtocol;
+using NetProtocol;
 using System.Net;
 using System.Net.Sockets;
 using static NetProtocol.ProtocolEndpoint;
@@ -13,7 +13,7 @@ namespace FileTransfer {
         /**
          * The job which represents the transmission operation
          */
-        private Job job;
+        private SendingJob job;
 
         /**
          * Delegate: defines the format of a callback to call when the transmission 
@@ -28,7 +28,7 @@ namespace FileTransfer {
         /**
          * Delegate: format of the callback to call when error on connection occours
          */
-        public delegate void OnConnectionError();
+        public delegate void OnConnectionError(Job j);
         /**
          * Event on which register the callback to manage the connection error
          */
@@ -42,7 +42,7 @@ namespace FileTransfer {
         /**
          * Constructor
          */
-        public JobExecutor(Job job) {
+        public JobExecutor(SendingJob job) {
             this.job = job;
         }
 
@@ -80,7 +80,11 @@ namespace FileTransfer {
                 // Remove the job from the list
                 JobsList.Sending.remove(job.Id);
                 // Trigger the event of conncetion error
-                ConnectionError?.Invoke();
+//<<<<<<< job-status-and-notifications
+                ConnectionError?.Invoke(job);
+//            } finally {
+//=======
+//                ConnectionError?.Invoke();
             }
             catch (System.IO.IOException e)
             {
@@ -91,6 +95,7 @@ namespace FileTransfer {
             }
             finally
             {
+//>>>>>>> master
                 // Close the socket
                 socket.Close();
             }

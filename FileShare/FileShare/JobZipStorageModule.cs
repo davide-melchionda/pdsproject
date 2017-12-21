@@ -41,7 +41,7 @@ namespace FileShareConsole {
         /// JobFileIterator is created and returned in order to allow the caller to
         /// access to the temporary file to trasnfer.
         ///</summary>
-        public FileIterator prepareJob(Job j) {
+        public FileIterator prepareJob(SendingJob j) {
 
             //DateTime lastModify = j.Task.RequestTimestamp;  // The timestamp
 
@@ -144,7 +144,7 @@ namespace FileShareConsole {
             //string path = zipTempFolder + "\\" + Path.GetFileNameWithoutExtension(task.Info.Name) + now.ToString("yyyyMMddhhmmss") + now.Millisecond + ".zip";
             Directory.CreateDirectory(Path.Combine(zipTempFolder, task.Id));
             String path = Path.Combine(zipTempFolder, task.Id, task.Id + ".tmp");
-            Job job = new Job(task, receivePath);
+            ReceivingJob job = new ReceivingJob(task, receivePath);
 
             // Push the job in the receiving jobs list
             //JobsList.Receiving.push(job);

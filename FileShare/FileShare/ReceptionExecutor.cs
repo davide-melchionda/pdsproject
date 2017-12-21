@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
@@ -17,7 +17,7 @@ namespace FileTransfer {
         /**
          * Delegate: format of the callback to call when error on connection occours
          */
-        public delegate void OnConnectionError();
+        public delegate void OnConnectionError(Job j);
         /**
          * Event on which register the callback to manage the connection error
          */
@@ -55,12 +55,17 @@ namespace FileTransfer {
             } catch (SocketException e) {
 
                 // Trigger the event of conncetion error
-                ConnectionError?.Invoke();
+//<<<<<<< job-status-and-notifications
+                ConnectionError?.Invoke(job);
+
+//=======
+//                ConnectionError?.Invoke();
             }
             catch (Exception e)
             {
                 // Trigger the event of Path error
                 PathError?.Invoke();
+//>>>>>>> master
             } finally {
                 // Remove the job (if any) from the list
                 if (job != null)

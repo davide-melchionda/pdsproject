@@ -12,7 +12,7 @@ namespace FileTransfer {
         /**
          * Delegate: on connection error during the transfer
          */
-        public delegate void OnConnectionError();
+        public delegate void OnConnectionError(Job j);
         /**
          * Event on connection error
          */
@@ -35,7 +35,7 @@ namespace FileTransfer {
          * which has the purpose of execute the file tranfer according 
          * to a specific protocol.
          */
-        public void scheduleJob(Job job) {
+        public void scheduleJob(SendingJob job) {
 
             // Pushes the job in the list of in-service jobs
             JobsList.Sending.push(job);
@@ -49,8 +49,8 @@ namespace FileTransfer {
             };
 
             // When a connection error occours
-            sender.ConnectionError += () => {
-                ConnectionError?.Invoke();
+            sender.ConnectionError += (Job j) => {
+                ConnectionError?.Invoke(j);
             };
 
 

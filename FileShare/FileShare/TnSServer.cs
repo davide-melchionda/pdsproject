@@ -49,7 +49,6 @@ namespace FileTransfer
             FileIterator iterator = null;
 
             try {
-
                 TransmissionPacket received = network.receivePacket(socket); //receive a network packet from the client
                 if (received.Type.ToString() != "request") {
                     //TODO This must raise an exception cause we don't expect a client to send responsens 
@@ -84,14 +83,16 @@ namespace FileTransfer
 
                             // socket.Poll(-1, SelectMode.SelectRead) checks the readable status of the socket. It's blocking, and (due to the infinite
                             // timeout setted as first parameter) unlocks only when data are available or throws an exception when error occours.
-                            if ((socket.Poll(1, SelectMode.SelectRead) && socket.Available == 0) || !(iterator as JobFileIterator).Job.Active) {
+                            if ((socket.Poll(1, SelectMode.SelectRead) && socket.Available == 0) || (iterator as JobFileIterator).Job.Status != Job.JobStatus.Active) {
                                 throw new SocketException();
                             } else {
                                 receivedBytes = socket.Receive(chunk);
                                 iterator.write(chunk, receivedBytes);
                             }
                         }
-                        
+
+                        (iterator as JobFileIterator).Job.Status = Job.JobStatus.Completing;
+
                     } else { // ... if the user doesn't accepted to receive the file
                              // Send a negative response
                         network.SendPacket(socket, network.generateResponsetStream(false));
@@ -100,9 +101,16 @@ namespace FileTransfer
             } finally {
 
                 // Close the iterator so to release resources
-                if (iterator != null)
+                if (iterator != null) {
+                    if ((iterator as JobFileIterator).Job.Status == Job.JobStatus.Active)
+                        (iterator as JobFileIterator).Job.Status = Job.JobStatus.ConnectionError;
+
                     iterator.close();
-                
+
+                    if ((iterator as JobFileIterator).Job.Status != Job.JobStatus.ConnectionError)
+                        (iterator as JobFileIterator).Job.Status = Job.JobStatus.Completed;
+                }
+
                 // I don't know if I really have acquired a slot (maybe an exception occourde befor I could do it)
                 // The realease operation will throw an exception if the I have not acquired a slot
                 try {
