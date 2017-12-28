@@ -51,10 +51,23 @@ namespace FileShareConsole {
             //if (!File.Exists(zipName)) {  // NO MORE NEEDED
             ManualResetEvent zippedEvent;
             if (j.FilePaths.Count == 1 /*&& j.Task.Info[0].Type == FileTransfer.FileInfo.FType.DIRECTORY*/) {
+                FileAttributes attr = 0;
+                attr = File.GetAttributes(j.FilePaths.Last());
+
                 bool toZip = true;
-                DateTime lastModify = new System.IO.FileInfo(j.FilePaths[0]).LastWriteTimeUtc; 
-                string date = "_" + lastModify.Year + lastModify.Month + lastModify.Day + lastModify.Hour +  lastModify.Minute +  lastModify.Second + lastModify.Millisecond;
-                zipName = Path.Combine(zipTempFolder, j.Task.Info[0].Name + date);
+                //DateTime lastModify;
+                string uniquetoken;
+
+                if ((attr & FileAttributes.Directory) == FileAttributes.Directory) {
+                    var directory = new DirectoryInfo(j.FilePaths[0]);
+                    //lastModify = RealLastModify(directory);
+                    uniquetoken = UniqueTokenFromDirectory(directory);
+                } else {
+                    DateTime lastModify = new System.IO.FileInfo(j.FilePaths[0]).LastWriteTimeUtc;
+                    uniquetoken = "_" + lastModify.Year + lastModify.Month + lastModify.Day + lastModify.Hour + lastModify.Minute + lastModify.Second + lastModify.Millisecond;
+                }
+
+                zipName = Path.Combine(zipTempFolder, j.Task.Info[0].Name + uniquetoken);
                 lock (dictionaryLock) {
                     if (File.Exists(zipName)) {
                         toZip = false;
@@ -66,8 +79,6 @@ namespace FileShareConsole {
 
                 }
                 if (toZip) {
-                    FileAttributes attr = 0;
-                    attr = File.GetAttributes(j.FilePaths.Last());
                     if ((attr & FileAttributes.Directory) == FileAttributes.Directory) {
                         // zip directory (including base directory)
                         ZipFile.CreateFromDirectory(j.FilePaths.Last(), zipName, CompressionLevel.NoCompression, false);
@@ -149,9 +160,9 @@ namespace FileShareConsole {
             // Push the job in the receiving jobs list
             //JobsList.Receiving.push(job);
 
-                DirectoryInfo di = Directory.CreateDirectory(receivePath);
-            
-         
+            DirectoryInfo di = Directory.CreateDirectory(receivePath);
+
+
             // Creates the new file. Note: the file is zipped
             File.Create(path).Close();
 
@@ -468,5 +479,60 @@ namespace FileShareConsole {
             }
         }
 
+        /// <summary>
+        /// Utility method: needed for the computation of the unique token to put in the name of the
+        /// zipped file (see UniqueTokenFromDirectory).
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        private static string CreateMD5(string input) {
+            // Use input string to calculate MD5 hash
+            using (System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create()) {
+                byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
+                byte[] hashBytes = md5.ComputeHash(inputBytes);
+
+                // Convert the byte array to hexadecimal string
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < hashBytes.Length; i++) {
+                    sb.Append(hashBytes[i].ToString("X2"));
+                }
+                return sb.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Utitity method: gets a unique token to use in the name of the zipped file to uniquely
+        /// identify it.
+        /// </summary>
+        /// <param name="directory"></param>
+        /// <returns></returns>
+        private static string UniqueTokenFromDirectory(DirectoryInfo directory) {
+            string token = "";
+
+            using (System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create()) {
+
+                //TODO - Everything
+                //if (directory.GetFiles().Length > 0) {
+                //    var file = (from f in directory.GetFiles()
+                //                orderby f.LastWriteTime descending
+                //                select f);
+                //    foreach (System.IO.FileInfo f in file)
+                //        token = CreateMD5(token + f.LastWriteTime.ToLongDateString());
+                //}
+                //curLastModify = file.LastWriteTimeUtc;
+
+                foreach (System.IO.FileInfo f in directory.GetFiles())
+                    token = CreateMD5(token + f.Name + f.LastWriteTime.ToUniversalTime().Subtract(
+                                                        new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+                                                        ).TotalMilliseconds);
+
+                foreach (DirectoryInfo d in directory.GetDirectories())
+                    token = CreateMD5(token + UniqueTokenFromDirectory(d));
+            }
+
+            return token;
+        }
+
     }
+
 }
