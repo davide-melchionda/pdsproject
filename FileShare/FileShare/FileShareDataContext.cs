@@ -224,6 +224,7 @@ namespace FileShare {
         }
 
         public async void manageProgressBar(ProgressBar prog) {
+            int count = 3;
             ListedJob item = prog.DataContext as ListedJob;
             App.Current.Dispatcher.Invoke((Action)delegate {
                 prog.Value = item.Job.Percentage;
@@ -235,7 +236,11 @@ namespace FileShare {
                     App.Current.Dispatcher.Invoke((Action)delegate {
                         prog.Value = item.Job.Percentage;
                     });
-                    item.UpdateTimeLeft();
+                    if (count == 3) {
+                        item.UpdateTimeLeft();
+                        count = 0;
+                    } else
+                        count++;
 
                     // If we have done
                     if (item.Job.Percentage == 100 ||

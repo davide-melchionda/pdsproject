@@ -30,7 +30,7 @@ namespace FileShare {
         /// <summary>
         /// Represents the quantity of byte sent when measuring starts
         /// </summary>
-        private int sentFromStartTime;
+        private long sentFromStartTime;
 
         /// <summary>
         /// To determine if show a label or not: returns 'true' if there is only

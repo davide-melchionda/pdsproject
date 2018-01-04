@@ -44,11 +44,11 @@ namespace FileTransfer
             }
         }
 
-        private int sentByte;
+        private long sentByte;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public int SentByte {
+        public long SentByte {
             get {
                 return sentByte;
             }

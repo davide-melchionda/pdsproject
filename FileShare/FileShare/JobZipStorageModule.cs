@@ -319,7 +319,7 @@ namespace FileShareConsole {
              * iterator is like a pointer in the file, and points to the
              * byte offset-th byte in the file.
              */
-            private int offset;
+            private long offset;
 
             /**
              * path of the file pointed by the iterator.
@@ -394,11 +394,13 @@ namespace FileShareConsole {
                 if (offset + READ_BLOCK_SIZE <= length)
                     read = fileStream.Read(buffer, 0, READ_BLOCK_SIZE);
                 else {
-                    int toRead = (int)length - offset;
+                    int toRead = (int) (length - offset);
                     read = fileStream.Read(buffer, 0, toRead); // no-overflow
                 }
                 job.SentByte += read;
                 offset += read;
+                if (offset < 0)
+                    ;
                 return read;
             }
 
@@ -431,7 +433,7 @@ namespace FileShareConsole {
                 else
                     // Writes only the number of bytes which allows
                     // to now overflow file limits.
-                    written = (int)length - offset;
+                    written = (int) (length - offset);
 
                 // Writes bytes in the file
                 fileStream.Write(buf, 0, written);
