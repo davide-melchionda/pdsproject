@@ -53,7 +53,7 @@
                             <!--<Label Content="Username"/>-->
                             <StackPanel Orientation="Horizontal" Margin="16,24,16,0">
                                 <materialDesign:PackIcon Kind="Account" Margin="0,8,0,0" Foreground="{Binding ElementName=UsernameTB, Path=BorderBrush}" Height="24" Width="24" />
-								<TextBox  MaxLength="{Binding Settings.UsernameMaxLength}" Margin="8,0,0,0" Width="204" Height="32" x:Name="UsernameTB" Text="{Binding Settings.CurrentUsername}" TextChanged="UsernameTB_TextChanged" materialDesign:HintAssist.Hint="Name"/>
+                                <TextBox  MaxLength="{Binding Settings.UsernameMaxLength}" Margin="8,0,0,0" Width="204" Height="32" x:Name="UsernameTB" Text="{Binding Settings.CurrentUsername}" TextChanged="UsernameTB_TextChanged" materialDesign:HintAssist.Hint="Name"/>
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Orientation="Vertical" Margin="8,0,0,0" Width="284">
@@ -67,17 +67,17 @@
                             Click="Close_Button_Click"/>
                             <TextBlock Text="Oppure" TextAlignment="Center"></TextBlock>
                             <Button Style="{StaticResource MaterialDesignRaisedAccentButton}"
-					    Margin="16,16,16,16"
-                        Click="Import_Button_Click"
-                        Background="#448AFF"
-                        Foreground="White"
-                        BorderThickness="0.5"
-                        Height="40"
-                        Padding="16,8,16,8">
+					                Margin="16,16,16,16"
+                                    Click="Import_Button_Click"
+                                    Background="#448AFF"
+                                    Foreground="White"
+                                    BorderThickness="0.5"
+                                    Height="40"
+                                    Padding="16,8,16,8">
                                 <Button.Content>
                                     <StackPanel Orientation="Horizontal">
                                         <Image Width="24" Height="24" Source="{Binding Path=Settings.Resources.WinLogo}" />
-                                        <TextBlock Margin="24,0,0,0" Text="Accedi con Windows" />
+                                        <TextBlock Margin="24,4,0,0" Text="Accedi con Windows" />
                                     </StackPanel>
                                 </Button.Content>
                                 <!--<Image Source="\img\user.ico"></Image>-->
@@ -90,9 +90,9 @@
                                     </ToolTip>
                                 </Button.ToolTip>
                             </Button>
-							<CheckBox  HorizontalAlignment="Right" Margin="0,50,16,0" VerticalAlignment="Bottom" IsChecked="{Binding Path=Settings.ShowSetup}" Content="Don't show this again" />
+                            <CheckBox  HorizontalAlignment="Right" Margin="0,50,16,0" VerticalAlignment="Bottom" IsChecked="{Binding Path=Settings.ShowSetup}" Content="Don't show this again" />
 
-						</StackPanel>
+                        </StackPanel>
                     </StackPanel>
                 </materialDesign:Card>
             </StackPanel>
