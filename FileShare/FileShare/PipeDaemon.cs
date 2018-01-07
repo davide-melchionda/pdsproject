@@ -14,7 +14,7 @@ namespace FileShareConsole
         /// The size in milliseconds of the window inside which we consider the incoming
         /// requests as part of the same logical operation.
         /// </summary>
-        private const int GROUP_REQUESTS_WINDOW_MILLIS = 400;
+        private const int GROUP_REQUESTS_WINDOW_MILLIS = 800;
 
         public delegate void onPopCallbackType(List<string> fileName);
         public event onPopCallbackType popHappened;
