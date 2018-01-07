@@ -17,25 +17,52 @@
       Background="{StaticResource MaterialDesignPaper}"
       FontFamily="{StaticResource MaterialDesignFont}">
 
-    <Grid>
-        <StackPanel Margin="0,10,0,0" CanVerticallyScroll="True">
-            <!--<Label  HorizontalAlignment=" center" FontWeight="Bold">Profile picture</Label>-->
-            <TextBlock Text="Profilo" Style="{StaticResource MaterialDesignHeadlineTextBlock}" Margin="24,0,24,0"></TextBlock>
-            <Ellipse Width="128" Height="128">
-                <Ellipse.Fill>
-                    <ImageBrush ImageSource="{Binding Path=Me.Icon}"/>
-                </Ellipse.Fill>
-            </Ellipse>
-            <Button Background="Transparent" BorderThickness="0" BorderBrush="Transparent" Height="32" Name="ProfilePictureButton" Click="Profile_Button_Click" Padding="0"
-                                            Style="{StaticResource MaterialDesignFlatButton}" Margin="8">
-                <Button.Content>
-                    <StackPanel Orientation="Horizontal" Height="24">
-                        <materialDesign:PackIcon Kind="Camera" Foreground="{StaticResource PrimaryHueLightBrush}" Height="24" Width="24" />
-                        <TextBlock Text="Modifica" Height="20" Margin="8,4,0,0"/>
-                    </StackPanel>
-                </Button.Content>
-            </Button>
-            <!--<Button Background="Transparent" BorderThickness="0" Name="ProfilePictureButton" HorizontalAlignment="Center" Click="Profile_Button_Click">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid>
+            <StackPanel Margin="0,10,0,0" CanVerticallyScroll="True">
+                <!--<Label  HorizontalAlignment=" center" FontWeight="Bold">Profile picture</Label>-->
+                <TextBlock Text="Profilo" Style="{StaticResource MaterialDesignHeadlineTextBlock}" Margin="24,0,24,0"></TextBlock>
+                <Ellipse Width="128" Height="128">
+                    <Ellipse.Fill>
+                        <ImageBrush ImageSource="{Binding Path=Me.Icon}"/>
+                    </Ellipse.Fill>
+                </Ellipse>
+                <!--<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">-->
+                <Button Background="Transparent" BorderThickness="0" BorderBrush="Transparent" Height="32" Name="ProfilePictureButton" Click="Profile_Button_Click" Padding="0"
+                                            Style="{StaticResource MaterialDesignFlatButton}" Margin="64,4,64,0">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal" Height="24">
+                            <materialDesign:PackIcon Kind="Camera" Foreground="{StaticResource PrimaryHueLightBrush}" Height="24" Width="24" />
+                            <TextBlock Text="Modifica" Height="20" Margin="8,4,0,0" VerticalAlignment="Top"/>
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+                <!--<Button Style="{StaticResource MaterialDesignRaisedAccentButton}"
+					                Margin="48,24,48,0"
+                                    Click="Import_Button_Click"
+                                    Background="#448AFF"
+                                    Foreground="White"
+                                    BorderThickness="0.5"
+                                    Height="40"
+                                    Padding="16,8,16,8">
+                        <Button.Content>
+                            <StackPanel Orientation="Horizontal">
+                                <Image Width="24" Height="24" Source="{Binding Path=Settings.Resources.WinLogo}" />
+                                <TextBlock Margin="24,4,0,0" Text="Accedi con Windows" />
+                            </StackPanel>
+                        </Button.Content>
+                        --><!--<Image Source="\img\user.ico"></Image>--><!--
+                        <Button.ToolTip>
+                            <ToolTip>
+                                <StackPanel>
+                                    <TextBlock>Potrebbe non essere disponibile</TextBlock>
+                                    <TextBlock>in tutte le versioni di Windows.</TextBlock>
+                                </StackPanel>
+                            </ToolTip>
+                        </Button.ToolTip>
+                    </Button>-->
+                <!--</StackPanel>-->
+                <!--<Button Background="Transparent" BorderThickness="0" Name="ProfilePictureButton" HorizontalAlignment="Center" Click="Profile_Button_Click">
 				<Image  Width="30" Height="30" Source="{Binding Path=Settings.PictureIcon}" />
 				<Button.ToolTip>
 					<ToolTip>
@@ -44,58 +71,69 @@
 				</Button.ToolTip>
 			</Button>-->
 
-            <!--<Label  HorizontalAlignment=" center" FontWeight="Bold">Current username</Label>-->
-            <!--<TextBox  Padding="2" Margin="50,0,50,0" Name="UsernameTB" Text="{Binding Path=Settings.CurrentUsername}"  ></TextBox>-->
-            <StackPanel Orientation="Horizontal" HorizontalAlignment=" center" Margin="16,0,16,0">
-                <materialDesign:PackIcon Kind="Account" Margin="0,8,0,0" Foreground="{Binding ElementName=UsernameTB, Path=BorderBrush}" Height="24" Width="24" />
-				<TextBox  MaxLength="{Binding Settings.UsernameMaxLength}"  Margin="8,0,0,0" Width="224" Height="32" x:Name="UsernameTB" Text="{Binding Settings.CurrentUsername}" materialDesign:HintAssist.Hint="Name"/>
-            </StackPanel>
-
-            <Separator Margin="24,16,24,16"></Separator>
-
-            <StackPanel Orientation="Vertical">
-                <!--<Label FontWeight="Bold">Application Options</Label>-->
-                <TextBlock Text="Opzioni dell'applicazione" Style="{StaticResource MaterialDesignHeadlineTextBlock}" Margin="24,0,24,0"></TextBlock>
-
-                <StackPanel Orientation="Vertical" Margin="24,16,24,0">
-                    <CheckBox  Margin="1" Name="InvisibleStateCB" IsChecked="{Binding Path=Settings.IsInvisible}">Modalità invisibile
-                    </CheckBox>
-                    <CheckBox  Margin="1" Name ="AutoReceiveCB"  IsChecked="{Binding Path=Settings.AutoAcceptFiles}" >Ricevi ogni file automaticamente</CheckBox>
+                <!--<Label  HorizontalAlignment=" center" FontWeight="Bold">Current username</Label>-->
+                <!--<TextBox  Padding="2" Margin="50,0,50,0" Name="UsernameTB" Text="{Binding Path=Settings.CurrentUsername}"  ></TextBox>-->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment=" center" Margin="16,0,16,0">
+                    <materialDesign:PackIcon Kind="Account" Margin="0,8,0,0" Foreground="{Binding ElementName=UsernameTB, Path=BorderBrush}" Height="24" Width="24" />
+                    <TextBox  MaxLength="{Binding Path=Settings.UsernameMaxLength}"  Margin="8,0,0,0" Width="224" Height="32" x:Name="UsernameTB" Text="{Binding Settings.CurrentUsername}" materialDesign:HintAssist.Hint="Name"/>
                 </StackPanel>
-                <StackPanel Orientation="Vertical" Margin="24,24,24,0">
-                    <!--<Label >Default receiving path</Label>-->
-                    <!--<Button Name="ChoosePath" Content="..." 
+
+                <Button Background="Transparent" BorderThickness="0" BorderBrush="Transparent" Height="32" Name="ProfilePictureButton1" Click="Import_Button_Click" Padding="0"
+                                            Style="{StaticResource MaterialDesignFlatButton}" Margin="64,24,64,0" Foreground="#448AFF">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal" Height="24">
+                            <materialDesign:PackIcon Kind="LaptopWindows" Foreground="#448AFF" Height="24" Width="24" VerticalAlignment="Bottom" />
+                            <TextBlock Text="Accedi con Windows" Height="20" Margin="8,4,0,0"/>
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+
+                <Separator Margin="24,8,24,16"></Separator>
+
+                <StackPanel Orientation="Vertical">
+                    <!--<Label FontWeight="Bold">Application Options</Label>-->
+                    <TextBlock Text="Opzioni dell'applicazione" Style="{StaticResource MaterialDesignHeadlineTextBlock}" Margin="24,0,24,0"></TextBlock>
+
+                    <StackPanel Orientation="Vertical" Margin="24,16,24,0">
+                        <CheckBox  Margin="1" Name="InvisibleStateCB" IsChecked="{Binding Path=Settings.IsInvisible}">Modalità invisibile
+                        </CheckBox>
+                        <CheckBox  Margin="1" Name ="AutoReceiveCB"  IsChecked="{Binding Path=Settings.AutoAcceptFiles}" >Ricevi ogni file automaticamente</CheckBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical" Margin="24,24,24,0">
+                        <!--<Label >Default receiving path</Label>-->
+                        <!--<Button Name="ChoosePath" Content="..." 
 				Margin="10,0,0,0"
 				Click="Path_Button_Click"/>-->
-                    <TextBlock Text="Destinazione predefinita per i file" Style="{StaticResource MaterialDesignBody2TextBlock}"></TextBlock>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <!--<TextBox Name="DefaultPath" Text="{Binding Path=Settings.DefaultRecvPath }"   ></TextBox>-->
-                        <TextBox Margin="0,0,0,0" Width="248" Height="32" x:Name="DefaultPath" Text="{Binding Settings.DefaultRecvPath}" materialDesign:HintAssist.Hint="Percorso predefinito"/>
-                        <Button Background="Transparent" BorderThickness="0" Name="ChoosePath" HorizontalAlignment="Center" Click="Path_Button_Click"
+                        <TextBlock Text="Destinazione predefinita per i file" Style="{StaticResource MaterialDesignBody2TextBlock}"></TextBlock>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <!--<TextBox Name="DefaultPath" Text="{Binding Path=Settings.DefaultRecvPath }"   ></TextBox>-->
+                            <TextBox Margin="0,0,0,0" Width="248" Height="32" x:Name="DefaultPath" Text="{Binding Settings.DefaultRecvPath}" materialDesign:HintAssist.Hint="Percorso predefinito"/>
+                            <Button Background="Transparent" BorderThickness="0" Name="ChoosePath" HorizontalAlignment="Center" Click="Path_Button_Click"
                                  Style="{StaticResource MaterialDesignFlatButton}">
-                            <!--<Image  Width="30" Height="30" Source="{Binding Path=Settings.FolderIcon}" />-->
-                            <!--<materialDesign:PackIcon Kind="Folder" Margin="0,8,0,0" Foreground="{Binding ElementName=UsernameTB, Path=BorderBrush}" Height="24" Width="24" />-->
-                            <Button.Content>
-                                <StackPanel Orientation="Horizontal" Height="24">
-                                    <materialDesign:PackIcon Kind="Folder" Foreground="{StaticResource PrimaryHueLightBrush}" Height="24" Width="24" />
-                                    <TextBlock Text="..." Height="20" Margin="4,8,0,0"/>
-                                </StackPanel>
-                            </Button.Content>
-                            <Button.ToolTip>
-                                <ToolTip>
-                                    <TextBlock>Modifica destinazione</TextBlock>
-                                </ToolTip>
-                            </Button.ToolTip>
-                        </Button>
+                                <!--<Image  Width="30" Height="30" Source="{Binding Path=Settings.FolderIcon}" />-->
+                                <!--<materialDesign:PackIcon Kind="Folder" Margin="0,8,0,0" Foreground="{Binding ElementName=UsernameTB, Path=BorderBrush}" Height="24" Width="24" />-->
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal" Height="24">
+                                        <materialDesign:PackIcon Kind="Folder" Foreground="{StaticResource PrimaryHueLightBrush}" Height="24" Width="24" />
+                                        <TextBlock Text="..." Height="20" Margin="4,8,0,0"/>
+                                    </StackPanel>
+                                </Button.Content>
+                                <Button.ToolTip>
+                                    <ToolTip>
+                                        <TextBlock>Modifica destinazione</TextBlock>
+                                    </ToolTip>
+                                </Button.ToolTip>
+                            </Button>
+                        </StackPanel>
                     </StackPanel>
-                </StackPanel>
 
-                <Button Content="Done"
+                    <Button Content="Done"
 					Margin="50,20,50,10"
 					Padding="5"
 				IsDefault="True"
                 Click="Close_Button_Click"/>
+                </StackPanel>
             </StackPanel>
-        </StackPanel>
-    </Grid>
+        </Grid>
+    </ScrollViewer>
 </Page>
