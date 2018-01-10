@@ -4,6 +4,7 @@ using FileShareConsole;
 using System.Diagnostics;
 using System.Threading;
 using System;
+using System.Windows.Forms;
 
 namespace FileChooser {
     class Program {
@@ -17,7 +18,15 @@ namespace FileChooser {
                 //qui devi definire il tuo percorso
                 //firstProc.StartInfo.FileName = Path.Combine(Directory.GetCurrentDirectory(), @"File Share.exe");//@"C:\Users\franc\Documents\GitKraken\pdsproject\FileShare\bin\Debug\FileShare.exe";
                 firstProc.StartInfo.FileName = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase), @"FileShare.exe");
-                firstProc.Start();
+
+                bool created;
+                Mutex m = new Mutex(true, "_startFileShareProcMutex", out created);
+                if (created) {
+                    DialogResult result = MessageBox.Show("Devi prima avviare l'applicazione File Share per inviare file. Vuoi avviarla?", "Attenzione",
+                                                            MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+                    if (result == DialogResult.OK)
+                        firstProc.Start();
+                }
             } else {
                 try {
                     PipeModule.Push(args[0]);
