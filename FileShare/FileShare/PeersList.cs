@@ -23,13 +23,21 @@ namespace HelloProtocol {
          */
         private static PeersList instance;
         /**
+         * The object on which acquire the lock in order to create the instance
+         */
+        private static object syncRoot = new Object();
+        /**
          * SINGLETON CREATIONAL PATTERN
          * The property which represents the unique instance of the class.
          */
         public static PeersList Instance {
             get {
-                if (instance == null)
-                    instance = new PeersList();
+                if (instance == null) {
+                    lock (syncRoot) {
+                        if (instance == null)
+                            instance = new PeersList();
+                    }
+                }
                 return instance;
             }
         }

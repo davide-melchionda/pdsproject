@@ -14,8 +14,8 @@
         WindowCloseButtonStyle="{DynamicResource CleanCloseWindowButtonStyle}"
         BorderThickness="0" 
         GlowBrush="Black"
-        Width="488"
-        Height="544"
+        Height="588"
+        Width="578"
         Topmost="True"
         ShowActivated="True">
     <Grid>

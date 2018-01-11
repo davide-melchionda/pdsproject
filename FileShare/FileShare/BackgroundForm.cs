@@ -21,6 +21,9 @@ namespace FileShare {
 
         public BackgroundForm() {
             InitializeComponent();
+
+            notifyIcon1.ShowBalloonTip(2000, "File Share è in esecuzione", "Sei pronto a condividere!.", ToolTipIcon.Info);
+
         }
 
         private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e) {
@@ -100,8 +103,7 @@ namespace FileShare {
 
             SettingsWindow sw = SettingsWindow.Instance;
             sw.Show();
-
-
+            
         }
 
         private void ExitToolStripMenuItem_Click(object sender, System.EventArgs e) {

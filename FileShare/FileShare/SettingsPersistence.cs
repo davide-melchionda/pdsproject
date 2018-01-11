@@ -14,7 +14,7 @@ namespace FileShare
      */
     class SettingsPersistence
     {
-        private static string settingsFile = Settings.Instance.AppDataPath+"\\Settings.txt";
+        private static string settingsFile = Settings.Instance.AppDataPath + @"\Settings.txt";
 
         public static void readSettings()
         {
@@ -31,7 +31,7 @@ namespace FileShare
                     Settings.Instance.AutoAcceptFiles = appSettings.AutoAccept;
                     Settings.Instance.CurrentUsername = appSettings.CurrentUsername;
                     Settings.Instance.DefaultRecvPath = appSettings.DefaultPath;
-                    Settings.Instance.ShowSetup = appSettings.ShowSetup;
+                    Settings.Instance.DontShowSetup = appSettings.DontShowSetup;
                     Settings.Instance.IsInvisible = appSettings.IsInvisible;
                     Settings.Instance.PicturePath = appSettings.PicPath;
 
@@ -47,7 +47,7 @@ namespace FileShare
             storable.CurrentUsername = Settings.Instance.CurrentUsername;
             storable.DefaultPath = Settings.Instance.DefaultRecvPath;
             storable.PicPath = Settings.Instance.PicturePath;
-            storable.ShowSetup = Settings.Instance.ShowSetup;
+            storable.DontShowSetup = Settings.Instance.DontShowSetup;
             System.IO.DirectoryInfo di = new DirectoryInfo(Path.GetDirectoryName(settingsFile));
             if (!di.Exists)
             {
@@ -71,7 +71,7 @@ namespace FileShare
         class StorableSettings
         {
             private bool isInvisible;
-            private bool showSetup;
+            private bool dontShowSetup;
             private bool autoAccept;
             private string defaultPath;
             private string currentUsername;
@@ -82,7 +82,7 @@ namespace FileShare
             public string DefaultPath { get => defaultPath; set => defaultPath = value; }
             public string CurrentUsername { get => currentUsername; set => currentUsername = value; }
             public string PicPath { get => picPath; set => picPath = value; }
-            public bool ShowSetup { get => showSetup; set => showSetup = value; }
+            public bool DontShowSetup { get => dontShowSetup; set => dontShowSetup = value; }
 
             public StorableSettings() { }
 

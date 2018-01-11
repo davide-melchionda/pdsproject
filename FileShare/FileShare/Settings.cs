@@ -19,12 +19,10 @@ using System.Windows.Media.Imaging;
  */
 [Serializable]
 
-public class Settings : System.ComponentModel.INotifyPropertyChanged
-{
+public class Settings : System.ComponentModel.INotifyPropertyChanged {
     public event PropertyChangedEventHandler PropertyChanged;
 
-    protected virtual void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
-    {
+    protected virtual void NotifyPropertyChanged([CallerMemberName] string propertyName = "") {
         var handler = PropertyChanged;
         if (handler != null)
             handler(this, new PropertyChangedEventArgs(propertyName));
@@ -35,15 +33,21 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
      */
     private static Settings instance;
     /**
+     * The object on which acquire the lock in order to create the instance
+     */
+    private static object syncRoot = new Object();
+    /**
      * SINGLETON CREATIONAL PATTERN
      * The property which represents the unique instance of the class.
      */
-    public static Settings Instance
-    {
-        get
-        {
-            if (instance == null)
-                instance = new Settings();
+    public static Settings Instance {
+        get {
+            if (instance == null) {
+                lock (syncRoot) {
+                    if (instance == null)
+                        instance = new Settings();
+                }
+            }
             return instance;
         }
     }
@@ -56,14 +60,11 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
     /**
      * localPeer property
      */
-    public Peer LocalPeer
-    {
-        get
-        {
+    public Peer LocalPeer {
+        get {
             return localPeer;
         }
-        set
-        {
+        set {
             // TODO
             // Try to write on file the new setting configurations
             // Throw an exception if something goes wrong
@@ -82,14 +83,11 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
     /**
      * mcastHelloPort property
      */
-    public int MCAST_HELLO_PORT
-    {
-        get
-        {
+    public int MCAST_HELLO_PORT {
+        get {
             return mcastHelloPort;
         }
-        set
-        {
+        set {
             // TODO
             // Try to write on file the new setting configurations
             // Throw an exception if something goes wrong
@@ -106,14 +104,11 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
     /**
      * mcastHelloIPAddress property
      */
-    public IPAddress MCAST_HELLO_IP_ADDRESS
-    {
-        get
-        {
+    public IPAddress MCAST_HELLO_IP_ADDRESS {
+        get {
             return mcastHelloIPAddress;
         }
-        set
-        {
+        set {
             // TODO
             // Try to write on file the new setting configurations
             // Throw an exception if something goes wrong
@@ -130,14 +125,11 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
     /**
      * bufSize property
      */
-    public int BUFSIZE
-    {
-        get
-        {
+    public int BUFSIZE {
+        get {
             return bufSize;
         }
-        set
-        {
+        set {
             // TODO
             // Try to write on file the new setting configurations
             // Throw an exception if something goes wrong
@@ -156,10 +148,8 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
     /**
      * maxageMillis property
      */
-    public int MAXAGE_MILLIS
-    {
-        get
-        {
+    public int MAXAGE_MILLIS {
+        get {
             return maxageMillis;
         }
     }
@@ -171,10 +161,8 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
     /**
      * helloCleanupSleepTime property
      */
-    public int HELLO_CLEANUP_SLEEP_TIME
-    {
-        get
-        {
+    public int HELLO_CLEANUP_SLEEP_TIME {
+        get {
             return helloCleanupSleepTime;
         }
     }
@@ -187,14 +175,11 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
     /**
      * helloInterval property
      */
-    public int HELLO_INTERVAL
-    {
-        get
-        {
+    public int HELLO_INTERVAL {
+        get {
             return helloInterval;
         }
-        set
-        {
+        set {
             helloInterval = value;
         }
     }
@@ -206,16 +191,13 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
     /**
      * servAcceptingPort property
      */
-    public int SERV_ACCEPTING_PORT
-    {
-        get
-        {
+    public int SERV_ACCEPTING_PORT {
+        get {
             return servAcceptingPort;
         }
     }
 
-    public void updatePeerAddress(string newAddress)
-    {
+    public void updatePeerAddress(string newAddress) {
         localPeer.Ipaddress = newAddress;
         localPeer.Id = localPeer.Name + ":" + localPeer.Ipaddress + ":" + DateTime.Now;
     }
@@ -224,14 +206,11 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
     /**
      * tcpReceivingPort property
      */
-    public int TCP_RECEIVING_PORT
-    {
-        get
-        {
+    public int TCP_RECEIVING_PORT {
+        get {
             return tcpReceivingPort;
         }
-        set
-        {
+        set {
             // TODO
             // Try to write on file the new setting configurations
             // Throw an exception if something goes wrong
@@ -245,14 +224,11 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
     /**
      * autoAcceptFiles property
      */
-    public bool AutoAcceptFiles
-    {
-        get
-        {
+    public bool AutoAcceptFiles {
+        get {
             return autoAcceptFiles;
         }
-        set
-        {
+        set {
             // TODO
             // Try to write on file the new setting configurations
             // Throw an exception if something goes wrong
@@ -269,14 +245,11 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
     /**
    * If the state is invisible or not. In invisible state the application doesn't show itself to the network
    */
-    public bool IsInvisible
-    {
-        get
-        {
+    public bool IsInvisible {
+        get {
             return isInvisible;
         }
-        set
-        {
+        set {
             // TODO
             // Try to write on file the new setting configurations
             // Throw an exception if something goes wrong
@@ -287,25 +260,22 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
 
         }
     }
-    private bool showSetup = /* DEFAULT */ false;
+    private bool dontShowSetup = /* DEFAULT */ false;
 
     /**
    * If the state is invisible or not. In invisible state the application doesn't show itself to the network
    */
-    public bool ShowSetup
-    {
-        get
-        {
-            return showSetup;
+    public bool DontShowSetup {
+        get {
+            return dontShowSetup;
         }
-        set
-        {
+        set {
             // TODO
             // Try to write on file the new setting configurations
             // Throw an exception if something goes wrong
 
             // ... after the file update
-            showSetup = value;
+            dontShowSetup = value;
             NotifyPropertyChanged();
 
         }
@@ -314,18 +284,15 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
     /**
  * The default path on the file system in which save settings file.
  */
-    private string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\Fileshare";
+    private string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\File Share";
     /**
      * defaultRecvPath property
      */
-    public string AppDataPath
-    {
-        get
-        {
+    public string AppDataPath {
+        get {
             return appDataPath;
         }
-        set
-        {
+        set {
             appDataPath = value; ;
             NotifyPropertyChanged();
         }
@@ -334,22 +301,16 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
     /**
      * The default path on the file system in which save received files.
      */
-    //private string defaultRecvPath = @"C:\Users\franc\Desktop\recv\";
     private string defaultRecvPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
-    //private string defaultRecvPath = @"C:\Users\vm-dm-win\Desktop\recv\";
     /**
      * defaultRecvPath property
      */
-    public string DefaultRecvPath
-    {
-        get
-        {
+    public string DefaultRecvPath {
+        get {
             return defaultRecvPath;
         }
-        set
-        {
-            if (!String.IsNullOrEmpty(value))
-            {
+        set {
+            if (!String.IsNullOrEmpty(value)) {
                 defaultRecvPath = value; ;
                 NotifyPropertyChanged();
             }
@@ -365,16 +326,12 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
     /**
     * defaultRecvPath property
     */
-    public string CurrentUsername
-    {
-        get
-        {
+    public string CurrentUsername {
+        get {
             return this.LocalPeer.Name;
         }
-        set
-        {
-            if (!String.IsNullOrEmpty(value))
-            {
+        set {
+            if (!String.IsNullOrEmpty(value)) {
                 this.LocalPeer.Name = value;
                 NotifyPropertyChanged();
             }
@@ -388,14 +345,11 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
     /// <summary>
     /// Property binded to iconSize private instance field
     /// </summary>
-    public Size IconSize
-    {
-        get
-        {
+    public Size IconSize {
+        get {
             return iconSize;
         }
-        set
-        {
+        set {
             iconSize = value;
         }
     }
@@ -408,29 +362,22 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
     /// <summary>
     /// Property linked to picturePath field
     /// </summary>
-    public string PicturePath
-    {
-        get
-        {
+    public string PicturePath {
+        get {
             return picturePath;
         }
-        set
-        {
-            if (File.Exists(value))
-            {
+        set {
+            if (File.Exists(value)) {
                 //LocalPeer.Icon = ImageAdapter.GetThumbnailImage(new BitmapImage(new Uri(value)), IconSize);
                 //LocalPeer.ByteIcon = ImageAdapter.ByteArrayFromImage(new BitmapImage(new Uri(value)), MaxThumbnailPictureMemorySize);7
                 Bitmap tmpBitmap;
-                try
-                {
+                try {
                     tmpBitmap = new Bitmap(value);
                     LocalPeer.ByteIcon = ImageAdapter.ByteArrayFromImage(tmpBitmap, MaxThumbnailPictureMemorySize);
                     tmpBitmap.Dispose();
                     picturePath = value;
                     NotifyPropertyChanged();
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     Console.WriteLine(e.Message);
                 }
 
@@ -442,30 +389,25 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged
     /// The maximum size of a picture. This limit is necessary to allow the picture be sent 
     /// inside a UDP datagram.
     /// </summary>
-    public int MaxThumbnailPictureMemorySize
-    {
-        get
-        {
+    public int MaxThumbnailPictureMemorySize {
+        get {
             return 40 * 1024;   /* DEFAULT */
         }
     }
 
     public Resources Resources { get; set; }
-    public int UsernameMaxLength
-    {   
-            get
-        {
-                return 20;   /* DEFAULT */
-            }
+    public int UsernameMaxLength {
+        get {
+            return 20;   /* DEFAULT */
         }
+    }
 
     /**
      * SINGLETON CREATIONAL PATTERN
      * The protected constructor.
      * Retrieves the settings from a file.
      */
-    protected Settings()
-    {
+    protected Settings() {
 
         // TODO
         // Retrieve configuration from a file

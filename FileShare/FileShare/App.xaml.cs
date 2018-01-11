@@ -32,7 +32,7 @@ namespace FileShare
             }
 
             SettingsPersistence.readSettings();
-            if (Settings.Instance.ShowSetup == false)
+            if (Settings.Instance.DontShowSetup == false)
             {
                 ProfileSetupWindow pw = new ProfileSetupWindow();
                 pw.ShowDialog();
@@ -135,6 +135,7 @@ namespace FileShare
             /* Start the background form which will manage the tray icon 
              * and the notification window */
             bf = new BackgroundForm();
+
         }
 
         private void Hellothread_OnProfilePicUpdate(string peerId, byte[] newPicture)

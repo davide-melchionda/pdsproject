@@ -15,6 +15,10 @@ namespace FileTransfer {
          */
         private static JobsList sending;
         /**
+         * The object on which acquire the lock in order to create the instance
+         */
+        private static object syncRootSending = new Object();
+        /**
          * instance property.
          * Through the get method it's possble to get a reference to the
          * unique instance for outgoing transfers of this cass.
@@ -22,7 +26,10 @@ namespace FileTransfer {
         public static JobsList Sending {
             get {
                 if (sending == null) {
-                    sending = new JobsList();
+                    lock (syncRootSending) {
+                        if (sending == null)
+                            sending = new JobsList();
+                    }
                 }
                 return sending;
             }
@@ -33,6 +40,10 @@ namespace FileTransfer {
          */
         private static JobsList receiving;
         /**
+         * The object on which acquire the lock in order to create the instance
+         */
+        private static object syncRootReceiving = new Object();
+        /**
          * instance property.
          * Through the get method it's possble to get a reference to the
          * unique instance for incoming transfers of this cass.
@@ -40,7 +51,10 @@ namespace FileTransfer {
         public static JobsList Receiving {
             get {
                 if (receiving== null) {
-                    receiving = new JobsList();
+                    lock (syncRootReceiving) {
+                        if (receiving == null)
+                            receiving = new JobsList();
+                    }
                 }
                 return receiving;
             }

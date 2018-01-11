@@ -21,13 +21,21 @@ namespace HelloProtocol {
          */
         private static HelloNetworkModule instance;
         /**
+         * The object on which acquire the lock in order to create the instance
+         */
+        private static object syncRoot = new Object();
+        /**
          * SINGLETON CREATIONAL PATTERN
          * The property which represents the unique instance of the class.
          */
         public static HelloNetworkModule Instance {
             get {
-                if (instance == null)
-                    instance = new HelloNetworkModule();
+                if (instance == null) {
+                    lock (syncRoot) {
+                        if (instance == null)
+                            instance = new HelloNetworkModule();
+                    }
+                }
                 return instance;
             }
         }

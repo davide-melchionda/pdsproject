@@ -45,6 +45,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_15F14902D5BC400490C93F2B1957E090"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_1C8F5C4DAF15FA6E6A64E76037C107E1"
         "OwnerKey" = "8:_C39420130AEA4ED79086C31F773544A1"
         "MsmSig" = "8:_UNDEFINED"
@@ -71,6 +77,12 @@
         {
         "MsmKey" = "8:_39F088545F6A0D22EAD1523BC47A6E3C"
         "OwnerKey" = "8:_C39420130AEA4ED79086C31F773544A1"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_44503DD392C140C98BE6E857B6CB9049"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -112,6 +124,18 @@
         "Entry"
         {
         "MsmKey" = "8:_C39420130AEA4ED79086C31F773544A1"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_F2436D0D2CBC4C129495AECFE0C393D0"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_FCC01B1536C941E68C3164FFD64EF1FD"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -384,6 +408,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_15F14902D5BC400490C93F2B1957E090"
+            {
+            "SourcePath" = "8:..\\FileShare\\bin\\Debug\\imgs\\share-icon.ico"
+            "TargetName" = "8:share-icon.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_5B459AC4749340358E7F24E22BC8C731"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_1C8F5C4DAF15FA6E6A64E76037C107E1"
             {
             "AssemblyRegister" = "3:1"
@@ -475,6 +519,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_44503DD392C140C98BE6E857B6CB9049"
+            {
+            "SourcePath" = "8:..\\FileShare\\bin\\Debug\\imgs\\share-context.ico"
+            "TargetName" = "8:share-context.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_5B459AC4749340358E7F24E22BC8C731"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_4F8C58B7E8AC015ED07470949E307AAF"
@@ -652,12 +716,85 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F2436D0D2CBC4C129495AECFE0C393D0"
+            {
+            "SourcePath" = "8:..\\FileShare\\bin\\Debug\\Settings.txt"
+            "TargetName" = "8:Settings.txt"
+            "Tag" = "8:"
+            "Folder" = "8:_734FE12722AD4900AAA9055508A23D10"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FCC01B1536C941E68C3164FFD64EF1FD"
+            {
+            "SourcePath" = "8:..\\FileShare\\bin\\Debug\\imgs\\share-icon.ico"
+            "TargetName" = "8:share-icon.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_8542149185264A17A93FE2D88C2F6F0B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
         }
         "FileType"
         {
         }
         "Folder"
         {
+            "{1525181F-901A-416C-8A58-119130FE478E}:_28BF921F4B764043948D19FD3D3C7DA1"
+            {
+            "Name" = "8:#1915"
+            "AlwaysCreate" = "11:FALSE"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Property" = "8:AppDataFolder"
+                "Folders"
+                {
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_734FE12722AD4900AAA9055508A23D10"
+                    {
+                    "Name" = "8:File Share"
+                    "AlwaysCreate" = "11:FALSE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_9329AA3E013045758CB2DF9884FAAB44"
+                        "Folders"
+                        {
+                            "{9EF0B969-E518-4E46-987F-47570745A589}:_A99F7852BA6D47E6B97A2BCD1537F7F4"
+                            {
+                            "Name" = "8:temp"
+                            "AlwaysCreate" = "11:FALSE"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "Property" = "8:_C36854E2C6FB4F009A1A7D26BE9FA479"
+                                "Folders"
+                                {
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             "{1525181F-901A-416C-8A58-119130FE478E}:_2BCC4FBA9CAE4FA793A2C8B313F73CEE"
             {
             "Name" = "8:#1919"
@@ -742,7 +879,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:File Share"
         "ProductCode" = "8:{D34C93DD-AA79-473A-96DA-60E38ACD6293}"
-        "PackageCode" = "8:{B2C0D10C-4424-4DB1-BBF4-5312D771C5B3}"
+        "PackageCode" = "8:{601DDFCB-C596-4C3E-80CB-3DD8A0A3936B}"
         "UpgradeCode" = "8:{2E961A95-6173-4350-9D44-C3CF016EB46C}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -894,6 +1031,14 @@
                                         }
                                         "Values"
                                         {
+                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_986C9EEC07764E17883A7B5450A046C7"
+                                            {
+                                            "Name" = "8:icon"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "ValueTypes" = "3:1"
+                                            "Value" = "8:[TARGETDIR]imgs\\share-context.ico"
+                                            }
                                         }
                                     }
                                 }
@@ -958,6 +1103,14 @@
                                         }
                                         "Values"
                                         {
+                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_18FF84576168451C88F92F4A0FDD3903"
+                                            {
+                                            "Name" = "8:icon"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "ValueTypes" = "3:1"
+                                            "Value" = "8:[TARGETDIR]imgs\\share-context.ico"
+                                            }
                                         }
                                     }
                                 }
@@ -1001,7 +1154,7 @@
             "Target" = "8:_C39420130AEA4ED79086C31F773544A1"
             "Folder" = "8:_4C2603703CC1449095F067DFCB88A40B"
             "WorkingFolder" = "8:_7048919C53A442699967DD4EFD35B4E8"
-            "Icon" = "8:"
+            "Icon" = "8:_FCC01B1536C941E68C3164FFD64EF1FD"
             "Feature" = "8:"
             }
         }

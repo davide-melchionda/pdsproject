@@ -26,14 +26,24 @@ namespace FileChooser {
                                                             MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
                     if (result == DialogResult.OK)
                         firstProc.Start();
+
+                    m.ReleaseMutex();
                 }
             } else {
                 try {
                     PipeModule.Push(args[0]);
                 } catch (TimeoutException e) {
-                    // TODO What should we do here? Probably we should show a dialog
+                    bool created;
+                    Mutex m = new Mutex(true, "_showErrorDialogOnPipeTimeoutExceptionMutex", out created);
+                    if (created) {
+                        MessageBox.Show("Impossibile contattare l'applicazione. Verifica File Share sia in esecuzione e configurato.", "Impossibile conttare File Share",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        m.ReleaseMutex();
+                    }
                 }
             }
+
+            // When process ends the CloseHandle() is automatically called
         }
     }
 }

@@ -11,7 +11,7 @@ namespace FileShareConsole
 
     class PipeModule : IPCModule
     {
-        private static string IPC_PIPE = "FileSharePipe";
+        private static string IPC_PIPE = "\\\\.\\pipe\\FileSharePipe";
         private static NamedPipeServerStream pipeServer;
         private static StreamReader reader;
 
