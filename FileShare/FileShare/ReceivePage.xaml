@@ -9,7 +9,8 @@
       mc:Ignorable="d"
 	  Background="{StaticResource MaterialDesignPaper}"
       Title="ReceivePage" 
-      Width="550">
+      Width="550"
+      Height="560">
 
     <Grid Width="550">
         <StackPanel Orientation="Vertical">
@@ -25,7 +26,7 @@
                         <TextBlock Text="{Binding Path=Sender.Peer.Name}" HorizontalAlignment="Center" Style="{DynamicResource MaterialDesignHeadlineTextBlock}" Padding="16" FontSize="18"></TextBlock>
                     </StackPanel>
                     <!--<StackPanel Orientation="Vertical" Width="258" Margin="8,0,8,0">-->
-                    <Grid MaxHeight="248">
+                    <Grid Height="248">
                         <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="8,0,0,0">
                             <ListView x:Name="filesList" x:FieldModifier="public" Width="310" ItemsSource="{Binding Infos}" Margin="0,0,0,16" Padding="0">
                                 <ListView.Resources >

@@ -76,6 +76,36 @@
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal">
+                                                <Button Background="Transparent" BorderThickness="0" BorderBrush="Transparent" Height="24" Margin="4,0,0,0" Name="info_button"
+                                                        Style="{StaticResource MaterialDesignFlatButton}" Foreground="#448AFF">
+                                                    <Button.Content>
+                                                        <StackPanel Orientation="Horizontal" Height="16">
+                                                            <materialDesign:PackIcon Kind="InformationOutline" Foreground="#448AFF" Height="16" Width="16" VerticalAlignment="Bottom" />
+                                                        </StackPanel>
+                                                    </Button.Content>
+                                                    <Button.ToolTip>
+                                                        <ToolTip Background="White" BorderBrush="Gray" BorderThickness="1">
+                                                            <StackPanel HorizontalAlignment="Center">
+                                                                <TextBlock Name="toolbox_sender" Text="{Binding Path=Job.Task.ReceiverName, StringFormat= 'A {0}'}" 
+                                                                            TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" MaxWidth="210" FontSize="14" TextAlignment="Center"
+                                                                           Foreground="#222222"/>
+                                                                <ListView ItemsSource="{Binding Path=Job.Task.Info}" SelectionChanged="ListView_SelectionChanged_1">
+                                                                    <ListView.View>
+                                                                        <GridView>
+                                                                            <GridViewColumn Width="160">
+                                                                                <GridViewColumn.CellTemplate>
+                                                                                    <DataTemplate>
+                                                                                        <TextBlock Text="{Binding Path=Name}" TextTrimming="CharacterEllipsis" MaxWidth="160" Foreground="#222222"/>
+                                                                                    </DataTemplate>
+                                                                                </GridViewColumn.CellTemplate>
+                                                                            </GridViewColumn>
+                                                                        </GridView>
+                                                                    </ListView.View>
+                                                                </ListView>
+                                                            </StackPanel>
+                                                        </ToolTip>
+                                                    </Button.ToolTip>
+                                                </Button>
                                                 <TextBlock Text="{Binding Path=Job.Task.Info[0].Name}" TextTrimming="CharacterEllipsis" MaxWidth="160" Margin="0,8,0,0"/>
                                                 <TextBlock Name="and_others" Text="{Binding Path=FilesCountMinusOne, StringFormat= ' e altri {0}'}" 
                                                        TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" MaxWidth="210" Margin="0,8,0,0">
@@ -243,7 +273,7 @@
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <ListView ItemsSource="{Binding receivingJobs}" SelectionChanged="ListView_SelectionChanged_1">
                         <ListView.View>
-                            <GridView> 
+                            <GridView>
                                 <GridViewColumn Width="160" Header="In uscita">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>

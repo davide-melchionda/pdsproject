@@ -80,6 +80,7 @@ namespace FileTransfer {
                 // Remove the job from the list
                 JobsList.Sending.remove(job.Id);
                 // Trigger the event of conncetion error
+                job.Status = Job.JobStatus.ConnectionError;
 //<<<<<<< job-status-and-notifications
                 ConnectionError?.Invoke(job);
 //            } finally {

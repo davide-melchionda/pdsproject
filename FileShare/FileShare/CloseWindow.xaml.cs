@@ -25,6 +25,8 @@ namespace FileShare
             ClosePage closePage = new ClosePage();
             closePage.OnClosed += ClosePage_OnClosed; ;
             CloseFrame.Navigate(closePage);
+
+            DataContext = Settings.Instance.Resources;
         }
 
         private void ClosePage_OnClosed()

@@ -1,8 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.IO;
 
-namespace FileTransfer
-{
+namespace FileTransfer {
 
     public class FileInfo {
         /**
@@ -21,16 +20,15 @@ namespace FileTransfer
         /**
          * type property
          */
-        public FType Type
-        {
+        public FType Type {
             get { return type; }
             set { type = value; }
         }
 
-    /**
-     * Name of the file
-     */
-    private string name;
+        /**
+         * Name of the file
+         */
+        private string name;
         /**
          * name property
          */
@@ -49,13 +47,13 @@ namespace FileTransfer
          */
         public long Size {
             get { return size; }
-            set { size=value; }
+            set { size = value; }
         }
         /**
       *  A constructor at use of the Json Library
       */
         [JsonConstructor]
-        public FileInfo() {}
+        public FileInfo() { }
         /**
          * Constructor. Receives the path of a file and initialize
          * allt he iformations about the file itself.

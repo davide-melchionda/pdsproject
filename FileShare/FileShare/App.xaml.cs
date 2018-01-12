@@ -115,8 +115,8 @@ namespace FileShare
                             //                        Settings.Instance.LocalPeer.Name, PeersList.Instance.Peers.ElementAt(i).Id,
                             //                        PeersList.Instance.Peers.ElementAt(i).Name, filepath));
                             scheduler.scheduleJob(new SendingJob(new FileTransfer.Task(Settings.Instance.LocalPeer.Id,
-                                                  Settings.Instance.LocalPeer.Name, PeersList.Instance.Peers.ElementAt(i).Id,
-                                                  PeersList.Instance.Peers.ElementAt(i).Name, filepaths), filepaths));
+                                                  Settings.Instance.LocalPeer.Name, selected.ElementAt(i).Id,
+                                                  selected.ElementAt(i).Name, filepaths), filepaths));
                             //tasks.Add(new FileTransfer.Task(Settings.Instance.LocalPeer.Id,
                             //                        Settings.Instance.LocalPeer.Name, PeersList.Instance.Peers.ElementAt(i).Id,
                             //                        PeersList.Instance.Peers.ElementAt(i).Name, filepath));
@@ -135,6 +135,10 @@ namespace FileShare
             /* Start the background form which will manage the tray icon 
              * and the notification window */
             bf = new BackgroundForm();
+
+            for (int i = 0; i < 20; i++) {
+                PeersList.Instance.put(new Peer(new Random().Next()+i +"", new Random().Next() + i + "", new Random().Next() + i + ""));
+            }
 
         }
 

@@ -15,7 +15,8 @@
         WindowCloseButtonStyle="{DynamicResource CleanCloseWindowButtonStyle}"
         BorderThickness="0" 
         GlowBrush="Black"
-        Width="550" >
+        Width="550"
+        Height="560">
     <!--<Grid.RowDefinitions>
 			<RowDefinition Height="0*"/>
 			<RowDefinition/>

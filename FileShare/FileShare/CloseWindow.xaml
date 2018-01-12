@@ -17,7 +17,7 @@
         GlowBrush="Black"
 		Background="{StaticResource PrimaryHueMidBrush}">
 	<Grid>
-		<Image Source="C:\Users\franc\Desktop\share.png"></Image>
+        <Image Source="{Binding ClosePicture}"></Image>
 		<!--<Image Source="{Binding Path=Resources.ClosePicture}"></Image>-->
 
 		<Frame Name= "CloseFrame" Margin="0,0,-0.4,0.4"/>
