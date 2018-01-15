@@ -20,8 +20,20 @@
                       ShowCloseButton="False"
         BorderThickness="0" 
         GlowBrush="Black">
+    
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
+            <Button Click="Clear_All_Click">
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal" Height="36">
+                        <materialDesign:PackIcon Kind="NotificationClearAll" Foreground="White" Height="16" Width="16" Margin="0,8,0,8" />
+                        <!--<TextBlock Height="24" Text="Impostazioni" Style="{StaticResource MaterialDesignBody1TextBlock}" Margin="4,6,4,6"></TextBlock>-->
+                    </StackPanel>
+                </Button.Content>
+                <Button.ToolTip>
+                    <TextBox>Cancella trasferimenti completati</TextBox>
+                </Button.ToolTip>
+            </Button>
             <Button Click="Button_Click">
                 <Button.Content>
                     <StackPanel Orientation="Horizontal" Height="36">
@@ -30,25 +42,11 @@
                     </StackPanel>
                 </Button.Content>
             </Button>
-            <!--<Button>
-                <StackPanel Orientation="Horizontal">
-                    <Rectangle Width="20"
-                   Height="20"
-                   Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
-                        <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_cupcake}" />
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-                    <TextBlock Margin="4 0 0 0"
-                   VerticalAlignment="Center"
-                   Text="deploy cupcakes" />
-                </StackPanel>
-            </Button>-->
         </Controls:WindowCommands>
     </Controls:MetroWindow.RightWindowCommands>
 
 
     <Grid>
-        <Frame Name="NotificationFrame" Source="NotificationPage.xaml" />
+        <Frame Name="NotificationFrame" />
     </Grid>
 </Controls:MetroWindow>

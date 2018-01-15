@@ -2,16 +2,12 @@
 using FileTransfer;
 using HelloProtocol;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 
-namespace FileShare {
+namespace FileShare
+{
 
     /**
      * The DataContext class contains the structures used by the NotificationWindow to show informations
@@ -19,20 +15,23 @@ namespace FileShare {
      * mapping from the low level lists (modified by the core modules of the application) and the high level
      * lists (ObservableCollection(s) directly used by the GUI).
      */
-    class FileShareDataContext {
+    class FileShareDataContext
+    {
 
         /**
          * The instance of the list of jobs for outgoing transfers
          */
         private static FileShareDataContext instance;
+
         /**
-         * instance property.
-         * Through the get method it's possble to get a reference to the
-         * unique instance for outgoing transfers of this cass.
-         */
+* instance property.
+* Through the get method it's possble to get a reference to the
+* unique instance for outgoing transfers of this cass.
+*/
         public static FileShareDataContext Instance {
             get {
-                if (instance == null) {
+                if (instance == null)
+                {
                     instance = new FileShareDataContext();
                 }
                 return instance;
@@ -55,68 +54,84 @@ namespace FileShare {
             get { return receivingJobs.Count == 0; }
         }
 
-        protected FileShareDataContext() {
+        protected FileShareDataContext()
+        {
 
             Me = new ListedPeer(Settings.Instance.LocalPeer);
 
-            PeersList.Instance.PeerInserted += (Peer inserted) => {
-                App.Current.Dispatcher.Invoke((Action)delegate {
+            PeersList.Instance.PeerInserted += (Peer inserted) =>
+            {
+                App.Current.Dispatcher.Invoke((Action)delegate
+                {
                     peers.Add(new ListedPeer(inserted));
                 });
             };
 
-            PeersList.Instance.PeerRemoved += (Peer removed) => {
+            PeersList.Instance.PeerRemoved += (Peer removed) =>
+            {
                 foreach (ListedPeer p in peers)
-                    if (p.Peer.Id == removed.Id) {
-                        App.Current.Dispatcher.Invoke((Action)delegate {
+                    if (p.Peer.Id == removed.Id)
+                    {
+                        App.Current.Dispatcher.Invoke((Action)delegate
+                        {
                             peers.Remove(p);
                         });
                         break;
                     }
             };
 
-            JobsList.Sending.JobAdded += (Job job) => {
+            JobsList.Sending.JobAdded += (Job job) =>
+            {
                 ListedJob listedItem = new ListedJob(job);
-                App.Current.Dispatcher.Invoke((Action)delegate {
+                App.Current.Dispatcher.Invoke((Action)delegate
+                {
                     sendingJobs.Add(listedItem);
                 });
                 ConfigureState(listedItem); // Adapt view to the currest state of the job
-                job.PropertyChanged += (object sender, PropertyChangedEventArgs args) => {
+                job.PropertyChanged += (object sender, PropertyChangedEventArgs args) =>
+                {
                     ConfigureState(listedItem);
                 };
             };
 
-            JobsList.Sending.JobRemoved += (Job removedJob) => {
+            JobsList.Sending.JobRemoved += (Job removedJob) =>
+            {
                 foreach (ListedJob listItem in sendingJobs)
-                    if (listItem.Job.Id == removedJob.Id) {
+                    if (listItem.Job.Id == removedJob.Id)
+                    {
                         ConfigureState(listItem);
-                        System.Threading.Thread.Sleep(5000);
-                        App.Current.Dispatcher.Invoke((Action)delegate {
-                            sendingJobs.Remove(listItem);
-                        });
+                        //System.Threading.Thread.Sleep(5000);
+                        //App.Current.Dispatcher.Invoke((Action)delegate {
+                        //    sendingJobs.Remove(listItem);
+                        //});
                         break;
                     }
             };
 
-            JobsList.Receiving.JobAdded += (Job job) => {
+            JobsList.Receiving.JobAdded += (Job job) =>
+            {
                 ListedJob listedItem = new ListedJob(job);
-                App.Current.Dispatcher.Invoke((Action)delegate {
+                App.Current.Dispatcher.Invoke((Action)delegate
+                {
                     receivingJobs.Add(listedItem);
                 });
                 ConfigureState(listedItem); // Adapt view to the currest state of the job
-                job.PropertyChanged += (object sender, PropertyChangedEventArgs args) => {
+                job.PropertyChanged += (object sender, PropertyChangedEventArgs args) =>
+                {
                     ConfigureState(listedItem);
                 };
             };
 
-            JobsList.Receiving.JobRemoved += (Job removedJob) => {
+            JobsList.Receiving.JobRemoved += (Job removedJob) =>
+            {
                 foreach (ListedJob listItem in receivingJobs)
-                    if (listItem.Job.Id == removedJob.Id) {
+                    if (listItem.Job.Id == removedJob.Id)
+                    {
                         ConfigureState(listItem);
-                        System.Threading.Thread.Sleep(5000);
-                        App.Current.Dispatcher.Invoke((Action)delegate {
-                            receivingJobs.Remove(listItem);
-                        });
+                        //System.Threading.Thread.Sleep(5000);
+                        //App.Current.Dispatcher.Invoke((Action)delegate {
+                        //    receivingJobs.Remove(listItem);
+                        //});
                         break;
                     }
             };
@@ -135,14 +150,17 @@ namespace FileShare {
 
         }
 
-        private void ConfigureState(ListedJob listItem) {
+        private void ConfigureState(ListedJob listItem)
+        {
             // If no message was set, it was not me to configure this 
             // listItem to be removed. This means that I have to configure
             // all the fields to a generic "Error" or "Completed" sate.
             // I've no information to say more than this
-            if (/*listItem.Message == null || listItem.Message == "In completamento"*/true) {
+            if (/*listItem.Message == null || listItem.Message == "In completamento"*/true)
+            {
                 //if (listItem.Job.Percentage != 100) {
-                switch (listItem.Job.Status) {
+                switch (listItem.Job.Status)
+                {
                     case Job.JobStatus.Active:
                         listItem.Preparing = false;
                         listItem.Completing = false;
@@ -215,7 +233,8 @@ namespace FileShare {
             // somewhere else.
         }
 
-        internal void DeactivateJob(ListedJob item) {
+        internal void DeactivateJob(ListedJob item)
+        {
             item.Stopped = true;
             item.Job.Status = Job.JobStatus.StoppedByLocal; // It was me to stop this job
             item.Completed = true;
@@ -223,23 +242,30 @@ namespace FileShare {
             item.Message = "In cancellazione...";
         }
 
-        public async void manageProgressBar(ProgressBar prog) {
+        public async void manageProgressBar(ProgressBar prog)
+        {
             int count = 3;
             ListedJob item = prog.DataContext as ListedJob;
-            App.Current.Dispatcher.Invoke((Action)delegate {
+            App.Current.Dispatcher.Invoke((Action)delegate
+            {
                 prog.Value = item.Job.Percentage;
             });
-            await System.Threading.Tasks.Task.Run(() => {
-                while (true) {
+            await System.Threading.Tasks.Task.Run(() =>
+            {
+                while (true)
+                {
                     // Responsive app: first thing to do is to show to the user something
                     // coherent with the status of the job.
-                    App.Current.Dispatcher.Invoke((Action)delegate {
+                    App.Current.Dispatcher.Invoke((Action)delegate
+                    {
                         prog.Value = item.Job.Percentage;
                     });
-                    if (count == 3) {
+                    if (count == 3)
+                    {
                         item.UpdateTimeLeft();
                         count = 0;
-                    } else
+                    }
+                    else
                         count++;
 
                     // If we have done
@@ -252,6 +278,35 @@ namespace FileShare {
                     System.Threading.Thread.Sleep(300);
                 }
             });
+        }
+
+        internal void ClearAllCompleted()
+        {
+            //foreach (ListedJob listed in sendingJobs)
+            ListedJob listed;
+            for (int i = sendingJobs.Count-1; i >= 0; i--)
+            {
+                listed = sendingJobs[i];
+                if (listed.Completed)   
+                {
+                    App.Current.Dispatcher.Invoke((Action)delegate
+                    {
+                        sendingJobs.Remove(listed);
+                    });
+                }
+            }
+
+            for (int i = receivingJobs.Count - 1; i >= 0; i--)
+            {
+                listed = receivingJobs[i];
+                if (listed.Completed)
+                {
+                    App.Current.Dispatcher.Invoke((Action)delegate
+                    {
+                        receivingJobs.Remove(listed);
+                    });
+                }
+            }
         }
     }
 }

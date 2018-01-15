@@ -136,9 +136,9 @@ namespace FileShare
              * and the notification window */
             bf = new BackgroundForm();
 
-            for (int i = 0; i < 20; i++) {
-                PeersList.Instance.put(new Peer(new Random().Next()+i +"", new Random().Next() + i + "", new Random().Next() + i + ""));
-            }
+            //for (int i = 0; i < 20; i++) {
+            //    PeersList.Instance.put(new Peer(new Random().Next()+i +"", new Random().Next() + i + "", new Random().Next() + i + ""));
+            //}
 
         }
 

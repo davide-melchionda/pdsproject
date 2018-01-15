@@ -25,6 +25,11 @@ namespace FileShare {
             DataContext = FileShareDataContext.Instance;
         }
 
+        internal void ClearAllCompleted()
+        {
+            (DataContext as FileShareDataContext).ClearAllCompleted();
+        }
+
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e) {
 
         }

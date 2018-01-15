@@ -17,12 +17,12 @@ namespace FileTransfer
         /**
          * The semaphore which manages the high level threshold in server scheduling.
          */
-        private static Semaphore serversHighThreshold = new Semaphore(15, 15);
+        private static Semaphore serversHighThreshold = new Semaphore(4, 4);
 
         /**
          * The number which represents the low level threshold in server scheuling.
          */
-        private const int serversLowThreshold = 10;
+        private const int serversLowThreshold = 2;
 
         /**
          * The semaphore which manages the low level threshold in server scheduling.
@@ -48,7 +48,7 @@ namespace FileTransfer
         /**
          * This event will represent the completion of a task by a thread.
          */
-        AutoResetEvent threadFinishedEvent = new AutoResetEvent(false);
+        private static AutoResetEvent threadFinishedEvent = new AutoResetEvent(false);
 
         public override void enterClient()
         {
@@ -110,7 +110,7 @@ namespace FileTransfer
             dictionaryValueDecrement(connectionId);   // Decrements the count of active threads with the given id
             threadFinishedEvent.Set();  // Signals to waiting thread the event of finishing
         }
-
+         
         /**
          * Check if an entry eists in the dictionary for the given id.
          */
