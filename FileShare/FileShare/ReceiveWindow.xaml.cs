@@ -29,8 +29,6 @@ namespace FileShare
             page.OnClosed += Page_OnClosed;
             this.ReceiveFrame.Navigate(page);
             this.receivingRequest = request;
-
-
         }
         private void Page_OnClosed()
         {

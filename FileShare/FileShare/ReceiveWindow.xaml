@@ -17,6 +17,7 @@
         GlowBrush="Black"
         Width="550"
         Height="560">
+    <!--ShowActivated="True">-->
     <!--<Grid.RowDefinitions>
 			<RowDefinition Height="0*"/>
 			<RowDefinition/>
