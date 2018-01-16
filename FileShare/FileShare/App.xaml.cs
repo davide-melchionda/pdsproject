@@ -26,14 +26,12 @@ namespace FileShare
         //Deny the user the possibility to open two or more instances of the application
         void AppStartup(object sender, StartupEventArgs e)
         {
-            if (Process.GetProcessesByName("FileShare").Length > 1)
-            {
+            if (Process.GetProcessesByName("FileShare").Length > 1) {
                 Environment.Exit(0);
             }
 
             SettingsPersistence.readSettings();
-            if (Settings.Instance.DontShowSetup == false)
-            {
+            if (Settings.Instance.DontShowSetup == false) {
                 ProfileSetupWindow pw = new ProfileSetupWindow();
                 pw.ShowDialog();
             }
@@ -52,26 +50,24 @@ namespace FileShare
 
             // Start the thread responsible of receiving request of transferring files
             ServerClass receiver = new ServerClass();
-            receiver.RequestReceived += (ToAccept request) =>
-            {
+            receiver.RequestReceived += (ToAccept request) => {
 
                 // On the gui thread
-                Application.Current.Dispatcher.Invoke((Action)delegate
-                {
+                Application.Current.Dispatcher.Invoke((Action)delegate {
                     //mostra la finestra e prende in uscita path e response
                     ReceiveWindow rw = new ReceiveWindow(request);
-                    rw.ShowDialog();
-
+                    //rw.ShowDialog();
+                    rw.Show();
+                    //rw.Activate();
                 });
                 return request;
             };
-            
+
             receiver.ConnectionError += (Job j) => {
                 if (j == null || j.Status == Job.JobStatus.ConnectionError)
                     bf.NotifyError(BackgroundForm.ErrorNotificationType.Receiving);
             };
-            receiver.PathError += () =>
-            {
+            receiver.PathError += () => {
                 bf.NotifyError(BackgroundForm.ErrorNotificationType.Path);
             };
 
@@ -82,35 +78,30 @@ namespace FileShare
             PipeDaemon pipeListener = new PipeDaemon();
             /* Register on the pipeListener a callback to execute when the user wants to send
              * a new file. */
-            pipeListener.popHappened += (List<string> paths) =>
-            {
+            pipeListener.popHappened += (List<string> paths) => {
 
                 // On the gui thread
-                Application.Current.Dispatcher.Invoke((Action)delegate
-                {
+                Application.Current.Dispatcher.Invoke((Action)delegate {
                     /* Create a new SelectionWindow and register a callback to execute when
                      * the user has selected the list of receivers. */
                     SelectionWindow sw = new SelectionWindow(paths);
 
                     //sw.page.OnselectHappened += (List<Peer> selected, string filepath) => {
-                    sw.Selected += (List<Peer> selected, List<string> filepaths) =>
-                    {
+                    sw.Selected += (List<Peer> selected, List<string> filepaths) => {
                         // Close the window
                         sw.Close();
                         /* For each peer in the list schedule a new job on a job scheuler. */
                         JobScheduler scheduler = new JobScheduler();
                         // Register a callback to execute in case of connection errors
-                        
+
                         scheduler.ConnectionError += (Job j) => {
                             if (j.Status == Job.JobStatus.ConnectionError)
                                 bf.NotifyError(BackgroundForm.ErrorNotificationType.Sending);
                         };
-                        scheduler.FileError += () =>
-                        {
+                        scheduler.FileError += () => {
                             bf.NotifyError(BackgroundForm.ErrorNotificationType.File);
                         };
-                        for (int i = 0; i < selected.Count; i++)
-                        {
+                        for (int i = 0; i < selected.Count; i++) {
                             //tasks.Add(new FileTransfer.Task(Settings.Instance.LocalPeer.Id,
                             //                        Settings.Instance.LocalPeer.Name, PeersList.Instance.Peers.ElementAt(i).Id,
                             //                        PeersList.Instance.Peers.ElementAt(i).Name, filepath));
@@ -137,15 +128,14 @@ namespace FileShare
             bf = new BackgroundForm();
 
             //for (int i = 0; i < 20; i++) {
-            //    PeersList.Instance.put(new Peer(new Random().Next()+i +"", new Random().Next() + i + "", new Random().Next() + i + ""));
+            //    PeersList.Instance.put(new Peer(new Random().Next() + i + "", new Random().Next() + i + "", new Random().Next() + i + ""));
             //}
 
         }
 
         private void Hellothread_OnProfilePicUpdate(string peerId, byte[] newPicture)
         {
-            Application.Current.Dispatcher.Invoke((Action)delegate
-            {
+            Application.Current.Dispatcher.Invoke((Action)delegate {
                 //updates in GUI a user profile picture
 
                 PeersList.Instance.get(peerId).ByteIcon = newPicture;
@@ -167,8 +157,9 @@ namespace FileShare
         /// <param name="e"></param>
         public void AppExit(object sender, EventArgs e)
         {
-      
-            bf.Close(); SettingsPersistence.writeSettings();
+
+            bf.Close();
+            SettingsPersistence.writeSettings();
             GarbageCleanup gc = new GarbageCleanup();
             gc.run();
             // Process completed successfully

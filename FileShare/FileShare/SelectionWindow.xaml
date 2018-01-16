@@ -15,9 +15,8 @@
         BorderThickness="0" 
         GlowBrush="Black"
         Height="588"
-        Width="578"
-        Topmost="True"
-        ShowActivated="True">
+        Width="578">
+    <!--ShowActivated="True">-->
     <Grid>
 		<Frame Name="Page"/>
 

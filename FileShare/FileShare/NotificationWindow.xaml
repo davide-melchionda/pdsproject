@@ -19,7 +19,8 @@
                       IsCloseButtonEnabled="False"
                       ShowCloseButton="False"
         BorderThickness="0" 
-        GlowBrush="Black">
+        GlowBrush="Black"
+        ShowActivated="True">
     
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>

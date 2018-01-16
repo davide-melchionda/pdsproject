@@ -2,18 +2,22 @@
 using System;
 using System.Diagnostics;
 
-namespace HelloProtocol {
-    internal class HelloThread : ExecutableThread {
+namespace HelloProtocol
+{
+    internal class HelloThread : ExecutableThread
+    {
         public delegate void ProfilePicUpdated(string peerId, byte[] newPicture);
 
         public event ProfilePicUpdated OnProfilePicUpdate;
 
-        public HelloThread() {
+        public HelloThread()
+        {
             AppDomain.CurrentDomain.ProcessExit += new EventHandler(OnProcessExit);
 
         }
 
-        private void onPacketReceived(HelloPacket packet, String senderip) {
+        private void onPacketReceived(HelloPacket packet, String senderip)
+        {
 
             Logger.log(Logger.HELLO_DEBUG, "=======================================================================\n"); // DEBUG
 
@@ -104,7 +108,8 @@ namespace HelloProtocol {
             }
         }
 
-        protected override void execute() {
+        protected override void execute()
+        {
             // Obtaine a reference to the peers table
             PeersList peers = PeersList.Instance;
 
@@ -122,7 +127,11 @@ namespace HelloProtocol {
             cleanup.run();
 
             network.HelloPacketReception += onPacketReceived;
-            Settings.Instance.PropertyChanged += SendPresentationPacket;
+            Settings.Instance.PropertyChanged += (object s, System.ComponentModel.PropertyChangedEventArgs e) => {
+                if (String.Compare(e.PropertyName, "CurrentUsername") == 0 || String.Compare(e.PropertyName, "PicturePath") == 0)
+                    if (!Settings.Instance.IsInvisible) // Send a presentation packet only if not invisible
+                        SendPresentationPacket(/*s, e*/);
+            };
             Settings.Instance.PropertyChanged += Instance_visibilityChanged;
 
             while (true) {
@@ -138,26 +147,36 @@ namespace HelloProtocol {
 
         }
 
-        private void SendPresentationPacket(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+        private void SendPresentationPacket(/*object sender, System.ComponentModel.PropertyChangedEventArgs e*/)
+        {
             HelloNetworkModule network = HelloNetworkModule.Instance;
 
-            if (String.Compare(e.PropertyName, "CurrentUsername") == 0 || String.Compare(e.PropertyName, "PicturePath") == 0)
+            //if (String.Compare(e.PropertyName, "CurrentUsername") == 0 || String.Compare(e.PropertyName, "PicturePath") == 0)
                 while (!network.send(new PresentationPacket(Settings.Instance.LocalPeer)))
                     System.Threading.Thread.Sleep(3000);
         }
 
-        private void Instance_visibilityChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+        private void Instance_visibilityChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
             HelloNetworkModule network = HelloNetworkModule.Instance;
 
-            if (String.Compare(e.PropertyName, "IsInvisible") == 0)
-                sendGoodbye();
+            if (String.Compare(e.PropertyName, "IsInvisible") == 0) {
+                if (Settings.Instance.IsInvisible)
+                    sendGoodbye();
+                else
+                    SendPresentationPacket();
+            }
+
+
         }
 
-        public void OnProcessExit(object sender, EventArgs e) {
+        public void OnProcessExit(object sender, EventArgs e)
+        {
             sendGoodbye();
         }
 
-        private void sendGoodbye() {
+        private void sendGoodbye()
+        {
             HelloNetworkModule network = HelloNetworkModule.Instance;
             while (!network.send(new GoodByePacket(Settings.Instance.LocalPeer.Id)))
                 System.Threading.Thread.Sleep(3000);
