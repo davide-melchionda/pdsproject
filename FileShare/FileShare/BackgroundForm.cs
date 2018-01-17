@@ -22,7 +22,7 @@ namespace FileShare {
         public BackgroundForm() {
             InitializeComponent();
 
-            notifyIcon1.ShowBalloonTip(2000, "File Share è in esecuzione", "Sei pronto a condividere!.", ToolTipIcon.Info);
+            notifyIcon1.ShowBalloonTip(2000, "File Share è in esecuzione", "Sei pronto a condividere!", ToolTipIcon.Info);
 
         }
 

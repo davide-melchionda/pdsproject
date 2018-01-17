@@ -77,5 +77,28 @@ namespace FileShare {
         private void UsernameTB_TextChanged(object sender, TextChangedEventArgs e) {
 
         }
+        string oldText = "";
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+            System.Windows.Controls.TextBox textBox = sender as System.Windows.Controls.TextBox;
+            if (textBox != null)
+            {
+                int selStart = textBox.SelectionStart;
+                int selLength = textBox.SelectionLength;
+                foreach (char ch in textBox.Text.ToCharArray())
+                {
+                    if (!System.Char.IsLetterOrDigit(ch))
+                    {
+                        textBox.Text = oldText;
+                        textBox.SelectionStart = selStart;
+                        textBox.SelectionLength = selLength;
+                        return;
+                    }
+                }
+                oldText = textBox.Text;
+            }
+        }
+
     }
 }
