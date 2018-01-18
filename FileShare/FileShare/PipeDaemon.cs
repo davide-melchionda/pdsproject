@@ -43,5 +43,9 @@ namespace FileShareConsole
                 }
             }
         }
+
+        protected override void PrepareStop() {
+            // TODO
+        }
     }
 }

@@ -20,10 +20,16 @@ namespace FileTransfer {
          */
         public event OnConnectionError ConnectionError;
 
-        /**
-   * Delegate: format of the callback to call when error on Path occours
-   */
+        /// <summary>
+        /// The socket on which the server will receive connections
+        /// </summary>
+        Socket listener;
+
+        /// <summary>
+        /// Delegate: format of the callback to call when error on Path occours
+        /// </summary>
         public delegate void OnPathError();
+        
         /**
          * Event on which register the callback to manage the Path error
          */
@@ -31,7 +37,7 @@ namespace FileTransfer {
 
         protected override void execute() {
             IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Any, Settings.Instance.SERV_ACCEPTING_PORT);
-            Socket listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
             try {
                 listener.Bind(localEndPoint);
@@ -53,12 +59,17 @@ namespace FileTransfer {
                     receiver.PathError += () => {
                         PathError?.Invoke();
                     };
+                    RegisterChild(receiver);
                     receiver.run();
                 }
             } catch (Exception e) {
                 Console.WriteLine(e.ToString());
             }
 
+        }
+
+        protected override void PrepareStop() {
+            listener.Close();   // Closes the socket. This whill cause an exception
         }
     }
 

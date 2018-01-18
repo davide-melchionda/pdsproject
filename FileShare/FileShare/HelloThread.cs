@@ -1,23 +1,20 @@
 ﻿
 using System;
 using System.Diagnostics;
+using System.Net.Sockets;
 
-namespace HelloProtocol
-{
-    internal class HelloThread : ExecutableThread
-    {
+namespace HelloProtocol {
+    internal class HelloThread : ExecutableThread {
         public delegate void ProfilePicUpdated(string peerId, byte[] newPicture);
 
         public event ProfilePicUpdated OnProfilePicUpdate;
 
-        public HelloThread()
-        {
-            AppDomain.CurrentDomain.ProcessExit += new EventHandler(OnProcessExit);
+        public HelloThread() {
+            //AppDomain.CurrentDomain.ProcessExit += new EventHandler(OnProcessExit);
 
         }
 
-        private void onPacketReceived(HelloPacket packet, String senderip)
-        {
+        private void onPacketReceived(HelloPacket packet, String senderip) {
 
             Logger.log(Logger.HELLO_DEBUG, "=======================================================================\n"); // DEBUG
 
@@ -108,8 +105,7 @@ namespace HelloProtocol
             }
         }
 
-        protected override void execute()
-        {
+        protected override void execute() {
             // Obtaine a reference to the peers table
             PeersList peers = PeersList.Instance;
 
@@ -119,11 +115,13 @@ namespace HelloProtocol
             // Run a thread dedicated to the sending of the
             // hello packets (one each 30 sec.)
             HelloSenderThread sender = new HelloSenderThread();
+            RegisterChild(sender);  // a new child wa created
             sender.run();
 
             // Run a thread dedicated to the cleaning of the
             // peers table.
             HelloCleanupThread cleanup = new HelloCleanupThread();
+            RegisterChild(cleanup);  // a new child wa created
             cleanup.run();
 
             network.HelloPacketReception += onPacketReceived;
@@ -134,9 +132,8 @@ namespace HelloProtocol
             };
             Settings.Instance.PropertyChanged += Instance_visibilityChanged;
 
-            while (true) {
-                network.receive();
-            }
+            while (!Stop && network.receive())
+                ;
 
             /*
              * Should we close the socket?
@@ -147,17 +144,15 @@ namespace HelloProtocol
 
         }
 
-        private void SendPresentationPacket(/*object sender, System.ComponentModel.PropertyChangedEventArgs e*/)
-        {
+        private void SendPresentationPacket(/*object sender, System.ComponentModel.PropertyChangedEventArgs e*/) {
             HelloNetworkModule network = HelloNetworkModule.Instance;
 
             //if (String.Compare(e.PropertyName, "CurrentUsername") == 0 || String.Compare(e.PropertyName, "PicturePath") == 0)
-                while (!network.send(new PresentationPacket(Settings.Instance.LocalPeer)))
-                    System.Threading.Thread.Sleep(3000);
+            while (!network.send(new PresentationPacket(Settings.Instance.LocalPeer)))
+                System.Threading.Thread.Sleep(3000);
         }
 
-        private void Instance_visibilityChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
+        private void Instance_visibilityChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             HelloNetworkModule network = HelloNetworkModule.Instance;
 
             if (String.Compare(e.PropertyName, "IsInvisible") == 0) {
@@ -166,20 +161,24 @@ namespace HelloProtocol
                 else
                     SendPresentationPacket();
             }
-
-
         }
 
-        public void OnProcessExit(object sender, EventArgs e)
-        {
-            sendGoodbye();
-        }
+        //public void OnProcessExit(object sender, EventArgs e) {
+        //    sendGoodbye();
+        //}
 
-        private void sendGoodbye()
-        {
+        private void sendGoodbye() {
             HelloNetworkModule network = HelloNetworkModule.Instance;
             while (!network.send(new GoodByePacket(Settings.Instance.LocalPeer.Id)))
                 System.Threading.Thread.Sleep(3000);
+        }
+
+        protected override void PrepareStop() {
+            // immediately after have killed the childs we want
+            ChildsGone += () => {
+                sendGoodbye();  //... 1) to send a Goodbye packet
+                HelloNetworkModule.Instance.closeSockets(); // ... 2) to make the network module release all resources
+            };
         }
     }
 }

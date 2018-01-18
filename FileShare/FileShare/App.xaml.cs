@@ -7,15 +7,30 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Security.Principal;
+using System.Threading;
 using System.Windows;
 
-namespace FileShare
-{
+namespace FileShare {
     /// <summary>
     /// Logica di interazione per App.xaml
     /// </summary>
-    public partial class App : Application
-    {
+    public partial class App : Application {
+        /// <summary>
+        /// The instance of the HelloThread, that implements ExecutableThread
+        /// </summary>
+        HelloThread hellothread;
+
+        /// <summary>
+        /// The instance of the ServerClass, that implements ExecutableThread,
+        /// which will be used to mange incoming request of transfers
+        /// </summary>
+        ServerClass receiver;
+
+        /// <summary>
+        /// This list will contain all the ExecutableThreads on which the outgoing
+        /// Jobs will be scheduled.
+        /// </summary>
+        List<ExecutableThread> outgoingJobThreads = new List<ExecutableThread>();
 
         ///<summary>
         /// A form which will never be shown and which isresponsible of managing the
@@ -23,10 +38,25 @@ namespace FileShare
         /// </summary> 
         BackgroundForm bf;
 
+        /// <summary>
+        /// A mutex to manage the case in which more than one instance of this application was started
+        /// </summary>
+        static Mutex mutex;// = new Mutex(true, "_FileShareApp_Mutex");
+
         //Deny the user the possibility to open two or more instances of the application
-        void AppStartup(object sender, StartupEventArgs e)
-        {
-            if (Process.GetProcessesByName("FileShare").Length > 1) {
+        void AppStartup(object sender, StartupEventArgs e) {
+
+            // Only a single instance of this process must e executed
+            // if the length is grather than 1 we must quit
+            //if (Process.GetProcessesByName("FileShare").Length > 1) {
+            //    Environment.Exit(0);
+            //}
+            bool created;   // will be true if the mutext will be created and not retrieved
+            mutex = new Mutex(true, "_FileShareApp_Mutex", out created);
+            if (!created) { // If the mutex was not created, we are not the first thread trying to execute the program
+                //if (!mutex.WaitOne(TimeSpan.Zero, true)) {
+                mutex.Close();    // we don't want the system mantins the mutex opened for us
+                MessageBox.Show("File shar è già in esecuzione. Puoi accedervi dalla task bar.", "Avvio di File Share", MessageBoxButton.OK, MessageBoxImage.Information);
                 Environment.Exit(0);
             }
 
@@ -35,21 +65,14 @@ namespace FileShare
                 ProfileSetupWindow pw = new ProfileSetupWindow();
                 pw.ShowDialog();
             }
-            //GarbageCleanup gc = new GarbageCleanup();
-            //gc.run();
-
-            //WindowsIdentity wi = WindowsIdentity.GetCurrent();
-            //Settings.Instance.LocalPeer.Name = Environment.UserName;//wi.Name;
-
-            //Settings.Instance.PicturePath = @"C:\Users\" + Environment.UserName + @"\AppData\Local\Temp\" + Environment.UserName + @".bmp";
 
             // Start the thread responsible of the neighbor discovery process
-            HelloThread hellothread = new HelloThread();
+            hellothread = new HelloThread();
             hellothread.OnProfilePicUpdate += Hellothread_OnProfilePicUpdate;
             hellothread.run();
 
             // Start the thread responsible of receiving request of transferring files
-            ServerClass receiver = new ServerClass();
+            receiver = new ServerClass();
             receiver.RequestReceived += (ToAccept request) => {
 
                 // On the gui thread
@@ -105,9 +128,9 @@ namespace FileShare
                             //tasks.Add(new FileTransfer.Task(Settings.Instance.LocalPeer.Id,
                             //                        Settings.Instance.LocalPeer.Name, PeersList.Instance.Peers.ElementAt(i).Id,
                             //                        PeersList.Instance.Peers.ElementAt(i).Name, filepath));
-                            scheduler.scheduleJob(new SendingJob(new FileTransfer.Task(Settings.Instance.LocalPeer.Id,
+                            outgoingJobThreads.Add(scheduler.scheduleJob(new SendingJob(new FileTransfer.Task(Settings.Instance.LocalPeer.Id,
                                                   Settings.Instance.LocalPeer.Name, selected.ElementAt(i).Id,
-                                                  selected.ElementAt(i).Name, filepaths), filepaths));
+                                                  selected.ElementAt(i).Name, filepaths), filepaths)));
                             //tasks.Add(new FileTransfer.Task(Settings.Instance.LocalPeer.Id,
                             //                        Settings.Instance.LocalPeer.Name, PeersList.Instance.Peers.ElementAt(i).Id,
                             //                        PeersList.Instance.Peers.ElementAt(i).Name, filepath));
@@ -127,14 +150,13 @@ namespace FileShare
              * and the notification window */
             bf = new BackgroundForm();
 
-            //for (int i = 0; i < 20; i++) {
-            //    PeersList.Instance.put(new Peer(new Random().Next() + i + "", new Random().Next() + i + "", new Random().Next() + i + ""));
-            //}
+            for (int i = 0; i < 20; i++) {
+                PeersList.Instance.put(new Peer(new Random().Next() + i + "", new Random().Next() + i + "", new Random().Next() + i + ""));
+            }
 
         }
 
-        private void Hellothread_OnProfilePicUpdate(string peerId, byte[] newPicture)
-        {
+        private void Hellothread_OnProfilePicUpdate(string peerId, byte[] newPicture) {
             Application.Current.Dispatcher.Invoke((Action)delegate {
                 //updates in GUI a user profile picture
 
@@ -142,8 +164,7 @@ namespace FileShare
             });
         }
 
-        public ToAccept ShowConfirmWindow(ToAccept request)
-        {
+        public ToAccept ShowConfirmWindow(ToAccept request) {
 
             ReceiveWindow rw = new ReceiveWindow(request);
             rw.Show();
@@ -155,13 +176,31 @@ namespace FileShare
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void AppExit(object sender, EventArgs e)
-        {
-
+        public void AppExit(object sender, EventArgs e) {
             bf.Close();
+
+            // Stops the hello protocol thread (HelloThread)
+            hellothread.StopThread();
+            hellothread.Join();
+            // Stop the receiver thread (ServerClass)
+            receiver.StopThread();
+            receiver.Join();
+
+            // Lets stop all the thread that are managing outgoing jobs
+            foreach (ExecutableThread t in outgoingJobThreads)
+                t.StopThread();
+            foreach (ExecutableThread t in outgoingJobThreads)
+                t.Join();
+
             SettingsPersistence.writeSettings();
             GarbageCleanup gc = new GarbageCleanup();
             gc.run();
+            gc.Join();
+
+            // however the mutex will be automatically released 
+            // if this code will be not executed for any reason
+            mutex.ReleaseMutex();
+
             // Process completed successfully
             Environment.Exit(0);
         }
