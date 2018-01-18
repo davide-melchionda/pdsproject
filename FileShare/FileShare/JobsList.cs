@@ -73,6 +73,12 @@ namespace FileTransfer {
             }
         }
 
+        public int Count {
+            get {
+                return Jobs.Count;
+            }
+        }
+
         public delegate void OnJobAdded(Job job);
         public delegate void OnJobRemoved(Job job);
 

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Security.Principal;
 using System.Threading;
 using System.Windows;
@@ -31,6 +32,11 @@ namespace FileShare {
         /// Jobs will be scheduled.
         /// </summary>
         List<ExecutableThread> outgoingJobThreads = new List<ExecutableThread>();
+
+        /// <summary>
+        /// The PipeDaemon ExecutableThread tath allows the communication on the pipe
+        /// </summary>
+        PipeDaemon pipeListener;
 
         ///<summary>
         /// A form which will never be shown and which isresponsible of managing the
@@ -98,7 +104,7 @@ namespace FileShare {
 
             /* Create, configura and start the thread responsible of managing the communication on a pipe 
              * with the application which inform this process of the path of the file the user wants to send. */
-            PipeDaemon pipeListener = new PipeDaemon();
+            pipeListener = new PipeDaemon();
             /* Register on the pipeListener a callback to execute when the user wants to send
              * a new file. */
             pipeListener.popHappened += (List<string> paths) => {
@@ -149,11 +155,36 @@ namespace FileShare {
             /* Start the background form which will manage the tray icon 
              * and the notification window */
             bf = new BackgroundForm();
+            bf.BackgroundFormClosing += BeforeClosing;
 
-            for (int i = 0; i < 20; i++) {
-                PeersList.Instance.put(new Peer(new Random().Next() + i + "", new Random().Next() + i + "", new Random().Next() + i + ""));
-            }
+            //for (int i = 0; i < 20; i++) {
+            //    PeersList.Instance.put(new Peer(new Random().Next() + i + "", new Random().Next() + i + "", new Random().Next() + i + ""));
+            //}
 
+        }
+
+        private void BeforeClosing() {
+            // Stops the hello protocol thread (HelloThread)
+            hellothread.StopThread();
+            // Stop the receiver thread (ServerClass)
+            receiver.StopThread();
+            // Stop the pipe listener thread (PipeDaemon)
+            pipeListener.StopThread();
+            // Lets stop all the thread that are managing outgoing jobs
+            foreach (ExecutableThread t in outgoingJobThreads)
+                t.StopThread();
+
+            // Waits for the end of all these threads
+            receiver.Join();
+            pipeListener.Join();
+            hellothread.Join();
+            foreach (ExecutableThread t in outgoingJobThreads)
+                t.Join();
+
+            SettingsPersistence.writeSettings();
+            GarbageCleanup gc = new GarbageCleanup();
+            gc.run();
+            gc.Join();
         }
 
         private void Hellothread_OnProfilePicUpdate(string peerId, byte[] newPicture) {
@@ -176,33 +207,42 @@ namespace FileShare {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void AppExit(object sender, EventArgs e) {
-            bf.Close();
+        public async void AppExit(object sender, EventArgs e) {
 
-            // Stops the hello protocol thread (HelloThread)
-            hellothread.StopThread();
-            hellothread.Join();
-            // Stop the receiver thread (ServerClass)
-            receiver.StopThread();
-            receiver.Join();
+            //await System.Threading.Tasks.Task.Factory.StartNew(() => {
 
-            // Lets stop all the thread that are managing outgoing jobs
-            foreach (ExecutableThread t in outgoingJobThreads)
-                t.StopThread();
-            foreach (ExecutableThread t in outgoingJobThreads)
-                t.Join();
+            //    // Stops the hello protocol thread (HelloThread)
+            //    hellothread.StopThread();
+            //    hellothread.Join();
+            //    // Stop the receiver thread (ServerClass)
+            //    receiver.StopThread();
+            //    receiver.Join();
 
-            SettingsPersistence.writeSettings();
-            GarbageCleanup gc = new GarbageCleanup();
-            gc.run();
-            gc.Join();
+            //    // Lets stop all the thread that are managing outgoing jobs
+            //    foreach (ExecutableThread t in outgoingJobThreads)
+            //        t.StopThread();
+            //    foreach (ExecutableThread t in outgoingJobThreads)
+            //        t.Join();
 
-            // however the mutex will be automatically released 
-            // if this code will be not executed for any reason
+            //    SettingsPersistence.writeSettings();
+            //    GarbageCleanup gc = new GarbageCleanup();
+            //    gc.run();
+            //    gc.Join();
+            //    //bf.Close();
+            //    // however the mutex will be automatically released 
+            //    // if this code will be not executed for any reason
+            //    mutex.ReleaseMutex();
+
+            //    // Process completed successfully
+            //    //Environment.Exit(0);
+            //});
+            //task.ContinueWith(new Action<System.Threading.Tasks.Task>((antecedent) => {
             mutex.ReleaseMutex();
 
-            // Process completed successfully
-            Environment.Exit(0);
+            //Environment.Exit(0);
+                
+            //}));
+            
         }
     }
 }

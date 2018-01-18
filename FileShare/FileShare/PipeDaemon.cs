@@ -19,33 +19,41 @@ namespace FileShareConsole
         public delegate void onPopCallbackType(List<string> fileName);
         public event onPopCallbackType popHappened;
 
+        /// <summary>
+        /// The pipe module to access to the pipe
+        /// </summary>
+        PipeModule pipeModule;
+
         protected override void execute()
         {
-            PipeModule.InstantiateServer();
+            pipeModule = new PipeModule();
+            pipeModule.InstantiateServer();
 
             ConcurrentBag<string> paths = new ConcurrentBag<string>();
 
             object lockForPathsList = new object();
 
-            while (true)
+            while (!Stop)
             {
                 //Console.Write(PipeModule.Pop());
-                string s = PipeModule.Pop();
-                paths.Add(s);
-                if (paths.Count == 1) {
-                    Task.Run(() => {
-                        System.Threading.Thread.Sleep(GROUP_REQUESTS_WINDOW_MILLIS);
-                        lock (lockForPathsList) {
-                            popHappened?.Invoke(new List<string>(paths));
-                            paths = new ConcurrentBag<string>();
-                        }
-                    });
-                }
+                //string s = pipeModule.Pop();
+                pipeModule.Pop((s) => {
+                    paths.Add(s);
+                    if (paths.Count == 1) {
+                        Task.Run(() => {
+                            System.Threading.Thread.Sleep(GROUP_REQUESTS_WINDOW_MILLIS);
+                            lock (lockForPathsList) {
+                                popHappened?.Invoke(new List<string>(paths));
+                                paths = new ConcurrentBag<string>();
+                            }
+                        });
+                    }
+                });
             }
         }
 
         protected override void PrepareStop() {
-            // TODO
+            pipeModule.ClosePipe();
         }
     }
 }

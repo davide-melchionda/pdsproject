@@ -19,6 +19,9 @@ namespace FileShare {
             Receiving, Sending, File, Path
         };
 
+        public delegate void OnBackgroundFormClosing();
+        public event OnBackgroundFormClosing BackgroundFormClosing;
+
         public BackgroundForm() {
             InitializeComponent();
 
@@ -43,7 +46,8 @@ namespace FileShare {
 
             // If the click was performed with the left button
             if (e.Button != MouseButtons.Right && notificationWindow == null) {
-                if (lastDeactivateValid && Environment.TickCount - lastDeactivateTick < 200) return;
+                if (lastDeactivateValid && Environment.TickCount - lastDeactivateTick < 200)
+                    return;
 
                 // Create a new window
                 notificationWindow = new NotificationWindow();
@@ -103,20 +107,35 @@ namespace FileShare {
 
             SettingsWindow sw = SettingsWindow.Instance;
             sw.Show();
-            
+
         }
 
         private void ExitToolStripMenuItem_Click(object sender, System.EventArgs e) {
-            base.OnClosed(e);
+            //base.OnClosed(e);
             System.Windows.Application a = System.Windows.Application.Current;
 
-            if (FileShareDataContext.Instance.receivingJobs.Count != 0 || FileShareDataContext.Instance.sendingJobs.Count != 0) //chiedi all'utente se è sicuro di annullare i trasferimenti in corso
+            if (FileShareDataContext.Instance.StillReceiving || FileShareDataContext.Instance.StillSending) //chiedi all'utente se è sicuro di annullare i trasferimenti in corso
             {
-                CloseWindow cw = new CloseWindow();
+                CloseWindow cw = new CloseWindow(this);
                 cw.ShowDialog();
             } else {
-                a.Shutdown();
+                //a.Shutdown();
+                CloseBackgorundForm();
             }
+        }
+
+        public void CloseBackgorundForm() {
+            //Closing();
+            base.Close();
+            //base.Close();
+
+            System.Threading.Tasks.Task.Factory.StartNew(() => {
+                BackgroundFormClosing?.Invoke();
+                App.Current.Dispatcher.Invoke(() => {
+                    // Shutdown the application.
+                    App.Current.Shutdown();
+                });
+            });
 
         }
 

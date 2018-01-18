@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -19,10 +20,10 @@ namespace FileShare
     /// </summary>
     public partial class CloseWindow : MahApps.Metro.Controls.MetroWindow
     {
-        public CloseWindow()
+        public CloseWindow(Form f)
         {
             InitializeComponent();
-            ClosePage closePage = new ClosePage();
+            ClosePage closePage = new ClosePage(f);
             closePage.OnClosed += ClosePage_OnClosed; ;
             CloseFrame.Navigate(closePage);
 
