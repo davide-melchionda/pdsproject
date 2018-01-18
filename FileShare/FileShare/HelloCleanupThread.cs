@@ -7,15 +7,20 @@ namespace HelloProtocol {
 
     internal class HelloCleanupThread : ExecutableThread {
 
+        private AutoResetEvent sleepHandle = new AutoResetEvent(false);
+
         public HelloCleanupThread() {
 
         }
 
         protected override void execute() {
 
-            while (true) {
-                // Sleep for a certain time interval
-                Thread.Sleep(Settings.Instance.HELLO_CLEANUP_SLEEP_TIME);
+            while (!Stop) {
+                // Sleep for a certain time interval or while not waken up
+                sleepHandle.WaitOne(Settings.Instance.HELLO_CLEANUP_SLEEP_TIME);
+
+                if (Stop)   
+                    break;  // quit
 
                 // The instant he woke up
                 //DateTime wakeup = new DateTime();
@@ -47,6 +52,10 @@ namespace HelloProtocol {
             }
         }
 
+        protected override void PrepareStop() {
+            Stop = true;
+            sleepHandle.Set();
+        }
     }
 
 }

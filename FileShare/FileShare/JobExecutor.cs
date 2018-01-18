@@ -34,6 +34,11 @@ namespace FileTransfer {
          */
         public event OnConnectionError ConnectionError;
 
+        /// <summary>
+        /// The socket on which the transfer will be executed
+        /// </summary>
+        Socket socket;
+
         public delegate void OnFileError();
         /**
          * Event on which register the callback to manage the connection error
@@ -51,15 +56,14 @@ namespace FileTransfer {
          */
         protected override void execute() {
             // Create a TCP/IP  socket.
-            Socket socket = new Socket(AddressFamily.InterNetwork,
-                                        SocketType.Stream,
-                                        ProtocolType.Tcp);
+            socket = new Socket(AddressFamily.InterNetwork,
+                                         SocketType.Stream,
+                                         ProtocolType.Tcp);
             // Specifies the receiver address in order to perform conncetion
             Peer receiver = HelloProtocol.PeersList.Instance.get(job.Task.Receiver);
             IPAddress receiverAddr = IPAddress.Parse(receiver.Ipaddress);
             IPEndPoint remoteEP = new IPEndPoint(receiverAddr, Settings.Instance.SERV_ACCEPTING_PORT);
-            try
-            {
+            try {
                 // Connect to the receiver socket
                 socket.Connect(remoteEP);
 
@@ -74,33 +78,31 @@ namespace FileTransfer {
                 // Calls the delegate
                 OnTrasmissionEnd();
 
-            }
-            catch (SocketException e)
-            {
+            } catch (SocketException e) {
                 // Remove the job from the list
                 JobsList.Sending.remove(job.Id);
                 // Trigger the event of conncetion error
                 job.Status = Job.JobStatus.ConnectionError;
-//<<<<<<< job-status-and-notifications
+                //<<<<<<< job-status-and-notifications
                 ConnectionError?.Invoke(job);
-//            } finally {
-//=======
-//                ConnectionError?.Invoke();
-            }
-            catch (System.IO.IOException e)
-            {
+                //            } finally {
+                //=======
+                //                ConnectionError?.Invoke();
+            } catch (System.IO.IOException e) {
                 // Remove the job from the list
                 JobsList.Sending.remove(job.Id);
                 // Trigger the event of conncetion error
                 FileError?.Invoke();
-            }
-            finally
-            {
-//>>>>>>> master
+            } finally {
+                //>>>>>>> master
                 // Close the socket
                 socket.Close();
             }
 
+        }
+
+        protected override void PrepareStop() {
+            socket.Close();
         }
     }
 }

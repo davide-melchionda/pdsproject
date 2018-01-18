@@ -60,6 +60,7 @@ namespace HelloProtocol {
          * Endpoint for the multicast group
          */
         IPEndPoint groupEP; // DEBUG
+        private object e1;
 
         /**
          * SINGLETON CREATIONAL PATTERN
@@ -71,7 +72,7 @@ namespace HelloProtocol {
             // The next part of the protocol will automatically set the correct id.
             Random r = new Random();
             int randId = r.Next();
-            
+
             try {
                 // Initialize the outgoing (multicast) socket
                 mcastSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
@@ -85,7 +86,7 @@ namespace HelloProtocol {
                 mcastSocket.SetSocketOption(SocketOptionLevel.IP,
                                                 SocketOptionName.AddMembership,
                                                 mcastOption);
-                
+
                 // Initialize the endpoint for the multiacst group
                 groupEP = new IPEndPoint(Settings.Instance.MCAST_HELLO_IP_ADDRESS,
                                          Settings.Instance.MCAST_HELLO_PORT);
@@ -95,23 +96,28 @@ namespace HelloProtocol {
 
             } catch (Exception e) {
                 Console.WriteLine("Socket connection error: " + e.Message);  // DEBUG
-            }      
+            }
         }
-        
+
         /**
          * Receives an hello packet from the network and gives it to
          * the function received as parameter.
          */
-        public void receive() {
-            
+        public bool receive() {
             // Reception buffer
             byte[] buf = new Byte[Settings.Instance.BUFSIZE];
 
             // Prepares an object to contain the sender address
             EndPoint remoteEP = new IPEndPoint(IPAddress.Any, 0);
 
-            // RECEIVE SOMETHING FROM THE NETWORK
-            mcastSocket.ReceiveFrom(buf, ref remoteEP);
+            try {
+                // RECEIVE SOMETHING FROM THE NETWORK
+                mcastSocket.ReceiveFrom(buf, ref remoteEP);
+            } catch (SocketException e) {
+                return false;
+            } catch (ObjectDisposedException e1) {
+                return false;
+            }
 
             // Transfoms the byte sequence in a string
             string jsonRecvPacket = Encoding.UTF8.GetString(buf, 0, buf.Length);
@@ -135,6 +141,8 @@ namespace HelloProtocol {
             Task.Run(() => {
                 HelloPacketReception?.Invoke(packet, ((IPEndPoint)remoteEP).Address.ToString());
             });
+
+            return true;
         }
 
         /**
@@ -148,15 +156,17 @@ namespace HelloProtocol {
             // Serialize the packet to Json and puts the result string into
             // the byte buffer
             string jPacket = JsonConvert.SerializeObject(packet);
-             buf = Encoding.UTF8.GetBytes(jPacket);
+            buf = Encoding.UTF8.GetBytes(jPacket);
 
             // Creates the receiver endpoint (the port will be the usual MCAST_HELLO_PORT)
             EndPoint remoteEP = new IPEndPoint(IPAddress.Parse(address), Settings.Instance.MCAST_HELLO_PORT);
-            
+
             try {
                 // Send the packet on the network
                 sendSocket.SendTo(buf, remoteEP);
             } catch (SocketException e) {
+                return false;
+            } catch (ObjectDisposedException e1) {
                 return false;
             }
 
@@ -184,7 +194,9 @@ namespace HelloProtocol {
             try {
                 // Send the packet on the network
                 sendSocket.SendTo(buf, remoteEP);
-            } catch (SocketException e) {
+            } catch (SocketException e1) {
+                return false;
+            } catch (ObjectDisposedException e) {
                 return false;
             }
 
@@ -202,5 +214,5 @@ namespace HelloProtocol {
         }
 
     }
-    
+
 }

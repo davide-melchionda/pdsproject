@@ -8,6 +8,7 @@ using System.Windows.Forms;
 
 namespace FileChooser {
     class Program {
+
         static void Main(string[] args) {
 
             if (Process.GetProcessesByName("FileShare").Length == 0) {

@@ -74,5 +74,9 @@ namespace FileTransfer {
                 socket.Close();
             }
         }
+
+        protected override void PrepareStop() {
+            socket.Close(); // Close the socket. This will cause an error
+        }
     }
 }

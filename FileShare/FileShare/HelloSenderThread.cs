@@ -27,17 +27,31 @@ namespace HelloProtocol {
         protected override void execute()
         {
             HelloNetworkModule network = HelloNetworkModule.Instance;
-            while(visibilityChange.WaitOne())
+            while(!Stop && visibilityChange.WaitOne())
             {
+                if (Stop)
+                    break;  // quit
+
+                // will store the result of the send() operation
+                bool sendresult = false;
+
                 lock (Settings.Instance)
                 {
-                    if(!Settings.Instance.IsInvisible)
-                    network.send(new KeepalivePacket(Settings.Instance.LocalPeer.Id,
+                    if (!Settings.Instance.IsInvisible)
+                        sendresult = network.send(new KeepalivePacket(Settings.Instance.LocalPeer.Id,
                                                      Settings.Instance.LocalPeer.Name,
                                                      Settings.Instance.LocalPeer.Ipaddress));
                 }
-                Thread.Sleep(Settings.Instance.HELLO_INTERVAL);
+
+                if (sendresult) // if the send() failed we don't want to wait, we want to try again
+                    Thread.Sleep(Settings.Instance.HELLO_INTERVAL);
             }
+        }
+
+        protected override void PrepareStop() {
+            Stop = true;   // prepares itself to stop
+            // now that the Stop flag is to false
+            visibilityChange.Set(); // unlock itself if needed 
         }
     }
 }

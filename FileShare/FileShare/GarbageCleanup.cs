@@ -26,5 +26,9 @@ namespace FileShare
                 }
             }
         }
+
+        protected override void PrepareStop() {
+            // TODO
+        }
     }
 }

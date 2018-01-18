@@ -34,8 +34,9 @@ namespace FileTransfer {
          * Job consist in the assignment of the job to a JobExecutor 
          * which has the purpose of execute the file tranfer according 
          * to a specific protocol.
+         * Returns the ExecutableThread on which the job is beeing managed.
          */
-        public void scheduleJob(SendingJob job) {
+        public ExecutableThread scheduleJob(SendingJob job) {
 
             // Pushes the job in the list of in-service jobs
             JobsList.Sending.push(job);
@@ -60,7 +61,9 @@ namespace FileTransfer {
             };
             // Run the sender 
             sender.run();
-            
+
+            return sender;
+
         }
 
     }
