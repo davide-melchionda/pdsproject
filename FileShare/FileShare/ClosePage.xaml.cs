@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -23,15 +24,20 @@ namespace FileShare
         public delegate void Close();
         public event Close OnClosed;
 
-        public ClosePage()
+        Form f;
+
+        public ClosePage(Form f)
         {
             InitializeComponent();
+
+            this.f = f;
         }
       
         private void Close_Button_Click(object sender, RoutedEventArgs e)
         {
             System.Windows.Application a = System.Windows.Application.Current;
-            a.Shutdown();
+            //a.Shutdown();
+            ((BackgroundForm)f).CloseBackgorundForm();
 
         }
         private void Cancel_Button_Click(object sender, RoutedEventArgs e)

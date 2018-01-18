@@ -31,7 +31,7 @@ namespace HelloProtocol {
                 Logger.log(Logger.HELLO_DEBUG, "Packet received from " + keepalive.PeerId + ". Type: " + packet.Type + "\n"); // DEBUG
 
                 // If the packet come from local host ...
-                if (localPeer.Id == keepalive.PeerId) {
+                if (localPeer.Id == keepalive.PeerId || false) {
                     Logger.log(Logger.HELLO_DEBUG, "I'm the sender!\n"); // DEBUG
                     // ... and local ip address is not updated ...
                     if (localPeer.Ipaddress != senderip) {
