@@ -402,6 +402,14 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged {
         }
     }
 
+    /// <summary>
+    /// The name of the network on which the user decided to operate.
+    /// </summary>
+    public string NetworkName {
+        get;
+        internal set;
+    }
+
     /**
      * SINGLETON CREATIONAL PATTERN
      * The protected constructor.

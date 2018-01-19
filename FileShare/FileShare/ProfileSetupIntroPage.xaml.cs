@@ -13,22 +13,21 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace FileShare
-{
+namespace FileShare {
     /// <summary>
     /// Logica di interazione per Page1.xaml
     /// </summary>
-    public partial class ProfileSetupIntroPage : Page
-    {
+    public partial class ProfileSetupIntroPage : Page {
 
         public delegate void GoOn();
         public event GoOn OnGoOn;
 
-        public ProfileSetupIntroPage()
-        {
+        public ProfileSetupIntroPage() {
             InitializeComponent();
 
-            DataContext = new { Resources = Settings.Instance.Resources };
+            DataContext = new {
+                Resources = Settings.Instance.Resources
+            };
         }
 
         private void Button_Click(object sender, RoutedEventArgs e) {

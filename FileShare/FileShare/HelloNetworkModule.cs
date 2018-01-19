@@ -2,9 +2,11 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace HelloProtocol {
 
@@ -68,6 +70,44 @@ namespace HelloProtocol {
          */
         protected HelloNetworkModule() {
 
+            // Retrieves information about network interfaces in the system
+            NetworkInterface[] nics = NetworkInterface.GetAllNetworkInterfaces();
+            ////DEBUG>>>>>>>>>>>>>>>>>>>>>>>
+            //foreach (NetworkInterface n in nics)
+            //    //if (n.NetworkInterfaceType == NetworkInterfaceType.Wireless80211)
+            //    if (n.NetworkInterfaceType == NetworkInterfaceType.Wireless80211)
+            //        Settings.Instance.NetworkName = n.Name;
+            ////<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<DEBUG
+            NetworkInterface nic = null;
+            foreach (NetworkInterface n in nics) {
+                //if (nic.NetworkInterfaceType != NetworkInterfaceType.Loopback
+                //    && nic.NetworkInterfaceType != NetworkInterfaceType.Tunnel
+                //    && nic.OperationalStatus == OperationalStatus.Up
+                //    && nic.Name.StartsWith("vEthernet") == false
+                //    && nic.Description.Contains("Hyper-v") == false) {
+                //    //Do something
+                //    break;
+                //}
+                //if (ni.NetworkInterfaceType == NetworkInterfaceType.Wireless80211 || ni.NetworkInterfaceType == NetworkInterfaceType.Ethernet)
+                // if we want to filter on the type of the network
+                if (n.Name == Settings.Instance.NetworkName) {
+                    nic = n;    // this is the selected nic
+                    break;
+                }
+            }
+
+            MessageBox.Show("The nic name is " + nic.Name);
+
+            IPAddress addr = null;
+            foreach (UnicastIPAddressInformation ip in nic.GetIPProperties().UnicastAddresses) {
+                if (ip.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork) {
+                    //Console.WriteLine(ip.Address.ToString());
+                    addr = ip.Address;
+                }
+            }
+
+            MessageBox.Show("The ip address is " + nic.GetIPProperties().UnicastAddresses);
+
             // When the application starts, a random generated id is used.
             // The next part of the protocol will automatically set the correct id.
             Random r = new Random();
@@ -76,7 +116,8 @@ namespace HelloProtocol {
             try {
                 // Initialize the outgoing (multicast) socket
                 mcastSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-                IPAddress localIP = IPAddress.Any;
+                //IPAddress localIP = IPAddress.Any;
+                IPAddress localIP = addr;
                 EndPoint localEP = new IPEndPoint(localIP, Settings.Instance.MCAST_HELLO_PORT);
                 mcastSocket.Bind(localEP);  // Bind
 
@@ -93,6 +134,10 @@ namespace HelloProtocol {
 
                 // Creates the outgoing socket
                 sendSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+                EndPoint localOutgoingEP = new IPEndPoint(localIP, 0);
+                sendSocket.Bind(localOutgoingEP);  // Bind
+
+                //MessageBox.Show("The ip address is " + nic.GetIPProperties().UnicastAddresses);
 
             } catch (Exception e) {
                 Console.WriteLine("Socket connection error: " + e.Message);  // DEBUG

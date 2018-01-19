@@ -13,30 +13,31 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace FileShare
-{
+namespace FileShare {
     /// <summary>
     /// Logica di interazione per ProfileSetupWindow.xaml
     /// </summary>
-    public partial class ProfileSetupWindow : MetroWindow
-    {
-        public ProfileSetupWindow()
-        {
+    public partial class ProfileSetupWindow : MetroWindow {
+        public ProfileSetupWindow() {
             InitializeComponent();
             ProfileSetupIntroPage firstPage = new ProfileSetupIntroPage();
             //this.SetupFrame.Navigate(firstPage);
             this.Content = firstPage;
             firstPage.OnGoOn += () => {
-                ProfileSetupPage page = new ProfileSetupPage();
-                page.ShowsNavigationUI = false;
-                //this.SetupFrame.Navigate(page);
-                this.Content = page;
-                page.OnClosed += Page_OnClosed;
+                NetworkSetupPage netpage = new NetworkSetupPage();
+                netpage.ShowsNavigationUI = false;
+                this.Content = netpage;
+                netpage.OnGoOn += () => {
+                    ProfileSetupPage page = new ProfileSetupPage();
+                    page.ShowsNavigationUI = false;
+                    //this.SetupFrame.Navigate(page);
+                    this.Content = page;
+                    page.OnClosed += Page_OnClosed;
+                };
             };
         }
 
-        private void Page_OnClosed()
-        {
+        private void Page_OnClosed() {
             this.Close();
         }
     }

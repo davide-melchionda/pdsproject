@@ -1,0 +1,46 @@
+﻿<Page x:Class="FileShare.NetworkSetupPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:FileShare"
+      mc:Ignorable="d" 
+      d:DesignHeight="400" d:DesignWidth="600"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+      TextElement.FontWeight="Regular"
+      TextElement.FontSize="13"
+      TextOptions.TextFormattingMode="Ideal" 
+      TextOptions.TextRenderingMode="Auto"       
+      Background="{StaticResource PrimaryHueMidBrush}"
+      FontFamily="{StaticResource MaterialDesignFont}"
+      Title="NetworkSetupPage">
+
+    <Grid>
+        <StackPanel HorizontalAlignment="Center">
+            <!--<TextBlock Text="Seleziona la rete cui vuoi connetterti"></TextBlock>-->
+            <materialDesign:Card HorizontalContentAlignment="Center" HorizontalAlignment="Center">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <ListView x:Name="netlist" x:FieldModifier="public" ItemsSource="{Binding nics}" MaxHeight="500" Margin="0,8,0,8" SelectionMode="Single">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Width="500" Header="Seleziona le rete cui vuoi connetterti">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <TextBlock Text="{Binding Path=Name, Mode=OneWay}"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </ScrollViewer>
+            </materialDesign:Card>
+            <Button Style="{StaticResource MaterialDesignRaisedButton}" Background="White" Foreground="{StaticResource PrimaryHueDarkBrush}" Width="200" Height="40" Margin="0,24,0,0"
+                    Click="Button_Click">Seleziona</Button>
+        </StackPanel>
+
+    </Grid>
+</Page>
