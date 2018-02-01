@@ -17,6 +17,33 @@ public abstract class ExecutableThread {
     /// </summary>
     Thread thread;
 
+    private object synch_obj = new object();
+
+    /// <summary>
+    /// Is the thread still running?
+    /// </summary>
+    private bool alive;
+    /// <summary>
+    /// Property: is the thread still running?
+    /// </summary>
+    public bool Alive {
+        get {
+            return alive;
+        }
+    }
+
+    //private bool alwaysWaitForChilds;
+    //public bool AlwaysWaitForChilds {
+    //    get {
+    //        return alwaysWaitForChilds;
+    //    }
+    //    set {
+    //        alwaysWaitForChilds = value;
+    //        if (value)
+    //            Terminate += StopThread;
+    //    }
+    //}
+
     /// <summary>
     /// The list of the childs of this ExecutableThread.
     /// </summary>
@@ -51,33 +78,38 @@ public abstract class ExecutableThread {
     /// It's not possible to turn stop to false again.
     /// </summary>
     public void StopThread() {
-        // first of all we must call the PrepareStop so that if the 
-        // thread is executing any blocking operation it can manage this
-        // (e.g. an ExecutableThread could close the socket on which it's
-        // working in order to exit from the blocking Read() with an exception
-        PrepareStop();
 
-        // We require to each of our child to stop its execution
-        foreach (ExecutableThread c in childs) {
-            // Then we can call the StopThread(). Please note that the thread could 
-            // have been already ended. In this case this operation is useless, but 
-            // we must do it because we don't have any information.
-            c.StopThread();
+        lock (synch_obj) {
+            if (Alive) {
+                // first of all we must call the PrepareStop so that if the 
+                // thread is executing any blocking operation it can manage this
+                // (e.g. an ExecutableThread could close the socket on which it's
+                // working in order to exit from the blocking Read() with an exception
+                PrepareStop();
+
+                // We require to each of our child to stop its execution
+                foreach (ExecutableThread c in childs) {
+                    // Then we can call the StopThread(). Please note that the thread could 
+                    // have been already ended. In this case this operation is useless, but 
+                    // we must do it because we don't have any information.
+                    c.StopThread();
+                 }
+
+                // However the child is not forced to stop immediately,
+                // so we must call join in order to wait for its termination.
+                // We do this after having asked to all of our child to stop
+                for (int i = childs.Count - 1; i >= 0; i--) {// loopping again on our childs
+                    childs[i].Join();   // This is our wrapper function
+                    childs.Remove(childs[i]); // Only now we can remove it from the list
+                }
+
+                // All childs are gone. We can call the relative callback.
+                ChildsGone?.Invoke();
+
+                // Now we can set our stop field to 'true' and return to our parent (if any)
+                stop = true;
+            }
         }
-
-        // However the child is not forced to stop immediately,
-        // so we must call join in order to wait for its termination.
-        // We do this after having asked to all of our child to stop
-        for (int i = childs.Count-1; i >= 0; i--) {// loopping again on our childs
-            childs[i].Join();   // This is our wrapper function
-            childs.Remove(childs[i]); // Only now we can remove it from the list
-        }
-
-        // All childs are gone. We can call the relative callback.
-        ChildsGone?.Invoke();
-
-        // Now we can set our stop field to 'true' and return to our parent (if any)
-        stop = true;
     }
 
     /// <summary>
@@ -107,15 +139,13 @@ public abstract class ExecutableThread {
     public void RegisterChild(ExecutableThread child) {
         // we must register a child to
         childs.Add(child);
-        
+
         // NOTE: We must not remove the child from the list in the
         // following Terminate callback: if we do this, we will not find 
-        // the child in the childs list anymore. This means that the child 
-        // 
+        // the child in the childs list anymore.
 
-        // we register a callback on terminating: we must pass
-        // receive all the childs of the registered child if he
-        // will die.
+        // We register a callback on terminating: we must pass receive 
+        // all the childs of the registered child if he will die.
         child.Terminate += () => {
             foreach (ExecutableThread c in child.Childs)
                 childs.Add(c);
@@ -129,8 +159,16 @@ public abstract class ExecutableThread {
     /// </summary>
     public void run() {
         thread = new Thread(() => {
-            execute();      // execute the logic of the thread
+            lock (synch_obj) {
+                alive = true;
+            }
+
+            execute();              // execute the logic of the thread
             Terminate?.Invoke();    // execute the operation associated to the end of this thread
+
+            lock (synch_obj) {
+                alive = false;          // thread no more alive
+            }
         });
     thread.Start();
     }

@@ -20,13 +20,13 @@ namespace FileShare {
             InitializeComponent();
 
             DataContext = new {
-                nics = NetworkInterface.GetAllNetworkInterfaces()
+                nets = Settings.Instance.AvailableNetworks
             };
         }
 
         private void Button_Click(object sender, RoutedEventArgs e) {
-            foreach (NetworkInterface nic in netlist.SelectedItems.Cast<NetworkInterface>().ToList())
-                Settings.Instance.NetworkName = nic.Name;   // It will be only one due to the list selection config
+            foreach (NetworkInfo net in netlist.SelectedItems.Cast<NetworkInfo>().ToList())
+                Settings.Instance.Network = net;   // It will be only one due to the list selection config
             OnGoOn?.Invoke();   // go on
         }
 

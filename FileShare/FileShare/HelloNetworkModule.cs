@@ -4,6 +4,7 @@ using System;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -16,6 +17,10 @@ namespace HelloProtocol {
          * Define delegate to manage the packet reception.
          */
         public delegate void Handler(HelloPacket packet, string senderip);
+
+        public delegate void OnUnableToConnect();
+        public static OnUnableToConnect UnableToConnect;
+
 
         /**
          * SINGLETON CREATIONAL PATTERN
@@ -34,12 +39,27 @@ namespace HelloProtocol {
             get {
                 if (instance == null) {
                     lock (syncRoot) {
-                        if (instance == null)
-                            instance = new HelloNetworkModule();
+                        if (instance == null) {
+                            try {
+                                instance = new HelloNetworkModule();
+                            } catch (UnableToConnectException e) {
+                                instance = null;
+                            }
+
+                        }
                     }
                 }
                 return instance;
             }
+        }
+
+        /// <summary>
+        /// Sets to null the hello network module instance and relesase resources, so that 
+        /// we can execute again its construction from the scratch.
+        /// </summary>
+        public void Reset() {
+            closeSockets();     // close the sockets
+            instance = null;    // sets to null the instance
         }
 
         /**
@@ -70,50 +90,23 @@ namespace HelloProtocol {
          */
         protected HelloNetworkModule() {
 
-            // Retrieves information about network interfaces in the system
-            NetworkInterface[] nics = NetworkInterface.GetAllNetworkInterfaces();
-            ////DEBUG>>>>>>>>>>>>>>>>>>>>>>>
-            //foreach (NetworkInterface n in nics)
-            //    //if (n.NetworkInterfaceType == NetworkInterfaceType.Wireless80211)
-            //    if (n.NetworkInterfaceType == NetworkInterfaceType.Wireless80211)
-            //        Settings.Instance.NetworkName = n.Name;
-            ////<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<DEBUG
-            NetworkInterface nic = null;
-            foreach (NetworkInterface n in nics) {
-                //if (nic.NetworkInterfaceType != NetworkInterfaceType.Loopback
-                //    && nic.NetworkInterfaceType != NetworkInterfaceType.Tunnel
-                //    && nic.OperationalStatus == OperationalStatus.Up
-                //    && nic.Name.StartsWith("vEthernet") == false
-                //    && nic.Description.Contains("Hyper-v") == false) {
-                //    //Do something
-                //    break;
-                //}
-                //if (ni.NetworkInterfaceType == NetworkInterfaceType.Wireless80211 || ni.NetworkInterfaceType == NetworkInterfaceType.Ethernet)
-                // if we want to filter on the type of the network
-                if (n.Name == Settings.Instance.NetworkName) {
-                    nic = n;    // this is the selected nic
-                    break;
-                }
-            }
-
-            MessageBox.Show("The nic name is " + nic.Name);
-
-            IPAddress addr = null;
-            foreach (UnicastIPAddressInformation ip in nic.GetIPProperties().UnicastAddresses) {
-                if (ip.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork) {
-                    //Console.WriteLine(ip.Address.ToString());
-                    addr = ip.Address;
-                }
-            }
-
-            MessageBox.Show("The ip address is " + nic.GetIPProperties().UnicastAddresses);
-
-            // When the application starts, a random generated id is used.
-            // The next part of the protocol will automatically set the correct id.
-            Random r = new Random();
-            int randId = r.Next();
-
             try {
+                if (Settings.Instance.Network == null)
+                    throw new UnableToConnectException("No network selected");
+
+                NetworkInterface nic = Settings.Instance.Network.Nic;
+                IPAddress addr = null;
+                foreach (UnicastIPAddressInformation ip in nic.GetIPProperties().UnicastAddresses) {
+                    if (ip.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork) {
+                        addr = ip.Address;
+                    }
+                }
+
+                // When the application starts, a random generated id is used.
+                // The next part of the protocol will automatically set the correct id.
+                Random r = new Random();
+                int randId = r.Next();
+
                 // Initialize the outgoing (multicast) socket
                 mcastSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
                 //IPAddress localIP = IPAddress.Any;
@@ -139,8 +132,11 @@ namespace HelloProtocol {
 
                 //MessageBox.Show("The ip address is " + nic.GetIPProperties().UnicastAddresses);
 
+                //throw new UnableToConnectException("Exc");
+
             } catch (Exception e) {
-                Console.WriteLine("Socket connection error: " + e.Message);  // DEBUG
+                //Console.WriteLine("Socket connection error: " + e.Message);  // DEBUG
+                throw new UnableToConnectException("HelloNetworkModule: Unable to connect");
             }
         }
 
@@ -239,6 +235,7 @@ namespace HelloProtocol {
             try {
                 // Send the packet on the network
                 sendSocket.SendTo(buf, remoteEP);
+                if (sendSocket.IsBound);
             } catch (SocketException e1) {
                 return false;
             } catch (ObjectDisposedException e) {
@@ -258,6 +255,23 @@ namespace HelloProtocol {
             sendSocket.Close();
         }
 
+        /// <summary>
+        /// This exception is thrown when it's impossible to extablisha connection
+        /// </summary>
+        [Serializable]
+        public class UnableToConnectException : Exception {
+            public UnableToConnectException() {
+            }
+
+            public UnableToConnectException(string message) : base(message) {
+            }
+
+            public UnableToConnectException(string message, Exception innerException) : base(message, innerException) {
+            }
+
+            protected UnableToConnectException(SerializationInfo info, StreamingContext context) : base(info, context) {
+            }
+        }
     }
 
 }

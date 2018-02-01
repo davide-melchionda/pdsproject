@@ -19,16 +19,16 @@
     <Grid>
         <StackPanel HorizontalAlignment="Center">
             <!--<TextBlock Text="Seleziona la rete cui vuoi connetterti"></TextBlock>-->
-            <materialDesign:Card HorizontalContentAlignment="Center" HorizontalAlignment="Center">
+            <materialDesign:Card HorizontalContentAlignment="Center" HorizontalAlignment="Center" Padding="16">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <ListView x:Name="netlist" x:FieldModifier="public" ItemsSource="{Binding nics}" MaxHeight="500" Margin="0,8,0,8" SelectionMode="Single">
+                    <ListView x:Name="netlist" x:FieldModifier="public" ItemsSource="{Binding nets}" MaxHeight="500" Margin="0,8,0,8" SelectionMode="Single">
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn Width="500" Header="Seleziona le rete cui vuoi connetterti">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <Grid>
-                                                <TextBlock Text="{Binding Path=Name, Mode=OneWay}"/>
+                                                <TextBlock Text="{Binding Path=Network.Name, Mode=OneWay}"/>
                                             </Grid>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>

@@ -9,9 +9,7 @@ namespace HelloProtocol {
 
         private AutoResetEvent sleepHandle = new AutoResetEvent(false);
 
-        public HelloCleanupThread() {
-
-        }
+        public HelloCleanupThread() {}
 
         protected override void execute() {
 
@@ -41,13 +39,6 @@ namespace HelloProtocol {
                         peers.del(entry.Peer.Id);
                     }
                 }
-
-                Logger.log(Logger.HELLO_DEBUG, "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n"); // DEBUG
-                Logger.log(Logger.HELLO_DEBUG, "CLEANUP THREAD WOKE UP\n"); // DEBUG
-                Logger.log(Logger.HELLO_DEBUG, "KEY\t\tNAME\t\tADDRESS\n"); // DEBUG
-                foreach (Peer p in peers.Peers)
-                    Logger.log(Logger.HELLO_DEBUG, p.Id + "\t\t" + p.Name + "\t\t" + p.Ipaddress + "\n"); // DEBUG
-                Logger.log(Logger.HELLO_DEBUG, "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n"); // DEBUG
 
             }
         }
