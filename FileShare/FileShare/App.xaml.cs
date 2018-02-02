@@ -143,7 +143,7 @@ namespace FileShare {
                     //mostra la finestra e prende in uscita path e response
                     ReceiveWindow rw = new ReceiveWindow(request);
                     //rw.ShowDialog();
-                    rw.Show();
+                    rw.ShowDialog();
                     //rw.Activate();
                 });
                 return request;

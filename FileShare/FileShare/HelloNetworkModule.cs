@@ -102,10 +102,9 @@ namespace HelloProtocol {
                     }
                 }
 
-                // When the application starts, a random generated id is used.
-                // The next part of the protocol will automatically set the correct id.
-                Random r = new Random();
-                int randId = r.Next();
+                // When the application starts, the ip is setted as ip address of the local user
+                // in the Settings object
+                Settings.Instance.updatePeerAddress(addr.ToString());
 
                 // Initialize the outgoing (multicast) socket
                 mcastSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
@@ -118,8 +117,9 @@ namespace HelloProtocol {
                 MulticastOption mcastOption = new MulticastOption(Settings.Instance.MCAST_HELLO_IP_ADDRESS, localIP);
                 // Registers to the multicast group
                 mcastSocket.SetSocketOption(SocketOptionLevel.IP,
-                                                SocketOptionName.AddMembership,
-                                                mcastOption);
+                                            SocketOptionName.AddMembership,
+                                            mcastOption);
+                mcastSocket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastLoopback, false);
 
                 // Initialize the endpoint for the multiacst group
                 groupEP = new IPEndPoint(Settings.Instance.MCAST_HELLO_IP_ADDRESS,
