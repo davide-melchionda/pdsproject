@@ -3,6 +3,7 @@ using System.Threading;
 using System.Net.Sockets;
 using System.Net;
 using NetProtocol;
+using System.Net.NetworkInformation;
 
 namespace FileTransfer {
 
@@ -36,7 +37,17 @@ namespace FileTransfer {
         public event OnPathError PathError;
 
         protected override void execute() {
-            IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Any, Settings.Instance.SERV_ACCEPTING_PORT);
+            if (Settings.Instance.Network == null)
+                return;
+            NetworkInterface nic = Settings.Instance.Network.Nic;
+            IPAddress addr = null;
+            foreach (UnicastIPAddressInformation ip in nic.GetIPProperties().UnicastAddresses) {
+                if (ip.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork) {
+                    addr = ip.Address;
+                }
+            }
+            //IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Any, Settings.Instance.SERV_ACCEPTING_PORT);
+            IPEndPoint localEndPoint = new IPEndPoint(addr, Settings.Instance.SERV_ACCEPTING_PORT);
             listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
             try {

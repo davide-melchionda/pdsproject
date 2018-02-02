@@ -1,4 +1,5 @@
 ﻿using FileShare;
+using Microsoft.WindowsAPICodePack.Net;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -6,6 +7,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -355,6 +357,45 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged {
     }
 
     /// <summary>
+    /// All the available netowrks
+    /// </summary>
+    public List<NetworkInfo> AvailableNetworks {
+        get {
+            List<NetworkInfo> netInfos = new List<NetworkInfo>();
+            // get all nics
+            NetworkInterface[] nics = NetworkInterface.GetAllNetworkInterfaces();
+            //Get the networks that are currently connected to
+            var networks = NetworkListManager.GetNetworks(NetworkConnectivityLevels.Connected);
+
+            // Filter
+            foreach (Network network in networks) {
+                foreach (NetworkConnection conn in network.Connections) {
+                    foreach (NetworkInterface nic in nics) {
+                        if (("{" + conn.AdapterId.ToString() + "}").ToUpper() == nic.Id.ToUpper())
+                            netInfos.Add(new NetworkInfo(network, nic));
+                    }
+                }
+            }
+
+            return netInfos;
+        }
+    }
+
+    //public List<NetworkInterface> MachineNetworkInterfaces {
+    //    get {
+    //        NetworkInterface[] nics = NetworkInterface.GetAllNetworkInterfaces();
+    //        List<NetworkInterface> interfaces = new List<NetworkInterface>();
+    //        foreach (NetworkInterface n in nics)
+    //            if (n.NetworkInterfaceType == NetworkInterfaceType.Wireless80211 ||
+    //                n.NetworkInterfaceType == NetworkInterfaceType.Ethernet) {
+    //                //if (n.SupportsMulticast && n.Description.Netw)
+    //                    interfaces.Add(n);
+    //            }
+    //        return interfaces;
+    //    }
+    //} 
+
+    /// <summary>
     /// Path in the file system of the icon image used as profile
     /// picture by the user.
     /// </summary>
@@ -400,6 +441,14 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged {
         get {
             return 20;   /* DEFAULT */
         }
+    }
+
+    /// <summary>
+    /// The name of the network on which the user decided to operate.
+    /// </summary>
+    public NetworkInfo Network {
+        get;
+        internal set;
     }
 
     /**
