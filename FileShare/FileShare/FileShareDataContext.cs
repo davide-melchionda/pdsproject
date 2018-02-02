@@ -69,6 +69,11 @@ namespace FileShare {
                 return sendingJobs.Count == 0;
             }
         }
+
+        internal void StopJob(ListedJob listedJob) {
+            System.Windows.Forms.MessageBox.Show("Request to remove " + listedJob.Job.Id);
+        }
+
         public bool NothingToReceive {
             get {
                 return receivingJobs.Count == 0;

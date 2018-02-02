@@ -260,6 +260,13 @@
                                 </GridViewColumn>
                             </GridView>
                         </ListView.View>
+                        <!--<ListView.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Annulla" Command="{Binding StopSending}" 
+                                          CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, 
+                                                                                                    Path=PlacementTarget.SelectedItem}" />
+                            </ContextMenu>
+                        </ListView.ContextMenu>-->
                     </ListView>
                 </ScrollViewer>
             </TabItem>

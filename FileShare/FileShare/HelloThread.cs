@@ -44,7 +44,7 @@ namespace HelloProtocol {
                     Peer localPeer = Settings.Instance.LocalPeer;
 
                     // If the packet come from local host ...
-                    if (localPeer.Id == keepalive.PeerId || false) {
+                    if (localPeer.Id == keepalive.PeerId) {
                         // ... and local ip address is not updated ...
                         if (localPeer.Ipaddress != senderip)
                             // ... update local ip address

@@ -28,7 +28,14 @@
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <Grid>
-                                                <TextBlock Text="{Binding Path=Network.Name, Mode=OneWay}"/>
+                                                <TextBlock>
+                                                    <TextBlock.Text>
+                                                        <MultiBinding StringFormat="{}{0} su {1}">
+                                                            <Binding Path="Network.Name" Mode="OneWay"></Binding>
+                                                            <Binding Path="Nic.Name" Mode="OneWay"></Binding>
+                                                        </MultiBinding>
+                                                    </TextBlock.Text>
+                                                </TextBlock>
                                             </Grid>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>

@@ -62,5 +62,10 @@ namespace FileShare {
             (DataContext as FileShareDataContext).manageProgressBar(prog);
         }
 
+        private void StopSending(object sender, RoutedEventArgs args) {
+            ListedJob listedJob = DataContext as ListedJob;
+            FileShareDataContext.Instance.StopJob(listedJob);
+        }
+
     }
 }
