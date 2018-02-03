@@ -10,7 +10,7 @@ namespace FileTransfer {
 
         private Socket socket;
         private Job job;
-        
+
         public delegate ToAccept OnRequest(ToAccept request);
         public event OnRequest RequestReceived;
 
@@ -26,7 +26,7 @@ namespace FileTransfer {
         /**
     * Delegate: format of the callback to call when error on Path occours
     */
-        public delegate void OnPathError();
+        public delegate void OnPathError(System.IO.IOException e, String source);
         /**
          * Event on which register the callback to manage the Path error
          */
@@ -55,18 +55,24 @@ namespace FileTransfer {
             } catch (SocketException e) {
 
                 // Trigger the event of conncetion error
-//<<<<<<< job-status-and-notifications
                 ConnectionError?.Invoke(job);
 
-//=======
-//                ConnectionError?.Invoke();
-            }
-            catch (Exception e)
-            {
-                // Trigger the event of Path error
-                PathError?.Invoke();
-//>>>>>>> master
+            } catch (System.IO.IOException e) {
+
+                String sourceName = null;
+                if (job != null) {
+                    job.Status = Job.JobStatus.ConnectionError;
+
+                    // Trigger the event of Path error
+                    sourceName = job.Task.Info[0].Name;
+                    if (job.Task.Info.Count > 1)
+                        for (int i = 1; i > job.Task.Info.Count; i++)
+                            sourceName += ", " + job.Task.Info[i].Name;
+                }
+                PathError?.Invoke(e, sourceName);
+
             } finally {
+                
                 // Remove the job (if any) from the list
                 if (job != null)
                     JobsList.Receiving.remove(job.Id);

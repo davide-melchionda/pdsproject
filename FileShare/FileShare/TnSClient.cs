@@ -31,6 +31,7 @@ namespace NetworkTransmission {
             } catch (Exception e) {
                 if (iterator != null)
                     iterator.close();
+                throw e;
             }
         }
 

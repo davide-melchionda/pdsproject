@@ -63,7 +63,8 @@ namespace FileShare {
 
         private void DeleteListedJob(object sender, RoutedEventArgs args) {
             ListedJob lJob = SendingList.SelectedItem != null ? SendingList.SelectedItem as ListedJob : ReceivingList.SelectedItem as ListedJob;
-            (DataContext as FileShareDataContext).DeactivateJob(lJob);
+            if (lJob != null)
+                (DataContext as FileShareDataContext).DeactivateJob(lJob);
         }
 
     }

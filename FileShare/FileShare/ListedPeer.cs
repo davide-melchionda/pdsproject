@@ -34,7 +34,8 @@ namespace FileShare {
         /// <param name="peer"></param>
         public ListedPeer(Peer peer) {
             Peer = peer;
-            Icon = ImageAdapter.IconFromByteArray(peer.ByteIcon);
+            if (peer.ByteIcon != null)
+                Icon = ImageAdapter.IconFromByteArray(peer.ByteIcon);
             Peer.PropertyChanged += (object sender, PropertyChangedEventArgs args) => {
                 if (args.PropertyName.Equals("ByteIcon"))
                     Icon = ImageAdapter.IconFromByteArray(Peer.ByteIcon);
@@ -51,7 +52,7 @@ namespace FileShare {
          */
         public ImageSource Icon {
             get {
-                if (Peer.ByteIcon.Length == 0)
+                if (Peer.ByteIcon == null || Peer.ByteIcon.Length == 0)
                     return new BitmapImage(Settings.Instance.Resources.DefaultUserPicture);
                 return icon;
             }

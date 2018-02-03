@@ -29,7 +29,7 @@ namespace FileTransfer {
         /// <summary>
         /// Delegate: format of the callback to call when error on Path occours
         /// </summary>
-        public delegate void OnPathError();
+        public delegate void OnPathError(System.IO.IOException e, String source);
         
         /**
          * Event on which register the callback to manage the Path error
@@ -67,8 +67,8 @@ namespace FileTransfer {
                     receiver.ConnectionError += (Job j) => {
                         ConnectionError?.Invoke(j);
                     };
-                    receiver.PathError += () => {
-                        PathError?.Invoke();
+                    receiver.PathError += (System.IO.IOException e, String source) => {
+                        PathError?.Invoke(e, source);
                     };
                     RegisterChild(receiver);
                     receiver.run();

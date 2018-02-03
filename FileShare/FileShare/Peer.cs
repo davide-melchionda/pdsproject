@@ -101,7 +101,9 @@ public class Peer : INotifyPropertyChanged{
         }
     }
     
-    public Peer() { }
+    public Peer() {
+        byteIcon = new byte[0];
+    }
 
     public Peer(string id, string name, string ipaddress) {
         Id = id;

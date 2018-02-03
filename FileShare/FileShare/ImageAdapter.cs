@@ -22,7 +22,7 @@ namespace FileShare {
         /// <returns></returns>
         public static ImageSource IconFromByteArray(byte[] value) {
             // if no byte: no icon set
-            if (value.Length == 0)
+            if (value == null || value.Length == 0)
                 return null;
 
             // Sets byte icon

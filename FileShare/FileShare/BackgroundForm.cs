@@ -16,7 +16,7 @@ namespace FileShare {
         int lastDeactivateTick;
         bool lastDeactivateValid;
         public enum ErrorNotificationType {
-            Receiving, Sending, File, Path
+            Receiving, Sending, PathTooLong, DirectoryNotFound, File, Path
         };
 
         public delegate void OnBackgroundFormClosing();
@@ -82,7 +82,7 @@ namespace FileShare {
         /// Show a balloon tip to notify an error condition to the user
         /// </summary>
         /// <param name="type">Which kind of error occourred.</param>
-        internal void NotifyError(ErrorNotificationType type) {
+        internal void NotifyError(ErrorNotificationType type, String source = null) {
             switch (type) {
                 case ErrorNotificationType.Receiving:
                     notifyIcon1.ShowBalloonTip(5000, "Errore durante la ricezione", "Alcuni trasferimenti in ricezione non sono andati a buon fine.", ToolTipIcon.Error);
@@ -91,7 +91,13 @@ namespace FileShare {
                     notifyIcon1.ShowBalloonTip(5000, "Errore durante l'invio", "Alcuni trasferimenti in uscita non sono andati a buon fine.", ToolTipIcon.Error);
                     break;
                 case ErrorNotificationType.File:
-                    notifyIcon1.ShowBalloonTip(5000, "Errore durante l'invio", "Il file è aperto da un altro processo", ToolTipIcon.Error);
+                    notifyIcon1.ShowBalloonTip(5000, "Errore durante l'invio", "Il file (o un elemento nella sua gerarchia) è aperto da un altro processo", ToolTipIcon.Error);
+                    break;
+                case ErrorNotificationType.DirectoryNotFound:
+                    notifyIcon1.ShowBalloonTip(5000, "Errore durante il trasferimento", "La directory specificata non esiste.", ToolTipIcon.Error);
+                    break;
+                case ErrorNotificationType.PathTooLong:
+                    notifyIcon1.ShowBalloonTip(5000, "Errore durante l'invio", "Il path del file specificato è troppo lungo.", ToolTipIcon.Error);
                     break;
                 case ErrorNotificationType.Path:
                     notifyIcon1.ShowBalloonTip(5000, "Errore durante la ricezione", "Il percorso specificato non è valido", ToolTipIcon.Error);

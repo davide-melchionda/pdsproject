@@ -5,6 +5,7 @@ using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Security.Principal;
@@ -154,11 +155,20 @@ namespace FileShare {
                 if (j == null || j.Status == Job.JobStatus.ConnectionError)
                     bf.NotifyError(BackgroundForm.ErrorNotificationType.Receiving);
             };
-            receiver.PathError += () => {
-                bf.NotifyError(BackgroundForm.ErrorNotificationType.Path);
-            };
+            receiver.PathError += manageIOException;
             // Run the receiver thread
             receiver.run();
+        }
+
+        private void manageIOException(Exception e, String source) {
+            if (e is PathTooLongException)
+                bf.NotifyError(BackgroundForm.ErrorNotificationType.PathTooLong, source);
+            else if (e is DirectoryNotFoundException)
+                bf.NotifyError(BackgroundForm.ErrorNotificationType.DirectoryNotFound, source);
+            else if (e is UnauthorizedAccessException)
+                bf.NotifyError(BackgroundForm.ErrorNotificationType.Path, source);
+            else
+                bf.NotifyError(BackgroundForm.ErrorNotificationType.File, source);
         }
 
         /// <summary>
@@ -190,9 +200,7 @@ namespace FileShare {
                             if (j.Status == Job.JobStatus.ConnectionError)
                                 bf.NotifyError(BackgroundForm.ErrorNotificationType.Sending);
                         };
-                        scheduler.FileError += () => {
-                            bf.NotifyError(BackgroundForm.ErrorNotificationType.File);
-                        };
+                        scheduler.FileError += manageIOException;
                         for (int i = 0; i < selected.Count; i++) {
                             ExecutableThread worker = scheduler.scheduleJob(new SendingJob(new FileTransfer.Task(Settings.Instance.LocalPeer.Id,
                                                   Settings.Instance.LocalPeer.Name, selected.ElementAt(i).Id,

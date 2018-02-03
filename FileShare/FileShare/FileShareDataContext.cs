@@ -115,17 +115,17 @@ namespace FileShare {
                 };
             };
 
-            JobsList.Sending.JobRemoved += (Job removedJob) => {
-                foreach (ListedJob listItem in sendingJobs)
-                    if (listItem.Job.Id == removedJob.Id) {
-                        ConfigureState(listItem);
-                        //System.Threading.Thread.Sleep(5000);
-                        //App.Current.Dispatcher.Invoke((Action)delegate {
-                        //    sendingJobs.Remove(listItem);
-                        //});
-                        break;
-                    }
-            };
+            //JobsList.Sending.JobRemoved += (Job removedJob) => {
+            //    foreach (ListedJob listItem in sendingJobs)
+            //        if (listItem.Job.Id == removedJob.Id) {
+            //            ConfigureState(listItem);
+            //            //System.Threading.Thread.Sleep(5000);
+            //            //App.Current.Dispatcher.Invoke((Action)delegate {
+            //            //    sendingJobs.Remove(listItem);
+            //            //});
+            //            break;
+            //        }
+            //};
 
             JobsList.Receiving.JobAdded += (Job job) => {
                 ListedJob listedItem = new ListedJob(job);
@@ -138,17 +138,17 @@ namespace FileShare {
                 };
             };
 
-            JobsList.Receiving.JobRemoved += (Job removedJob) => {
-                foreach (ListedJob listItem in receivingJobs)
-                    if (listItem.Job.Id == removedJob.Id) {
-                        ConfigureState(listItem);
-                        //System.Threading.Thread.Sleep(5000);
-                        //App.Current.Dispatcher.Invoke((Action)delegate {
-                        //    receivingJobs.Remove(listItem);
-                        //});
-                        break;
-                    }
-            };
+            //JobsList.Receiving.JobRemoved += (Job removedJob) => {
+            //    foreach (ListedJob listItem in receivingJobs)
+            //        if (listItem.Job.Id == removedJob.Id) {
+            //            ConfigureState(listItem);
+            //            //System.Threading.Thread.Sleep(5000);
+            //            //App.Current.Dispatcher.Invoke((Action)delegate {
+            //            //    receivingJobs.Remove(listItem);
+            //            //});
+            //            break;
+            //        }
+            //};
 
             peers = new ObservableCollection<ListedPeer>();
             foreach (Peer p in PeersList.Instance.Peers)
@@ -237,7 +237,7 @@ namespace FileShare {
                         listItem.Message = "In completamento...";
                         break;
                     default:
-                        listItem.Message = "In cancellazione...";
+                        listItem.Message = "Errore";
                         break;
                 }
                 //} else {
@@ -257,9 +257,9 @@ namespace FileShare {
                 status == Job.JobStatus.WaitingForRemoteAcceptance) {
                 item.Stopped = true;
                 item.Job.Status = Job.JobStatus.StoppedByLocal; // It was me to stop this job
-                item.Completed = true;
-                item.Error = false;
-                item.Message = "In cancellazione...";
+                //item.Completed = true;
+                //item.Error = false;
+                //item.Message = "In cancellazione...";
             } else if (status == Job.JobStatus.Completed ||
                        status == Job.JobStatus.ConnectionError ||
                        status == Job.JobStatus.NotAcceptedByRemote ||

@@ -1,4 +1,5 @@
 using NetProtocol;
+using System;
 using System.ComponentModel;
 using System.Net;
 using System.Net.Sockets;
@@ -40,7 +41,7 @@ namespace FileTransfer {
         /// </summary>
         Socket socket;
 
-        public delegate void OnFileError();
+        public delegate void OnFileError(System.Exception e, String source);
         /**
          * Event on which register the callback to manage the connection error
          */
@@ -96,13 +97,22 @@ namespace FileTransfer {
                 //            } finally {
                 //=======
                 //                ConnectionError?.Invoke();
-            } catch (System.IO.IOException e) {
+            } catch (System.Exception e) {
+            
                 // Remove the job from the list
                 JobsList.Sending.remove(job.Id);
+                
+                // Update the job status
+                job.Status = Job.JobStatus.ConnectionError;
+
                 // Trigger the event of conncetion error
-                FileError?.Invoke();
+                String sourceName = job.Task.Info[0].Name;
+                if (job.Task.Info.Count > 1)
+                    for (int i = 1; i > job.Task.Info.Count; i++)
+                        sourceName += ", " + job.Task.Info[i].Name;
+                FileError?.Invoke(e, sourceName);
+
             } finally {
-                //>>>>>>> master
                 // Close the socket
                 socket.Close();
             }

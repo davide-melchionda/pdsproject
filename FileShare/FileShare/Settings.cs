@@ -201,7 +201,7 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged {
 
     public void updatePeerAddress(string newAddress) {
         localPeer.Ipaddress = newAddress;
-        localPeer.Id = localPeer.Name + ":" + localPeer.Ipaddress + ":" + DateTime.Now;
+        localPeer.Id = localPeer.Name + "_" + localPeer.Ipaddress;// + ":" + DateTime.Now;
     }
 
     private int tcpReceivingPort = /* DEFAULT */ 9000;
@@ -461,8 +461,11 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged {
         // TODO
         // Retrieve configuration from a file
 
-        // For now: the local peer is randomly initialized
-        localPeer = new Peer("Anonymouse user" + ":" + new Random().Next(), "Anonymouse user", "unknown_ip");
+        // For now: the local peer is initialized with dumb values
+        // It will be corrected as soon as possible when network information will be available
+        localPeer = new Peer(); // /*"Anonymouse user" + ":" + new Random().Next(), */"Anonymouse user", "unknown_ip");
+        localPeer.Name = "Anonimous user";
+        localPeer.Ipaddress = "unknown_ip";
         Resources = new Resources();
     }
 
