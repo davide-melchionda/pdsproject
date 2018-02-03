@@ -33,8 +33,10 @@ namespace FileShare {
             //    TaskType = "directory";
             //else TaskType = "file";
 
-            if ((Sender = new ListedPeer(HelloProtocol.PeersList.Instance.get(request.TasktoAccept.Sender))) == null)
-                Sender = new ListedPeer(new Peer(request.TasktoAccept.Sender, request.TasktoAccept.SenderName, "none"));
+            Peer p = null;
+            if ((p = HelloProtocol.PeersList.Instance.get(request.TasktoAccept.Sender)) == null)
+                p = new Peer(request.TasktoAccept.Sender, request.TasktoAccept.SenderName, "none");
+            Sender = new ListedPeer(p);
 
             Infos = new List<DisplayedFileInfo>();
             foreach (FileInfo info in request.TasktoAccept.Info)

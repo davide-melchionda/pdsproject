@@ -34,7 +34,7 @@ namespace FileShare {
         /// <param name="peer"></param>
         public ListedPeer(Peer peer) {
             Peer = peer;
-            Icon = ImageAdapter.IconFromByteArray(Peer.ByteIcon);
+            Icon = ImageAdapter.IconFromByteArray(peer.ByteIcon);
             Peer.PropertyChanged += (object sender, PropertyChangedEventArgs args) => {
                 if (args.PropertyName.Equals("ByteIcon"))
                     Icon = ImageAdapter.IconFromByteArray(Peer.ByteIcon);
