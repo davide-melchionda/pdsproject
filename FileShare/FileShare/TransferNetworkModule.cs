@@ -32,7 +32,7 @@ namespace NetworkTransmission
             {
                 byte[] bytes = new byte[1024];
                 bytesRec = handler.Receive(bytes);
-                data += Encoding.ASCII.GetString(bytes, 0, bytesRec);
+                data += Encoding.UTF8.GetString(bytes, 0, bytesRec);
                 //Console.WriteLine(data);
                 if (data.IndexOf("<EOF>") > -1)
                 {
@@ -73,7 +73,7 @@ namespace NetworkTransmission
         public byte[] generateRequestStream(FileTransfer.Task task)
         {
             RequestPacket request = new RequestPacket(task);
-            byte[] requestStream = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(request) + "<EOF>");
+            byte[] requestStream = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(request) + "<EOF>");
             return requestStream;
 
         }
@@ -85,7 +85,7 @@ namespace NetworkTransmission
         public byte[] generateResponsetStream(bool procede)    
         {
             ResponsePacket response = new ResponsePacket(procede);
-            byte[] responseStream = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(response) + "<EOF>");
+            byte[] responseStream = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(response) + "<EOF>");
             return responseStream;
 
         }
