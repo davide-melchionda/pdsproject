@@ -81,7 +81,7 @@ namespace FileShare {
                 int selLength = textBox.SelectionLength;
                 foreach (char ch in textBox.Text.ToCharArray())
                 {
-                    if (!System.Char.IsLetterOrDigit(ch))
+                    if (@"/\:*?<>|".Contains(Char.ToString(ch)))//!System.Char.IsLetterOrDigit(ch) && ch != '\'')
                     {
                         textBox.Text = oldText;
                         textBox.SelectionStart = selStart;

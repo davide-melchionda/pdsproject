@@ -4,6 +4,7 @@ using HelloProtocol;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace FileShare {
@@ -70,14 +71,17 @@ namespace FileShare {
             }
         }
 
-        internal void StopJob(ListedJob listedJob) {
-            System.Windows.Forms.MessageBox.Show("Request to remove " + listedJob.Job.Id);
-        }
-
         public bool NothingToReceive {
             get {
                 return receivingJobs.Count == 0;
             }
+        }
+
+        public void StopSending(ListedJob lJob) {
+            //App.Current.Dispatcher.Invoke(() => {
+            //    MessageBox.Show("Request to remove " + lJob.Job.Id, "MEssaggio", System.Windows.Forms.MessageBoxButtons.OK);
+            //});
+
         }
 
         protected FileShareDataContext() {
@@ -206,6 +210,13 @@ namespace FileShare {
                         listItem.Error = true;
                         listItem.Message = "Trasferimento interrotto dalla controparte";
                         break;
+                    case Job.JobStatus.StoppedByLocal:
+                        listItem.Preparing = false;
+                        listItem.Completing = false;
+                        listItem.Completed = true;
+                        listItem.Error = false;
+                        listItem.Message = "Annullato";
+                        break;
                     case Job.JobStatus.Completed:
                         listItem.Preparing = false;
                         listItem.Completing = false;
@@ -241,11 +252,25 @@ namespace FileShare {
         }
 
         internal void DeactivateJob(ListedJob item) {
-            item.Stopped = true;
-            item.Job.Status = Job.JobStatus.StoppedByLocal; // It was me to stop this job
-            item.Completed = true;
-            item.Error = false;
-            item.Message = "In cancellazione...";
+            Job.JobStatus status = item.Job.Status;
+            if (status == Job.JobStatus.Active ||
+                status == Job.JobStatus.WaitingForRemoteAcceptance) {
+                item.Stopped = true;
+                item.Job.Status = Job.JobStatus.StoppedByLocal; // It was me to stop this job
+                item.Completed = true;
+                item.Error = false;
+                item.Message = "In cancellazione...";
+            } else if (status == Job.JobStatus.Completed ||
+                       status == Job.JobStatus.ConnectionError ||
+                       status == Job.JobStatus.NotAcceptedByRemote ||
+                       status == Job.JobStatus.StoppedByLocal ||
+                       status == Job.JobStatus.StoppedByRemote) {
+                // We need to remove the ListedJob from the list
+                if (item.Job is SendingJob)
+                    sendingJobs.Remove(item);
+                else
+                    receivingJobs.Remove(item);
+            }
         }
 
         public async void manageProgressBar(ProgressBar prog) {

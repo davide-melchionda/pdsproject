@@ -107,7 +107,9 @@ namespace FileTransfer
 
                     iterator.close();
 
-                    if ((iterator as JobFileIterator).Job.Status != Job.JobStatus.ConnectionError)
+                    if ((iterator as JobFileIterator).Job.Status != Job.JobStatus.ConnectionError &&
+                        (iterator as JobFileIterator).Job.Status != Job.JobStatus.StoppedByLocal &&
+                        (iterator as JobFileIterator).Job.Status != Job.JobStatus.StoppedByRemote)
                         (iterator as JobFileIterator).Job.Status = Job.JobStatus.Completed;
                 }
 

@@ -1,4 +1,5 @@
 using NetProtocol;
+using System.ComponentModel;
 using System.Net;
 using System.Net.Sockets;
 using static NetProtocol.ProtocolEndpoint;
@@ -49,6 +50,12 @@ namespace FileTransfer {
          */
         public JobExecutor(SendingJob job) {
             this.job = job;
+
+            this.job.PropertyChanged += (object sender, PropertyChangedEventArgs args) => {
+                if (args.PropertyName == "Status" && this.job.Status == Job.JobStatus.StoppedByLocal)
+                    StopThread();
+            };
+
         }
 
         /**
@@ -82,7 +89,8 @@ namespace FileTransfer {
                 // Remove the job from the list
                 JobsList.Sending.remove(job.Id);
                 // Trigger the event of conncetion error
-                job.Status = Job.JobStatus.ConnectionError;
+                if (job.Status != Job.JobStatus.StoppedByLocal)
+                    job.Status = Job.JobStatus.ConnectionError;
                 //<<<<<<< job-status-and-notifications
                 ConnectionError?.Invoke(job);
                 //            } finally {

@@ -15,7 +15,7 @@ public abstract class ExecutableThread {
     /// <summary>
     /// The thread associated to this ExecutableThread
     /// </summary>
-    Thread thread;
+    private Thread thread;
 
     private object synch_obj = new object();
 
@@ -31,18 +31,6 @@ public abstract class ExecutableThread {
             return alive;
         }
     }
-
-    //private bool alwaysWaitForChilds;
-    //public bool AlwaysWaitForChilds {
-    //    get {
-    //        return alwaysWaitForChilds;
-    //    }
-    //    set {
-    //        alwaysWaitForChilds = value;
-    //        if (value)
-    //            Terminate += StopThread;
-    //    }
-    //}
 
     /// <summary>
     /// The list of the childs of this ExecutableThread.
@@ -170,7 +158,8 @@ public abstract class ExecutableThread {
                 alive = false;          // thread no more alive
             }
         });
-    thread.Start();
+        thread.IsBackground = true;
+        thread.Start();
     }
     
     /// <summary>

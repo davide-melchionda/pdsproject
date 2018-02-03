@@ -25,8 +25,7 @@ namespace FileShare {
             DataContext = FileShareDataContext.Instance;
         }
 
-        internal void ClearAllCompleted()
-        {
+        internal void ClearAllCompleted() {
             (DataContext as FileShareDataContext).ClearAllCompleted();
         }
 
@@ -53,7 +52,7 @@ namespace FileShare {
             ListedJob item = button.DataContext as ListedJob;
             FileShareDataContext f = DataContext as FileShareDataContext;
             await Task.Run(() => {
-                f.DeactivateJob(item); 
+                f.DeactivateJob(item);
             });
         }
 
@@ -62,9 +61,9 @@ namespace FileShare {
             (DataContext as FileShareDataContext).manageProgressBar(prog);
         }
 
-        private void StopSending(object sender, RoutedEventArgs args) {
-            ListedJob listedJob = DataContext as ListedJob;
-            FileShareDataContext.Instance.StopJob(listedJob);
+        private void DeleteListedJob(object sender, RoutedEventArgs args) {
+            ListedJob lJob = SendingList.SelectedItem != null ? SendingList.SelectedItem as ListedJob : ReceivingList.SelectedItem as ListedJob;
+            (DataContext as FileShareDataContext).DeactivateJob(lJob);
         }
 
     }

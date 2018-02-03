@@ -70,7 +70,7 @@
             <!-- ############################################################################################################################## -->
             <TabItem Header="In uscita">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <ListView ItemsSource="{Binding sendingJobs}" SelectionChanged="ListView_SelectionChanged_1">
+                    <ListView Name="SendingList" ItemsSource="{Binding sendingJobs}" SelectionChanged="ListView_SelectionChanged_1">
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn Width="160" Header="In uscita">
@@ -260,13 +260,11 @@
                                 </GridViewColumn>
                             </GridView>
                         </ListView.View>
-                        <!--<ListView.ContextMenu>
+                        <ListView.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="Annulla" Command="{Binding StopSending}" 
-                                          CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, 
-                                                                                                    Path=PlacementTarget.SelectedItem}" />
+                                <MenuItem Header="Rimuovi" Click="DeleteListedJob" />
                             </ContextMenu>
-                        </ListView.ContextMenu>-->
+                        </ListView.ContextMenu>
                     </ListView>
                 </ScrollViewer>
             </TabItem>
@@ -279,14 +277,23 @@
             <!-- ############################################################################################################################## -->
             <TabItem Header="In ricezione">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <ListView ItemsSource="{Binding receivingJobs}" SelectionChanged="ListView_SelectionChanged_1">
+                    <ListView Name="ReceivingList" ItemsSource="{Binding receivingJobs}" SelectionChanged="ListView_SelectionChanged_1">
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Width="160" Header="In uscita">
+                                <GridViewColumn Width="160" Header="In ricezione">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal">
-                                                <Button Background="Transparent" BorderThickness="0" BorderBrush="Transparent" Height="24" Margin="0,0,0,0" Name="info_button"
+                                                <!--
+                                                <Button Background="Transparent" BorderThickness="0" BorderBrush="Transparent" Margin="0,0,0,0" Name="info_button" Width="48" HorizontalAlignment="Left"
+                                                        Style="{StaticResource MaterialDesignFlatButton}" Foreground="#448AFF">
+                                                    <Button.Content>
+                                                        <StackPanel Orientation="Horizontal" Height="16">
+                                                            <materialDesign:PackIcon Kind="InformationOutline" Foreground="#448AFF" Height="16" Width="16" VerticalAlignment="Bottom" />
+                                                        </StackPanel>
+                                                    </Button.Content>
+                                                -->
+                                                <Button Background="Transparent" BorderThickness="0" BorderBrush="Transparent" Margin="0,0,0,0" Name="info_button" Width="48" HorizontalAlignment="Left"
                                                         Style="{StaticResource MaterialDesignFlatButton}" Foreground="#448AFF">
                                                     <Button.Content>
                                                         <StackPanel Orientation="Horizontal" Height="16">
@@ -478,6 +485,11 @@
                                 </GridViewColumn>
                             </GridView>
                         </ListView.View>
+                        <ListView.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Rimuovi" Click="DeleteListedJob" />
+                            </ContextMenu>
+                        </ListView.ContextMenu>
                     </ListView>
                 </ScrollViewer>
             </TabItem>
