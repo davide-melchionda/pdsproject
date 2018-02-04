@@ -44,6 +44,7 @@ namespace FileShare {
 
             DataContext = this;
         }
+
         private void Accept_Button_Click(object sender, RoutedEventArgs e) {
             request.Response = true;
             request.Path = ChosedPath.Text;
@@ -67,10 +68,20 @@ namespace FileShare {
             ChosedPath.Text = dialog.SelectedPath;
         }
 
-        public ListedPeer Sender { get; set; }
-        public List<DisplayedFileInfo> Infos { get; set; }
-        public Settings Settings { get => settings; set => settings = value; }
-        public ToAccept Request { get => request; set => request = value; }
-        public string TaskType { get => taskType; set => taskType = value; }
+        public ListedPeer Sender {
+            get; set;
+        }
+        public List<DisplayedFileInfo> Infos {
+            get; set;
+        }
+        public Settings Settings {
+            get => settings; set => settings = value;
+        }
+        public ToAccept Request {
+            get => request; set => request = value;
+        }
+        public string TaskType {
+            get => taskType; set => taskType = value;
+        }
     }
 }

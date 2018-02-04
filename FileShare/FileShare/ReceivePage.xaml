@@ -124,7 +124,7 @@
                 <TextBlock Text="Dove vuoi salvare il file?" Style="{StaticResource MaterialDesignBody1TextBlock}"></TextBlock>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <!--<TextBox Name="DefaultPath" Text="{Binding Path=Settings.DefaultRecvPath }"   ></TextBox>-->
-                    <TextBox Name="ChosedPath"  Margin="0,0,0,0" Width="248" Height="32" Text="{Binding Settings.DefaultRecvPath}" materialDesign:HintAssist.Hint="Percorso predefinito"/>
+                    <TextBox Name="ChosedPath"  Margin="0,0,0,0" Width="248" Height="32" Text="{Binding Settings.DefaultRecvPath, Mode=OneWay}" materialDesign:HintAssist.Hint="Percorso predefinito"/>
                     <!--<TextBox Padding="2" Margin="5" Name="ChosedPath" Text="{Binding Path=Settings.DefaultRecvPath }" ></TextBox>-->
                     <Button Background="Transparent" BorderThickness="0" Name="ChoosePath" HorizontalAlignment="Center" Click="Path_Button_Click"
                                  Style="{StaticResource MaterialDesignFlatButton}">

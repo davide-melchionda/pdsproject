@@ -139,14 +139,20 @@ namespace FileShare {
             // Start the thread responsible of receiving request of transferring files
             receiver = new ServerClass();
             receiver.RequestReceived += (ToAccept request) => {
+                AutoResetEvent goOn = new AutoResetEvent(false);    // To wait for the closing of the window
                 // On the gui thread
                 Application.Current.Dispatcher.Invoke((Action)delegate {
                     //mostra la finestra e prende in uscita path e response
                     ReceiveWindow rw = new ReceiveWindow(request);
                     //rw.ShowDialog();
-                    rw.ShowDialog();
+                    rw.Closed += (object target, EventArgs args) => {
+                        goOn.Set();
+                    };
+                    rw.Show();
                     //rw.Activate();
                 });
+                // wait until window is closed
+                goOn.WaitOne();
                 return request;
             };
             /* Some callback must be registered to the receiver thread to instruct it about 
@@ -360,6 +366,7 @@ namespace FileShare {
         /// <param name="e"></param>
         public void AppExit(object sender, EventArgs e) {
             mutex.ReleaseMutex();
+            Environment.Exit(0);
         }
     }
 }

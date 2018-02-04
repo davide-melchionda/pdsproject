@@ -71,6 +71,18 @@ namespace FileTransfer {
                 }
                 PathError?.Invoke(e, sourceName);
 
+            } catch (ObjectDisposedException e) {
+
+                ConnectionError?.Invoke(job);
+
+            // NOTE: 'ObjectDisposedException' and 'SocketException' make the same management as the generale 'Exception'.
+            // However they have their own catch because they are very common exceptions in this point of the code, and 
+            // in this way they are marked and clearely visible.
+            // This separation is not neede, but it's really useful to remark this concept.
+            } catch (Exception e) {
+
+                ConnectionError?.Invoke(job);
+
             } finally {
                 
                 // Remove the job (if any) from the list

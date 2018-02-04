@@ -12,17 +12,17 @@ namespace FileTransfer
         /**
          * The semaphore which manages fixed threshold in client scheduling.
          */
-        private static Semaphore clientsPool = new Semaphore(20, 20);
+        private static Semaphore clientsPool = new Semaphore(15, 15);
 
         /**
          * The semaphore which manages the high level threshold in server scheduling.
          */
-        private static Semaphore serversHighThreshold = new Semaphore(4, 4);
+        private static Semaphore serversHighThreshold = new Semaphore(15, 15);
 
         /**
          * The number which represents the low level threshold in server scheuling.
          */
-        private const int serversLowThreshold = 2;
+        private const int serversLowThreshold = 10;
 
         /**
          * The semaphore which manages the low level threshold in server scheduling.
