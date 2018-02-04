@@ -37,6 +37,7 @@ namespace HelloProtocol {
          */
         public static HelloNetworkModule Instance {
             get {
+                // double check and thread-safe singleton implementation
                 if (instance == null) {
                     lock (syncRoot) {
                         if (instance == null) {
@@ -129,10 +130,6 @@ namespace HelloProtocol {
                 sendSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
                 EndPoint localOutgoingEP = new IPEndPoint(localIP, 0);
                 sendSocket.Bind(localOutgoingEP);  // Bind
-
-                //MessageBox.Show("The ip address is " + nic.GetIPProperties().UnicastAddresses);
-
-                //throw new UnableToConnectException("Exc");
 
             } catch (Exception e) {
                 //Console.WriteLine("Socket connection error: " + e.Message);  // DEBUG

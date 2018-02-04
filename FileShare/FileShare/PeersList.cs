@@ -32,6 +32,7 @@ namespace HelloProtocol {
          */
         public static PeersList Instance {
             get {
+                // thread safe singleton
                 if (instance == null) {
                     lock (syncRoot) {
                         if (instance == null)
@@ -69,10 +70,8 @@ namespace HelloProtocol {
          * associated with the timestamp instance of this entry is "now".
          */
         public void put(Peer p) {
-            //map.Add(p.Id, new PeerEntry(p, new DateTime()));
-            map.TryAdd(p.Id, new PeerEntry(p, DateTime.Now));
-            if (PeerInserted != null)
-                PeerInserted(p);
+            if (map.TryAdd(p.Id, new PeerEntry(p, DateTime.Now)))   // only if the peer was effectively inserted
+                PeerInserted?.Invoke(p);
         }
 
         /**
@@ -91,10 +90,10 @@ namespace HelloProtocol {
          * Deletes the entry related to the peer with the specified key from the table.
          */
          public void del(string key) {
-            //Peer removed = map[key].Peer;
             PeerEntry removed = null;
             map.TryRemove(key, out removed);
-            PeerRemoved?.Invoke(removed.Peer);
+            if (removed != null)
+                PeerRemoved?.Invoke(removed.Peer);
         }
 
         /**

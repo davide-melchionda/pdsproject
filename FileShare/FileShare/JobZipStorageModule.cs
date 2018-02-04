@@ -87,10 +87,15 @@ namespace FileShareConsole {
                             ZipFile.CreateFromDirectory(j.FilePaths.Last(), zipName, CompressionLevel.NoCompression, false);
                         } else {  // otherwise
                                   // Note: if it's a file, ZipArchive has to work on a new file in order to zip
-                            ZipArchive newFile = ZipFile.Open(zipName, ZipArchiveMode.Create);
-                            //string p = Path.GetDirectoryName(filePath);
-                            newFile.CreateEntryFromFile(j.FilePaths.Last(), Path.GetFileName(j.FilePaths.Last()), CompressionLevel.NoCompression);
-                            newFile.Dispose();
+                            ZipArchive newFile = null;
+                            try {
+                                newFile = ZipFile.Open(zipName, ZipArchiveMode.Create);
+                                //string p = Path.GetDirectoryName(filePath);
+                                newFile.CreateEntryFromFile(j.FilePaths.Last(), Path.GetFileName(j.FilePaths.Last()), CompressionLevel.NoCompression);
+                            } finally {
+                                if (newFile != null)
+                                    newFile.Dispose();
+                            }
                         }
                         zippedEvent.Set();
                         lock (dictionaryLock) {
@@ -104,30 +109,40 @@ namespace FileShareConsole {
                             zippedEvent.WaitOne();
                     }
                 } else {
-                    // Constructs the zip file name
-                    Directory.CreateDirectory(Path.Combine(zipTempFolder, j.Id));
-                    zipName = Path.Combine(zipTempFolder, j.Id, j.Id + ".tmp");// + @"\" + Path.GetFileNameWithoutExtension(filePath) + date + ".zip";
 
-                    ZipArchive newFile = ZipFile.Open(zipName, ZipArchiveMode.Create);
+                    ZipArchive newFile = null;
 
-                    foreach (string filePath in j.FilePaths) {
-                        /* Retrieves the file attributes to check if the file is a directory or not
-                            because the way to zip is different in the two cases. */
-                        FileAttributes attr = 0;
-                        attr = File.GetAttributes(filePath);
+                    try {
 
-                        if ((attr & FileAttributes.Directory) == FileAttributes.Directory) {
-                            string tmpArchivePath = Path.Combine(Path.GetDirectoryName(zipName), Path.GetFileName(filePath) + ".zip");
-                            ZipFile.CreateFromDirectory(filePath, tmpArchivePath, CompressionLevel.NoCompression, false);
-                            newFile.CreateEntryFromFile(tmpArchivePath, Path.GetFileName(filePath), CompressionLevel.NoCompression);
-                            File.Delete(tmpArchivePath);
-                        } else {
-                            newFile.CreateEntryFromFile(filePath, Path.GetFileName(filePath), CompressionLevel.NoCompression);
+                        // Constructs the zip file name
+                        Directory.CreateDirectory(Path.Combine(zipTempFolder, j.Id));
+                        zipName = Path.Combine(zipTempFolder, j.Id, j.Id + ".tmp");// + @"\" + Path.GetFileNameWithoutExtension(filePath) + date + ".zip";
+
+                        newFile = ZipFile.Open(zipName, ZipArchiveMode.Create);
+
+                        foreach (string filePath in j.FilePaths) {
+                            /* Retrieves the file attributes to check if the file is a directory or not
+                                because the way to zip is different in the two cases. */
+                            FileAttributes attr = 0;
+                            attr = File.GetAttributes(filePath);
+
+                            if ((attr & FileAttributes.Directory) == FileAttributes.Directory) {
+                                string tmpArchivePath = Path.Combine(Path.GetDirectoryName(zipName), Path.GetFileName(filePath) + ".zip");
+                                try {
+                                    ZipFile.CreateFromDirectory(filePath, tmpArchivePath, CompressionLevel.NoCompression, false);
+                                    newFile.CreateEntryFromFile(tmpArchivePath, Path.GetFileName(filePath), CompressionLevel.NoCompression);
+                                } finally {
+                                    File.Delete(tmpArchivePath);
+                                }
+                            } else {
+                                newFile.CreateEntryFromFile(filePath, Path.GetFileName(filePath), CompressionLevel.NoCompression);
+                            }
                         }
-                    }
-                    //}
+                        //}
 
-                    newFile.Dispose();
+                    } finally {
+                        newFile.Dispose();
+                    }
                 }
                 // Intializes the remaining info in the task (SentName and Size)
                 j.Task.SentName = Path.GetFileName(zipName);    // name of the zipped file
@@ -136,11 +151,13 @@ namespace FileShareConsole {
                 // Returns an iterator to the file
                 jobIterator = (JobFileIterator)getIterator(zipName);
                 jobIterator.Job = j;
-                
+
                 //}
             } catch (IOException e) {
-                if (zipName != null)
+                if (zipName != null && File.Exists(zipName))
                     File.Delete(zipName);
+                if (Directory.Exists(Path.Combine(zipTempFolder, j.Id)))
+                    Directory.Delete(Path.Combine(zipTempFolder, j.Id));
                 throw e;
             }
 
@@ -157,22 +174,18 @@ namespace FileShareConsole {
          */
         public FileIterator createJob(FileTransfer.Task task, string receivePath) {
 
-            // Retrieves current date and computes a string to uniquely identiy the task
-            DateTime now = DateTime.Now;
+            // Retrieves current date and computes a string to uniquely identify the task
             string zipTempFolder = Settings.Instance.AppDataPath + "\\temp";
 
-            //string path = zipTempFolder + "\\" + Path.GetFileNameWithoutExtension(task.Info.Name) + now.ToString("yyyyMMddhhmmss") + now.Millisecond + ".zip";
             Directory.CreateDirectory(Path.Combine(zipTempFolder, task.Id));
             String path = Path.Combine(zipTempFolder, task.Id, task.Id + ".tmp");
             ReceivingJob job = new ReceivingJob(task, receivePath);
 
-            // Push the job in the receiving jobs list
-            //JobsList.Receiving.push(job);
-
+            // Creates or retrieves the directory selected for the reception
             DirectoryInfo di = Directory.CreateDirectory(receivePath);
 
-
             // Creates the new file. Note: the file is zipped
+            // This file is created in the temp directory
             File.Create(path).Close();
 
             // Creates a new iterator to the file
@@ -182,39 +195,80 @@ namespace FileShareConsole {
             // Defines the behavior when the iterator is going to be closed
             // registering a callback on the related event.
             iterator.BeforeIteratorClosed += () => {
+
                 // Job not completed: nothing to extract
                 if (job.SentByte != job.Task.Size)
                     return;
-                if (job.Task.Info.Count == 1/* && job.Task.Info[0].Type == FileTransfer.FileInfo.FType.DIRECTORY*/) {
-                    //ZipFile.ExtractToDirectory(path, GetUniqueFilePath(receivePath + "\\" + job.Task.Info.Last().Name));
-                    if (job.Task.Info.Last().Type == FileTransfer.FileInfo.FType.DIRECTORY)
-                        ZipFile.ExtractToDirectory(path, GetUniqueFilePath(receivePath + "\\" + job.Task.Info.Last().Name));
-                    else
-                        using (ZipArchive archive = ZipFile.OpenRead(path)) {
-                            string tempPath;
-                            foreach (ZipArchiveEntry entry in archive.Entries) {
-                                tempPath = GetUniqueFilePath(Path.Combine(job.DestinationPath, entry.Name));
-                                entry.ExtractToFile(tempPath);
+
+                List<String> createdFiles = new List<String>();
+                List<String> createdDirs = new List<String>();
+                string tempPath;
+
+                try {
+                    // If there is only one file in the archive
+                    if (job.Task.Info.Count == 1/* && job.Task.Info[0].Type == FileTransfer.FileInfo.FType.DIRECTORY*/) {
+                        //ZipFile.ExtractToDirectory(path, GetUniqueFilePath(receivePath + "\\" + job.Task.Info.Last().Name));
+                        if (job.Task.Info.Last().Type == FileTransfer.FileInfo.FType.DIRECTORY) {
+                            tempPath = GetUniqueFilePath(receivePath + "\\" + job.Task.Info.Last().Name);
+                            createdDirs.Add(tempPath);
+                            ZipFile.ExtractToDirectory(path, tempPath);
+                        } else {
+                            using (ZipArchive archive = ZipFile.OpenRead(path)) {
+                                foreach (ZipArchiveEntry entry in archive.Entries) {
+                                    tempPath = GetUniqueFilePath(Path.Combine(job.DestinationPath, entry.Name));
+                                    createdFiles.Add(tempPath);
+                                    entry.ExtractToFile(tempPath);
+                                }
                             }
                         }
-                } else {
-                    using (ZipArchive archive = ZipFile.OpenRead(path)) {
-                        foreach (FileTransfer.FileInfo fileInfo in job.Task.Info) {
-                            foreach (ZipArchiveEntry entry in archive.Entries) {
-                                if (fileInfo.Name == entry.Name) {
-                                    if (fileInfo.Type == FileTransfer.FileInfo.FType.DIRECTORY) {
-                                        string uniqueFileName = GetUniqueFilePath(Path.Combine(Path.GetDirectoryName(path), entry.Name));
-                                        entry.ExtractToFile(uniqueFileName + ".zip");
-                                        ZipFile.ExtractToDirectory(uniqueFileName + ".zip", GetUniqueFilePath(Path.Combine(receivePath, fileInfo.Name)));
-                                        File.Delete(uniqueFileName + ".zip");
-                                    } else {
-                                        entry.ExtractToFile(GetUniqueFilePath(Path.Combine(job.DestinationPath, entry.Name)));
+                    } else {    // more than one file
+                        using (ZipArchive archive = ZipFile.OpenRead(path)) {
+                            foreach (FileTransfer.FileInfo fileInfo in job.Task.Info) {
+                                foreach (ZipArchiveEntry entry in archive.Entries) {
+                                    if (fileInfo.Name == entry.Name) {
+                                        if (fileInfo.Type == FileTransfer.FileInfo.FType.DIRECTORY) {
+                                            // This temporary unique path will be used as the path of the zip file that will be then unzipped again to obtain the final file
+                                            string uniqueFileName = GetUniqueFilePath(Path.Combine(Path.GetDirectoryName(path), entry.Name));
+
+                                            try {
+                                                entry.ExtractToFile(uniqueFileName + ".zip");   // extraxt entry to the temp zip archive
+                                                                                                // Now we perform the real extraction to unzip the directory in the selcted location
+                                                tempPath = GetUniqueFilePath(Path.Combine(receivePath, fileInfo.Name));
+                                                createdDirs.Add(tempPath);
+                                                ZipFile.ExtractToDirectory(uniqueFileName + ".zip", tempPath);
+                                            } finally {
+                                                // we need to delete the temporary file we created
+                                                // this must be done even if an exception occours
+                                                File.Delete(uniqueFileName + ".zip");
+                                            }
+                                        } else {
+                                            tempPath = GetUniqueFilePath(Path.Combine(job.DestinationPath, entry.Name));
+                                            createdFiles.Add(tempPath);
+                                            entry.ExtractToFile(tempPath);
+                                        }
                                     }
                                 }
                             }
                         }
                     }
+                } catch (Exception e) {
+                    // In the case any exception occours, we 
+                    // must delete any file we have created
+
+                    // Delete all files
+                    foreach (String s in createdFiles)
+                        if (File.Exists(s))
+                            File.Delete(s);
+
+                    // Delete all directories
+                    foreach (String d in createdDirs)
+                        if (Directory.Exists(d))
+                            Directory.Delete(d, true); // delete recursive
+
+                    // Re-throw exception so that can be catched on upper levels
+                    throw e;
                 }
+
                 //JobsList.Receiving.remove(job.Id);
             };
 
@@ -394,7 +448,7 @@ namespace FileShareConsole {
                 if (offset + READ_BLOCK_SIZE <= length)
                     read = fileStream.Read(buffer, 0, READ_BLOCK_SIZE);
                 else {
-                    int toRead = (int) (length - offset);
+                    int toRead = (int)(length - offset);
                     read = fileStream.Read(buffer, 0, toRead); // no-overflow
                 }
                 job.SentByte += read;
@@ -433,7 +487,7 @@ namespace FileShareConsole {
                 else
                     // Writes only the number of bytes which allows
                     // to now overflow file limits.
-                    written = (int) (length - offset);
+                    written = (int)(length - offset);
 
                 // Writes bytes in the file
                 fileStream.Write(buf, 0, written);
@@ -457,32 +511,37 @@ namespace FileShareConsole {
 
             public override void close() {
                 int openedNum;
-                lock (dictionaryLock) {
-                    //openedFiles.TryGetValue(filePath, out openedNum);
-                    FileStreamRegisteredCounter r;
-                    fileDescriptors.TryGetValue(filePath, out r);
-                    if (r.Count < 2) {
-                        // Close the filestream
-                        fileStream.Close();
-                        fileDescriptors.Remove(filePath);
-                    } else
-                        r.Count--;
+                try {
+                    lock (dictionaryLock) {
+                        //openedFiles.TryGetValue(filePath, out openedNum);
+                        FileStreamRegisteredCounter r;
+                        fileDescriptors.TryGetValue(filePath, out r);
+                        if (r.Count < 2) {
+                            // Close the filestream
+                            fileStream.Close();
+                            fileDescriptors.Remove(filePath);
+                        } else
+                            r.Count--;
+                    }
+
+                    // If anyone is registered to the closing event
+                    // and requires to be executed befor the closing.
+                    BeforeIteratorClosed?.Invoke();
+                } finally { // Even if BeforeIteratorClosed fails and throws an exception we MUST close the iterator
+                    // Calls the closing method of the father
+                    base.close();
                 }
-
-                // If anyone is registered to the closing event
-                // and requires to be executed befor the closing.
-                if (BeforeIteratorClosed != null)
-                    BeforeIteratorClosed();
-
-                // Calls the closing method of the father
-                base.close();
             }
         }
 
         public class FileStreamRegisteredCounter {
 
-            public FileStream FileStream { get; set; }
-            public int Count { get; set; }
+            public FileStream FileStream {
+                get; set;
+            }
+            public int Count {
+                get; set;
+            }
 
             public FileStreamRegisteredCounter(FileStream stream, int count) {
                 FileStream = stream;

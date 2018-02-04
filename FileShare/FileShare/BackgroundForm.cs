@@ -18,6 +18,10 @@ namespace FileShare {
         public enum ErrorNotificationType {
             Receiving, Sending, PathTooLong, DirectoryNotFound, File, Path
         };
+        public enum ErrorDirection {
+            Receiving, Sending,
+            Unknown
+        };
 
         public delegate void OnBackgroundFormClosing();
         public event OnBackgroundFormClosing BackgroundFormClosing;
@@ -82,25 +86,35 @@ namespace FileShare {
         /// Show a balloon tip to notify an error condition to the user
         /// </summary>
         /// <param name="type">Which kind of error occourred.</param>
-        internal void NotifyError(ErrorNotificationType type, String source = null) {
+        internal void NotifyError(ErrorNotificationType type, ErrorDirection direction) {
+            string sendingOrReceiving = "";
+            switch (direction) {
+                case ErrorDirection.Sending:
+                    sendingOrReceiving = "durante l'invio";
+                    break;
+                case ErrorDirection.Receiving:
+                    sendingOrReceiving = "durante la ricezione";
+                    break;
+            }
+
             switch (type) {
                 case ErrorNotificationType.Receiving:
-                    notifyIcon1.ShowBalloonTip(5000, "Errore durante la ricezione", "Alcuni trasferimenti in ricezione non sono andati a buon fine.", ToolTipIcon.Error);
+                    notifyIcon1.ShowBalloonTip(5000, "Errore " + sendingOrReceiving, "Alcuni trasferimenti in ricezione non sono andati a buon fine.", ToolTipIcon.Error);
                     break;
                 case ErrorNotificationType.Sending:
-                    notifyIcon1.ShowBalloonTip(5000, "Errore durante l'invio", "Alcuni trasferimenti in uscita non sono andati a buon fine.", ToolTipIcon.Error);
+                    notifyIcon1.ShowBalloonTip(5000, "Errore " + sendingOrReceiving, "Alcuni trasferimenti in uscita non sono andati a buon fine.", ToolTipIcon.Error);
                     break;
                 case ErrorNotificationType.File:
-                    notifyIcon1.ShowBalloonTip(5000, "Errore durante l'invio", "Il file (o un elemento nella sua gerarchia) è aperto da un altro processo", ToolTipIcon.Error);
+                    notifyIcon1.ShowBalloonTip(5000, "Errore " + sendingOrReceiving, "Il file (o un elemento nella sua gerarchia) è aperto da un altro processo", ToolTipIcon.Error);
                     break;
                 case ErrorNotificationType.DirectoryNotFound:
-                    notifyIcon1.ShowBalloonTip(5000, "Errore durante il trasferimento", "La directory specificata non esiste.", ToolTipIcon.Error);
+                    notifyIcon1.ShowBalloonTip(5000, "Errore " + sendingOrReceiving, "La directory specificata non esiste.", ToolTipIcon.Error);
                     break;
                 case ErrorNotificationType.PathTooLong:
-                    notifyIcon1.ShowBalloonTip(5000, "Errore durante l'invio", "Il path del file specificato è troppo lungo.", ToolTipIcon.Error);
+                    notifyIcon1.ShowBalloonTip(5000, "Errore " + sendingOrReceiving, "Il path del file specificato è troppo lungo.", ToolTipIcon.Error);
                     break;
                 case ErrorNotificationType.Path:
-                    notifyIcon1.ShowBalloonTip(5000, "Errore durante la ricezione", "Il percorso specificato non è valido", ToolTipIcon.Error);
+                    notifyIcon1.ShowBalloonTip(5000, "Errore " + sendingOrReceiving, "Il percorso specificato non è valido", ToolTipIcon.Error);
                     break;
             }
         }

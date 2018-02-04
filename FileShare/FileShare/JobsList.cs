@@ -107,20 +107,15 @@ namespace FileTransfer {
         public void remove(string key) //Se non riesce a poppae nulla restituisce void e mette a dormire il consumer
         {
             Job j = null;
-            try {
-                list.TryRemove(key, out j);
-            } catch (ArgumentNullException e) {
-                throw e;
-            }
-            JobRemoved?.Invoke(j);
+            list.TryRemove(key, out j);
+            if (j != null)
+                JobRemoved?.Invoke(j);
         }
 
         public void push(Job job) //inserisce un nuovo job in coda, se si rende conto che la coda era precedentemente vuota risveglia il consumer
         {
             list.TryAdd(job.Id, job);
-            if (JobAdded != null)
-                new Thread(() => { JobAdded(job); }).Start();
-
+            JobAdded?.Invoke(job);
         }
         
     }

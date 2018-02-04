@@ -20,15 +20,11 @@ public abstract class ExecutableThread {
     private object synch_obj = new object();
 
     /// <summary>
-    /// Is the thread still running?
-    /// </summary>
-    private bool alive;
-    /// <summary>
     /// Property: is the thread still running?
     /// </summary>
     public bool Alive {
         get {
-            return alive;
+            return thread.IsAlive;
         }
     }
 
@@ -67,7 +63,7 @@ public abstract class ExecutableThread {
     /// </summary>
     public void StopThread() {
 
-        lock (synch_obj) {
+        //lock (synch_obj) {
             if (Alive) {
                 // first of all we must call the PrepareStop so that if the 
                 // thread is executing any blocking operation it can manage this
@@ -97,7 +93,7 @@ public abstract class ExecutableThread {
                 // Now we can set our stop field to 'true' and return to our parent (if any)
                 stop = true;
             }
-        }
+        //}
     }
 
     /// <summary>
@@ -147,16 +143,16 @@ public abstract class ExecutableThread {
     /// </summary>
     public void run() {
         thread = new Thread(() => {
-            lock (synch_obj) {
-                alive = true;
-            }
+            //lock (synch_obj) {
+            //    alive = true;
+            //}
 
             execute();              // execute the logic of the thread
             Terminate?.Invoke();    // execute the operation associated to the end of this thread
 
-            lock (synch_obj) {
-                alive = false;          // thread no more alive
-            }
+            //lock (synch_obj) {
+            //    alive = false;          // thread no more alive
+            //}
         });
         thread.IsBackground = true;
         thread.Start();

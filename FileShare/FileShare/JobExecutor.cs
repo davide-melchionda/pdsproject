@@ -41,7 +41,7 @@ namespace FileTransfer {
         /// </summary>
         Socket socket;
 
-        public delegate void OnFileError(System.Exception e, String source);
+        public delegate void OnFileError(System.Exception e, Job j);
         /**
          * Event on which register the callback to manage the connection error
          */
@@ -77,7 +77,6 @@ namespace FileTransfer {
 
                 // Create a client for the specific protocol
                 // The client receives the socket whith the connection established
-                //ClientProtocolEndpoint client = new DummyClient(socket, new DummyProtocol(), iterator, job.Task);
                 ClientProtocolEndpoint client = new NetworkTransmission.TnSClient(socket, new TnSProtocol(), job);
 
                 // Executes the transmission and obtais a result
@@ -92,11 +91,9 @@ namespace FileTransfer {
                 // Trigger the event of conncetion error
                 if (job.Status != Job.JobStatus.StoppedByLocal)
                     job.Status = Job.JobStatus.ConnectionError;
-                //<<<<<<< job-status-and-notifications
+                
                 ConnectionError?.Invoke(job);
-                //            } finally {
-                //=======
-                //                ConnectionError?.Invoke();
+                
             } catch (System.Exception e) {
             
                 // Remove the job from the list
@@ -104,13 +101,8 @@ namespace FileTransfer {
                 
                 // Update the job status
                 job.Status = Job.JobStatus.ConnectionError;
-
-                // Trigger the event of conncetion error
-                String sourceName = job.Task.Info[0].Name;
-                if (job.Task.Info.Count > 1)
-                    for (int i = 1; i > job.Task.Info.Count; i++)
-                        sourceName += ", " + job.Task.Info[i].Name;
-                FileError?.Invoke(e, sourceName);
+                
+                FileError?.Invoke(e, job);
 
             } finally {
                 // Close the socket

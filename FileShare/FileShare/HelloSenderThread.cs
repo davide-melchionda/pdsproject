@@ -40,7 +40,7 @@ namespace HelloProtocol {
         // Qualora lo stato dovesse passare a invisibile blocca l'invio di keepAlive
         private void Instance_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             if (e.PropertyName == "IsInvisible") {
-                if ((sender as Settings).IsInvisible/*e.Equals(true)*/) {
+                if ((sender as Settings).IsInvisible) {
                     visibilityChange.Reset();
                 } else
                     visibilityChange.Set();
@@ -55,8 +55,8 @@ namespace HelloProtocol {
             while (!Stop && visibilityChange.WaitOne()) {
                 if (Stop)
                     break;  // quit
+                
                 // will store the result of the send() operation
-
                 bool sendresult = false;
 
                 while (!sendresult) {
@@ -75,6 +75,9 @@ namespace HelloProtocol {
             }
         }
 
+        /// <summary>
+        /// EXECUTABLE THREAD METHOD
+        /// </summary>
         protected override void PrepareStop() {
             Stop = true;   // prepares itself to stop
             // now that the Stop flag is to false

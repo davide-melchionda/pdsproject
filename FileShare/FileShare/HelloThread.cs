@@ -7,8 +7,14 @@ namespace HelloProtocol {
     internal class HelloThread : ExecutableThread {
         public delegate void ProfilePicUpdated(string peerId, byte[] newPicture);
 
+        /// <summary>
+        /// When the user profile picture changes
+        /// </summary>
         public event ProfilePicUpdated OnProfilePicUpdate;
 
+        /// <summary>
+        /// An error delegate that will be called when network error occours
+        /// </summary>
         public delegate void OnNetworkCannotConnect();
         public event OnNetworkCannotConnect NetworkCannotConnect;
 
@@ -27,9 +33,15 @@ namespace HelloProtocol {
         ///  Retrieves the HelloNetworkModuleInstance
         /// </summary>
         public HelloThread() {
+            // Creates or retrieves a network module to use to communicate on the network
             network = HelloNetworkModule.Instance;
         }
 
+        /// <summary>
+        /// Defines the behaviour when a new packet is received.
+        /// </summary>
+        /// <param name="packet"></param>
+        /// <param name="senderip"></param>
         private void onPacketReceived(HelloPacket packet, String senderip) {
             // Only if we have the network we can process the packet
             if (network != null) {
@@ -41,15 +53,16 @@ namespace HelloProtocol {
                                                                         // Cast the received packet to a keepalive
                     KeepalivePacket keepalive = (KeepalivePacket)packet;
                     // Retrieves the local peer from the Settings
-                    Peer localPeer = Settings.Instance.LocalPeer;
+                    //Peer localPeer = Settings.Instance.LocalPeer;
 
-                    // If the packet come from local host ...
-                    if (localPeer.Id == keepalive.PeerId) {
-                        // ... and local ip address is not updated ...
-                        if (localPeer.Ipaddress != senderip)
-                            // ... update local ip address
-                            Settings.Instance.updatePeerAddress(senderip);
-                    } else if (peers.get(keepalive.PeerId) == null) {     // otherwise if the packet come from an unknown peer
+                    //// If the packet come from local host ...
+                    //if (localPeer.Id == keepalive.PeerId) {
+                    //    // ... and local ip address is not updated ...
+                    //    if (localPeer.Ipaddress != senderip)
+                    //        // ... update local ip address
+                    //        Settings.Instance.updatePeerAddress(senderip);
+                    //} else 
+                    if (peers.get(keepalive.PeerId) == null) {     // otherwise if the packet come from an unknown peer
                         int attempts = 0;   // attempts to send the packet
                                             // Try to send a query packet for MAX_NETFAIL_ATTEMPTS times
                         while (!network.sendUnicast(new QueryPacket(), senderip)) {
@@ -59,8 +72,14 @@ namespace HelloProtocol {
                             }
                             System.Threading.Thread.Sleep(3000);
                         }
-                    } else   // otherwise update the timestamp of the peer in the peers table
-                        peers.updatePeer(keepalive.PeerId, DateTime.Now, keepalive.PeerName);
+                    } else {   // otherwise update the timestamp of the peer in the peers table
+                        try {
+                            peers.updatePeer(keepalive.PeerId, DateTime.Now, keepalive.PeerName);
+                        } catch (PeerNotFoundException e) {
+                            Logger.log(Logger.HELLO_DEBUG, "Peer " + keepalive.PeerId 
+                                                            + " no more available even if keepalive was received from it.");
+                        }
+                    }
                 } else if (packet.Type == HelloPacket.PacketType.Query) {  // If it's a query
                                                                            //lock (Settings.Instance) {
                     if (!Settings.Instance.IsInvisible) {
@@ -102,6 +121,9 @@ namespace HelloProtocol {
             }
         }
 
+        /// <summary>
+        /// EXECUTABLE THREAD METHOD
+        /// </summary>
         protected override void execute() {
 
             // If we have no network, we can return
@@ -118,7 +140,6 @@ namespace HelloProtocol {
             HelloSenderThread sender = new HelloSenderThread(network);
             RegisterChild(sender);  // a new child wa created
             sender.CannotSend += () => {
-                //network.Reset();
                 NetworkCannotConnect?.Invoke();
             };
             sender.run();
@@ -129,41 +150,45 @@ namespace HelloProtocol {
             RegisterChild(cleanup);  // a new child wa created
             cleanup.run();
 
+            // Register the callback to invoke when a new packet is received
             network.HelloPacketReception += onPacketReceived;
+
+            // Callback: what should we do when an information like username or picture path changes?
             Settings.Instance.PropertyChanged += (object s, System.ComponentModel.PropertyChangedEventArgs e) => {
                 if (String.Compare(e.PropertyName, "CurrentUsername") == 0 || String.Compare(e.PropertyName, "PicturePath") == 0)
                     if (!Settings.Instance.IsInvisible) // Send a presentation packet only if not invisible
-                        SendPresentationPacket(/*s, e*/);
+                        SendPresentationPacket();
             };
             Settings.Instance.PropertyChanged += Instance_visibilityChanged;
 
+            // Loop until stop condition is reached: receive packet
             while (!Stop && network.receive())
                 ;
 
-            /*
-             * Should we close the socket?
-             * It's not correct to close the socket, because the object
-             * HelloNetworkModule is a Singleton, 
-             *      network.closeSockets();
-             */
-
         }
 
-        private void SendPresentationPacket(/*object sender, System.ComponentModel.PropertyChangedEventArgs e*/) {
-            //HelloNetworkModule network = HelloNetworkModule.Instance;
-
+        /// <summary>
+        /// Try to send a presentation packet for MAX_NETFAIL_ATTEMPTS time and 
+        /// execute the delaget NetworkCannotConnect if fails.
+        /// </summary>
+        private void SendPresentationPacket() {
             int attempts = 0;   // attempts to send presentation
-
             // Tries to send the PresentationPacket for N times. If it fails, calls the relative callback
             while (!network.send(new PresentationPacket(Settings.Instance.LocalPeer))) {
                 if (++attempts > MAX_NETFAIL_ATTEMPTS) {
-                    NetworkCannotConnect?.Invoke(); // failed: calling the delegate
+                    NetworkCannotConnect?.Invoke(); // failed N times: calling the delegate
                     return;
                 }
                 System.Threading.Thread.Sleep(3000);
             }
         }
 
+        /// <summary>
+        /// Send a goodbye packet to inform that it will be no more available on the network or
+        /// send a presentation if it is visible again.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Instance_visibilityChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             if (String.Compare(e.PropertyName, "IsInvisible") == 0) {
                 if (Settings.Instance.IsInvisible)
@@ -173,9 +198,13 @@ namespace HelloProtocol {
             }
         }
 
+        /// <summary>
+        /// Send a goodbye packet to inform that it will be no more available on the network.
+        /// Try to send a godbye packet for MAX_NETFAIL_ATTEMPTS time and 
+        /// execute the delaget NetworkCannotConnect if fails.
+        /// </summary>
         private void sendGoodbye() {
             int attempts = 0;   // attempts to send goodbye
-
             // Tries to send the PresentationPacket for N times. If it fails, calls the relative callback
             while (!network.send(new GoodByePacket(Settings.Instance.LocalPeer.Id))) {
                 if (++attempts > MAX_NETFAIL_ATTEMPTS) {
@@ -186,13 +215,16 @@ namespace HelloProtocol {
             }
         }
 
+        /// <summary>
+        /// EXECUTABLE THREAD METHOD
+        /// What should we do to prepare (and force) this thread to stop?
+        /// </summary>
         protected override void PrepareStop() {
             // immediately after have killed the childs we want
             ChildsGone += () => {
                 if (network != null) {
                     sendGoodbye();  //... 1) to send a Goodbye packet
-                    //network.closeSockets(); // ... 2) to make the network module release all resources
-                    network.Reset();
+                    network.Reset();    // to force HElloNetworkModule to close its sockets
                 }
             };
         }

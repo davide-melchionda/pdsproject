@@ -236,7 +236,15 @@ namespace FileShare {
                         listItem.Completed = true;
                         listItem.Message = "In completamento...";
                         break;
+                    case Job.JobStatus.PathError:
+                        listItem.Preparing = false;
+                        listItem.Completing = false;
+                        listItem.Completed = true;
+                        listItem.Error = true;
+                        listItem.Message = "Errore nel path del file";
+                        break;
                     default:
+                        listItem.Error = true;
                         listItem.Message = "Errore";
                         break;
                 }

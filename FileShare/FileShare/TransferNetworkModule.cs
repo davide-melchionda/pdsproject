@@ -28,7 +28,7 @@ namespace NetworkTransmission
             TransmissionPacket received = null;
             int bytesRec;
             JObject o = null;
-            while (true)
+            while (!(handler.Poll(1, SelectMode.SelectRead) && handler.Available == 0))
             {
                 byte[] bytes = new byte[1024];
                 bytesRec = handler.Receive(bytes);

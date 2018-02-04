@@ -23,7 +23,8 @@
                                 <ImageBrush ImageSource="{Binding Path=Sender.Icon}"/>
                             </Ellipse.Fill>
                         </Ellipse>
-                        <TextBlock Text="{Binding Path=Sender.Peer.Name}" HorizontalAlignment="Center" Style="{DynamicResource MaterialDesignHeadlineTextBlock}" Padding="16" FontSize="18"></TextBlock>
+                        <TextBlock Width="120" TextTrimming="WordEllipsis" TextWrapping="Wrap"  Text="{Binding Path=Sender.Peer.Name}" HorizontalAlignment="Center" 
+                                   Style="{DynamicResource MaterialDesignHeadlineTextBlock}" Padding="16" FontSize="14"></TextBlock>
                     </StackPanel>
                     <!--<StackPanel Orientation="Vertical" Width="258" Margin="8,0,8,0">-->
                     <Grid Height="248">

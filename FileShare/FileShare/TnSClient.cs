@@ -22,9 +22,9 @@ namespace NetworkTransmission {
 
         public TnSClient(Socket socket, Protocol protocol, SendingJob job) : base(socket, protocol) {
             this.job = job;
-            JobZipStorageModule module = new JobZipStorageModule();
             job.Status = Job.JobStatus.Preparing;
             try {
+                JobZipStorageModule module = new JobZipStorageModule();
                 iterator = module.prepareJob(job);
                 network = new TransferNetworkModule();
                 transferBlock = new byte[((JobZipStorageModule.JobFileIterator)iterator).READ_BLOCK_SIZE];
@@ -40,13 +40,14 @@ namespace NetworkTransmission {
             ResponsePacket response = null;
             TransmissionPacket tPacket = null;
 
-            byte[] msg = network.generateRequestStream(job.Task);       // Encode the data string into a byte array.
-
-            int bytesSent = network.SendPacket(socket, msg);        // Send the data through the socket.
-
-            job.Status = Job.JobStatus.WaitingForRemoteAcceptance;
-
             try {
+
+                byte[] msg = network.generateRequestStream(job.Task);       // Encode the data string into a byte array.
+
+                int bytesSent = network.SendPacket(socket, msg);        // Send the data through the socket.
+
+                job.Status = Job.JobStatus.WaitingForRemoteAcceptance;
+            
                 tPacket = (TransmissionPacket)network.receivePacket(this.socket);       // Receive the response from the remote.
                 if (tPacket.Type.ToString() != "response")
                     throw new SocketException();//TODO This must raise an exception cause we don't expect a server to send packets different from Responses at this point 

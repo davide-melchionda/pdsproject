@@ -81,8 +81,10 @@ namespace FileTransfer
                         int receivedBytes = 0;
                         while (iterator.hasNext()) {
 
-                            // socket.Poll(-1, SelectMode.SelectRead) checks the readable status of the socket. It's blocking, and (due to the infinite
-                            // timeout setted as first parameter) unlocks only when data are available or throws an exception when error occours.
+                            // socket.Poll(1, SelectMode.SelectRead) checks the readable status of the socket. It's blocking but we are using it with a timeout
+                            // of 1 microsec. It unlocks immediately and due to the SelectRead param the returned value is 'true' if 1) data is available for reading,
+                            // 2) Listen has been called and a connection is pending and 3) the connection has been closed, reset, or terminated. In case 3) the 
+                            // flag socket.Available is 0, so we can close everything.
                             if ((socket.Poll(1, SelectMode.SelectRead) && socket.Available == 0) || (iterator as JobFileIterator).Job.Status != Job.JobStatus.Active) {
                                 throw new SocketException();
                             } else {
@@ -100,19 +102,6 @@ namespace FileTransfer
                 }
             } finally {
 
-                // Close the iterator so to release resources
-                if (iterator != null) {
-                    if ((iterator as JobFileIterator).Job.Status == Job.JobStatus.Active)
-                        (iterator as JobFileIterator).Job.Status = Job.JobStatus.ConnectionError;
-
-                    iterator.close();
-
-                    if ((iterator as JobFileIterator).Job.Status != Job.JobStatus.ConnectionError &&
-                        (iterator as JobFileIterator).Job.Status != Job.JobStatus.StoppedByLocal &&
-                        (iterator as JobFileIterator).Job.Status != Job.JobStatus.StoppedByRemote)
-                        (iterator as JobFileIterator).Job.Status = Job.JobStatus.Completed;
-                }
-
                 // I don't know if I really have acquired a slot (maybe an exception occourde befor I could do it)
                 // The realease operation will throw an exception if the I have not acquired a slot
                 try {
@@ -120,6 +109,24 @@ namespace FileTransfer
                     ((TnSProtocol)protocol).releaseServer((socket.RemoteEndPoint as IPEndPoint).Address.ToString());
                 } catch (SemaphoreFullException e) {
                     // This means that SocketException occurred befor I could acquire the semaphore slot
+                }
+
+                // Close the iterator so to release resources
+                if (iterator != null) {
+                    if ((iterator as JobFileIterator).Job.Status == Job.JobStatus.Active)
+                        (iterator as JobFileIterator).Job.Status = Job.JobStatus.ConnectionError;
+
+                    if ((iterator as JobFileIterator).Job.Status != Job.JobStatus.ConnectionError &&
+                        (iterator as JobFileIterator).Job.Status != Job.JobStatus.StoppedByLocal &&
+                        (iterator as JobFileIterator).Job.Status != Job.JobStatus.StoppedByRemote)
+                        (iterator as JobFileIterator).Job.Status = Job.JobStatus.Completed;
+                }
+
+                try {
+                    iterator.close();
+                } catch (System.IO.IOException e) {
+                    (iterator as JobFileIterator).Job.Status = Job.JobStatus.PathError;
+                    throw e;
                 }
 
             }

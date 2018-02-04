@@ -10,6 +10,7 @@ using System.Net;
 using System.Net.NetworkInformation;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
@@ -66,15 +67,6 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged {
         get {
             return localPeer;
         }
-        set {
-            // TODO
-            // Try to write on file the new setting configurations
-            // Throw an exception if something goes wrong
-
-            // ... after the file update
-            localPeer = value;
-
-        }
     }
 
     /**
@@ -90,11 +82,6 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged {
             return mcastHelloPort;
         }
         set {
-            // TODO
-            // Try to write on file the new setting configurations
-            // Throw an exception if something goes wrong
-
-            // ... after the file update
             mcastHelloPort = value;
         }
     }
@@ -111,11 +98,6 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged {
             return mcastHelloIPAddress;
         }
         set {
-            // TODO
-            // Try to write on file the new setting configurations
-            // Throw an exception if something goes wrong
-
-            // ... after the file update
             mcastHelloIPAddress = value;
         }
     }
@@ -131,13 +113,7 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged {
         get {
             return bufSize;
         }
-        set {
-            // TODO
-            // Try to write on file the new setting configurations
-            // Throw an exception if something goes wrong
-
-            // ... after the file update
-            bufSize = value;
+        set {bufSize = value;
         }
     }
 
@@ -213,11 +189,6 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged {
             return tcpReceivingPort;
         }
         set {
-            // TODO
-            // Try to write on file the new setting configurations
-            // Throw an exception if something goes wrong
-
-            // ... after the file update
             tcpReceivingPort = value;
         }
     }
@@ -231,11 +202,6 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged {
             return autoAcceptFiles;
         }
         set {
-            // TODO
-            // Try to write on file the new setting configurations
-            // Throw an exception if something goes wrong
-
-            // ... after the file update
             autoAcceptFiles = value;
             NotifyPropertyChanged();
 
@@ -245,18 +211,13 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged {
     private bool isInvisible = /* DEFAULT */ false;
 
     /**
-   * If the state is invisible or not. In invisible state the application doesn't show itself to the network
-   */
+     * If the state is invisible or not. In invisible state the application doesn't show itself to the network
+     */
     public bool IsInvisible {
         get {
             return isInvisible;
         }
         set {
-            // TODO
-            // Try to write on file the new setting configurations
-            // Throw an exception if something goes wrong
-
-            // ... after the file update
             isInvisible = value;
             NotifyPropertyChanged();
 
@@ -272,11 +233,6 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged {
             return dontShowSetup;
         }
         set {
-            // TODO
-            // Try to write on file the new setting configurations
-            // Throw an exception if something goes wrong
-
-            // ... after the file update
             dontShowSetup = value;
             NotifyPropertyChanged();
 
@@ -284,8 +240,8 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged {
     }
 
     /**
- * The default path on the file system in which save settings file.
- */
+     * The default path on the file system in which save settings file.
+     */
     private string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\File Share";
     /**
      * defaultRecvPath property
@@ -313,7 +269,7 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged {
         }
         set {
             if (!String.IsNullOrEmpty(value)) {
-                defaultRecvPath = value; ;
+                defaultRecvPath = value;
                 NotifyPropertyChanged();
             }
         }
@@ -408,9 +364,7 @@ public class Settings : System.ComponentModel.INotifyPropertyChanged {
             return picturePath;
         }
         set {
-            if (File.Exists(value)) {
-                //LocalPeer.Icon = ImageAdapter.GetThumbnailImage(new BitmapImage(new Uri(value)), IconSize);
-                //LocalPeer.ByteIcon = ImageAdapter.ByteArrayFromImage(new BitmapImage(new Uri(value)), MaxThumbnailPictureMemorySize);7
+            if (!String.IsNullOrEmpty(value) && File.Exists(value)) {
                 Bitmap tmpBitmap;
                 try {
                     tmpBitmap = new Bitmap(value);

@@ -123,7 +123,8 @@ namespace FileTransfer
             StoppedByRemote,                // the job was stopped before completion by the remote peer
             ConnectionError,                // the job was stopped due to a network error
             NotAcceptedByRemote,            // the file(s) in this job was(were) refused by the remote receiving peer
-            WaitingForRemoteAcceptance      // we are waiting the remote peer decision about accepting or refusing the file
+            WaitingForRemoteAcceptance,     // we are waiting the remote peer decision about accepting or refusing the file
+            PathError                       // the transfer was not completed due to an error in the path of the sending or receiving file
         }
     }
 }

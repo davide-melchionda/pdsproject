@@ -43,6 +43,9 @@ namespace HelloProtocol {
             }
         }
 
+        /// <summary>
+        /// EXECUTABLE THREAD METHOD
+        /// </summary>
         protected override void PrepareStop() {
             Stop = true;
             sleepHandle.Set();

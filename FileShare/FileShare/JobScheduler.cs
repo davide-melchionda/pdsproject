@@ -18,7 +18,7 @@ namespace FileTransfer {
          */
         public event OnConnectionError ConnectionError;
 
-        public delegate void OnFileError(Exception e, String source);
+        public delegate void OnFileError(Exception e, Job j);
         /**
          * Event on connection error
          */
@@ -56,8 +56,8 @@ namespace FileTransfer {
 
 
             // When a file error occours
-            sender.FileError += (Exception e, String source) => {
-                FileError?.Invoke(e, source);
+            sender.FileError += (Exception e, Job j) => {
+                FileError?.Invoke(e, j);
             };
             // Run the sender 
             sender.run();

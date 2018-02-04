@@ -76,18 +76,19 @@ namespace FileShare {
         /// </summary>
         //private bool managingReconnection = false;
 
+        private List<Window> openedWindow = new List<Window>();
+
         //Deny the user the possibility to open two or more instances of the application
         void AppStartup(object sender, StartupEventArgs e) {
-            
+
             // Only a single instance of this process must e executed
             bool created;   // will be true if the mutext will be created and not retrieved
+            // FROM MSDN DOCS: If name is not null and initiallyOwned is true, the calling thread owns the named mutex only if createdNew is true after the call.
             mutex = new Mutex(true, "_FileShareApp_Mutex", out created);
             if (!created) { // If the mutex was not created, we are not the first thread trying to execute the program
-                //if (!mutex.WaitOne(TimeSpan.Zero, true)) {
                 mutex.Close();    // we don't want the system mantins the mutex opened for us
                 MessageBox.Show("File shar è già in esecuzione. Puoi accedervi dalla task bar.", "Avvio di File Share", MessageBoxButton.OK, MessageBoxImage.Information);
-                //Environment.Exit(0);
-                return;
+                Environment.Exit(0);
             }
 
             // Read settings from the settings file so to retrieve user preferences
@@ -100,7 +101,7 @@ namespace FileShare {
             // Starts the thread responsible of implementing the Neighboor Discovery protocol
             InitHelloProtocolThread();
             reconnectionAttempts = 0;
-            
+
             // Starts the thread responsible of listening for new connections
             InitReceiverThread();
 
@@ -112,7 +113,7 @@ namespace FileShare {
              * and the notification window */
             bf = new BackgroundForm();
             bf.BackgroundFormClosing += BeforeClosing;
-            
+
 
             // A FOOLISH (BUT USEFUL) WAY TO DEBUG A MULTI-USER SITUATION 
             //for (int i = 0; i < 20; i++) {
@@ -144,12 +145,12 @@ namespace FileShare {
                 Application.Current.Dispatcher.Invoke((Action)delegate {
                     //mostra la finestra e prende in uscita path e response
                     ReceiveWindow rw = new ReceiveWindow(request);
-                    //rw.ShowDialog();
+                    openedWindow.Add(rw);
                     rw.Closed += (object target, EventArgs args) => {
                         goOn.Set();
                     };
                     rw.Show();
-                    //rw.Activate();
+                    rw.Activate();
                 });
                 // wait until window is closed
                 goOn.WaitOne();
@@ -159,22 +160,30 @@ namespace FileShare {
              what to do in case of errors during the tranfer. */
             receiver.ConnectionError += (Job j) => {
                 if (j == null || j.Status == Job.JobStatus.ConnectionError)
-                    bf.NotifyError(BackgroundForm.ErrorNotificationType.Receiving);
+                    bf.NotifyError(BackgroundForm.ErrorNotificationType.Receiving, BackgroundForm.ErrorDirection.Receiving);
             };
             receiver.PathError += manageIOException;
             // Run the receiver thread
             receiver.run();
         }
 
-        private void manageIOException(Exception e, String source) {
+        private void manageIOException(Exception e, Job j) {
+            BackgroundForm.ErrorDirection sendingOrReceiving = BackgroundForm.ErrorDirection.Unknown;
+            if (j != null) {
+                if (j is SendingJob)
+                    sendingOrReceiving = BackgroundForm.ErrorDirection.Sending;
+                else
+                    sendingOrReceiving = BackgroundForm.ErrorDirection.Receiving;
+            }
+
             if (e is PathTooLongException)
-                bf.NotifyError(BackgroundForm.ErrorNotificationType.PathTooLong, source);
+                bf.NotifyError(BackgroundForm.ErrorNotificationType.PathTooLong, sendingOrReceiving);
             else if (e is DirectoryNotFoundException)
-                bf.NotifyError(BackgroundForm.ErrorNotificationType.DirectoryNotFound, source);
+                bf.NotifyError(BackgroundForm.ErrorNotificationType.DirectoryNotFound, sendingOrReceiving);
             else if (e is UnauthorizedAccessException)
-                bf.NotifyError(BackgroundForm.ErrorNotificationType.Path, source);
+                bf.NotifyError(BackgroundForm.ErrorNotificationType.Path, sendingOrReceiving);
             else
-                bf.NotifyError(BackgroundForm.ErrorNotificationType.File, source);
+                bf.NotifyError(BackgroundForm.ErrorNotificationType.File, sendingOrReceiving);
         }
 
         /// <summary>
@@ -194,7 +203,7 @@ namespace FileShare {
                     /* Create a new SelectionWindow and register a callback to execute when
                      * the user has selected the list of receivers. */
                     SelectionWindow sw = new SelectionWindow(paths);
-
+                    openedWindow.Add(sw);
                     sw.Selected += (List<Peer> selected, List<string> filepaths) => {
                         // Close the window
                         sw.Close();
@@ -204,7 +213,7 @@ namespace FileShare {
 
                         scheduler.ConnectionError += (Job j) => {
                             if (j.Status == Job.JobStatus.ConnectionError)
-                                bf.NotifyError(BackgroundForm.ErrorNotificationType.Sending);
+                                bf.NotifyError(BackgroundForm.ErrorNotificationType.Sending, BackgroundForm.ErrorDirection.Sending);
                         };
                         scheduler.FileError += manageIOException;
                         for (int i = 0; i < selected.Count; i++) {
@@ -215,6 +224,7 @@ namespace FileShare {
                         }
                     };
                     sw.Show();
+                    sw.Activate();
                 });
             };
 
@@ -230,58 +240,59 @@ namespace FileShare {
         /// </summary>
         private void RestoreHelloProtocolOnNetworkProblems() {
             //if (Monitor.TryEnter(single_function_execution)) {  // lock if no other is already working here
-                System.Threading.Tasks.Task.Factory.StartNew(() => {
+            System.Threading.Tasks.Task.Factory.StartNew(() => {
 
-                    if (Monitor.TryEnter(single_function_execution)) {  // lock if no other is already working here
-                        bool quit = false;
+                if (Monitor.TryEnter(single_function_execution)) {  // lock if no other is already working here
+                    bool quit = false;
 
-                        if (++reconnectionAttempts > MAX_RECONNECTION_ATTEMPTS) {
-                            App.Current.Dispatcher.Invoke(() => {
-                                MessageBoxResult mbres = MessageBox.Show("Sembra ci sia qualche problema con la rete. Sicuro di voler provare ancora?",
-                                                "Impossibile stabilire una connessione", MessageBoxButton.YesNo, MessageBoxImage.Error);
-                                if (mbres == MessageBoxResult.No)
-                                    quit = true;
-                                else
-                                    reconnectionAttempts = 0;
-                            });
-                        }
-
-                        if (quit) {
-                            BeforeClosing();
-                            App.Current.Dispatcher.Invoke(() => {
-                                App.Current.Shutdown();
-                            });
-                            return;
-                        }
-
-                        // An event to determine when the user has performed the selection of the network
-                        AutoResetEvent goOn = new AutoResetEvent(false);
-
-                        // Ask the threads hierarchy to stop
-                        hellothread.StopThread();
-                        receiver.StopThread();
-                        // Wait for the end of the threads
-                        hellothread.Join();
-                        receiver.Join();
-
-                        // In the UI thread: show the window to select the network
+                    if (++reconnectionAttempts > MAX_RECONNECTION_ATTEMPTS) {
                         App.Current.Dispatcher.Invoke(() => {
-                            NetworkWindow nw = new NetworkWindow();
-                            // When the window is closing (with network selected) Set() on the event
-                            nw.Closed += (object target, EventArgs args) => goOn.Set();
-                            nw.Show();
+                            MessageBoxResult mbres = MessageBox.Show("Sembra ci sia qualche problema con la rete. Sicuro di voler provare ancora?",
+                                            "Impossibile stabilire una connessione", MessageBoxButton.YesNo, MessageBoxImage.Error);
+                            if (mbres == MessageBoxResult.No)
+                                quit = true;
+                            else
+                                reconnectionAttempts = 0;
                         });
-
-                        // ...wait for the Set() on the event (in other words: wait for the network selection)
-                        goOn.WaitOne();
-
-                        Monitor.Exit(single_function_execution);    // unlock here
-                        
-                        // Run the threads again
-                        InitHelloProtocolThread();
-                        InitReceiverThread();
                     }
-                });
+
+                    if (quit) {
+                        BeforeClosing();
+                        App.Current.Dispatcher.Invoke(() => {
+                            App.Current.Shutdown();
+                        });
+                        return;
+                    }
+
+                    // An event to determine when the user has performed the selection of the network
+                    AutoResetEvent goOn = new AutoResetEvent(false);
+
+                    // Ask the threads hierarchy to stop
+                    hellothread.StopThread();
+                    receiver.StopThread();
+                    // Wait for the end of the threads
+                    hellothread.Join();
+                    receiver.Join();
+
+                    // In the UI thread: show the window to select the network
+                    App.Current.Dispatcher.Invoke(() => {
+                        NetworkWindow nw = new NetworkWindow();
+                        // When the window is closing (with network selected) Set() on the event
+                        nw.Closed += (object target, EventArgs args) => goOn.Set();
+                        nw.Show();
+                        nw.Activate();
+                    });
+
+                    // ...wait for the Set() on the event (in other words: wait for the network selection)
+                    goOn.WaitOne();
+
+                    Monitor.Exit(single_function_execution);    // unlock here
+
+                    // Run the threads again
+                    InitHelloProtocolThread();
+                    InitReceiverThread();
+                }
+            });
             //}
         }
 
@@ -301,6 +312,15 @@ namespace FileShare {
         /// the end of the application.
         /// </summary>
         private void BeforeClosing() {
+            foreach (Window w in openedWindow)
+                App.Current.Dispatcher.Invoke(() => {
+                    try {
+                        w.Close();
+                    } catch (Exception e) {
+                        ;   // NOTHING TO DO
+                    }
+                });
+
             // Stops the hello protocol thread (HelloThread)
             //if (hellothread.Alive)
             hellothread.StopThread();
@@ -347,16 +367,17 @@ namespace FileShare {
         }
 
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        public ToAccept ShowConfirmWindow(ToAccept request) {
-            ReceiveWindow rw = new ReceiveWindow(request);
-            rw.Show();
-            return request;
-        }
+        ///// <summary>
+        ///// 
+        ///// </summary>
+        ///// <param name="request"></param>
+        ///// <returns></returns>
+        //public ToAccept ShowConfirmWindow(ToAccept request) {
+        //    ReceiveWindow rw = new ReceiveWindow(request);
+        //    rw.ShowActivated = true;
+        //    rw.Show();
+        //    return request;
+        //}
 
         /// <summary>
         /// Manages the closing of the app. The main role of this method is
